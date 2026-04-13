@@ -1,25 +1,23 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'User Review Report'); ?>
 
-@section('title', 'User Review Report')
+<?php $__env->startSection('breadcrumb', "User Review Report / Employee $emp_id"); ?>
 
-@section('breadcrumb', "User Review Report / Employee $emp_id")
+<?php $__env->startSection('page-title', 'User Review Report'); ?>
 
-@section('page-title', 'User Review Report')
+<?php $__env->startSection('body-class', 'special-page'); ?>
 
-@section('body-class', 'special-page')
-
-@section('content')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<?php $__env->startSection('content'); ?>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <div class="container forms-block">
-        <h3 class="heading-two mt-0">User Review Report for Employee ID: {{ $emp_id }}</h3>
+        <h3 class="heading-two mt-0">User Review Report for Employee ID: <?php echo e($emp_id); ?></h3>
         <div class="mt-3">
             <button onclick="history.back()" class="btn btn-secondary">Back</button>
         </div>
 
         <div class="col-12 col-sm-6 search-container">
             <label for="financialYear" class="forms-label">Financial Years:</label>
-            @php
+            <?php
                 $currentMonth = date('m');
                 $currentYear = date('Y');
 
@@ -36,21 +34,22 @@
                     $currentFYStart + 1, // Next FY
                     $currentFYStart + 2, // Next +1 FY
                 ];
-            @endphp
+            ?>
 
             <select id="employeeDetails" class="form-select client__select" name="financial_year" required>
                 <option value="">Financial Year</option>
 
-                @foreach ($years as $year)
-                    @php
+                <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
                         $end = $year + 1;
                         $fy = $year . '-' . $end;
-                    @endphp
+                    ?>
 
-                    <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                        {{ $fy }}
+                    <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                        <?php echo e($fy); ?>
+
                     </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </select>
         </div>
@@ -84,34 +83,35 @@
 
         <!-- Buttons for each report -->
         <div class="evaluation-report">
-            @if ($userData['evaluation'] !== null)
-                <button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')">Evaluation
+            <?php if($userData['evaluation'] !== null): ?>
+                <button class="btn secondary-btn" onclick="loadReport('evaluation', '<?php echo e($emp_id); ?>')">Evaluation
                     Details</button>
-            @endif
+            <?php endif; ?>
 
-            @if ($userData['adminReview'] !== null)
-                <button class="btn secondary-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')">Admin
+            <?php if($userData['adminReview'] !== null): ?>
+                <button class="btn secondary-btn" onclick="loadReport('adminReport', '<?php echo e($emp_id); ?>')">Admin
                     Report</button>
-            @endif
+            <?php endif; ?>
 
-            @if ($userData['hrReview'] !== null)
-                <button class="btn secondary-btn" onclick="loadReport('hrReport', '{{ $emp_id }}')">HR Report</button>
-            @endif
+            <?php if($userData['hrReview'] !== null): ?>
+                <button class="btn secondary-btn" onclick="loadReport('hrReport', '<?php echo e($emp_id); ?>')">HR Report</button>
+            <?php endif; ?>
 
-            @if ($userData['managerReview'] !== null)
-                <button class="btn secondary-btn" onclick="loadReport('managerReport', '{{ $emp_id }}')">Manager
+            <?php if($userData['managerReview'] !== null): ?>
+                <button class="btn secondary-btn" onclick="loadReport('managerReport', '<?php echo e($emp_id); ?>')">Manager
                     Report</button>
-            @endif
-            @if ($clientReviews->isNotEmpty())
-                @foreach ($clientReviews as $clientReview)
+            <?php endif; ?>
+            <?php if($clientReviews->isNotEmpty()): ?>
+                <?php $__currentLoopData = $clientReviews; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $clientReview): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <button class="btn secondary-btn"
-                        onclick="loadClientReport('{{ $clientReview->emp_id }}', '{{ $clientReview->client_id }}')">
-                        View Client Review for: {{ $clientReview->client_name ?? 'Unknown Client' }}
+                        onclick="loadClientReport('<?php echo e($clientReview->emp_id); ?>', '<?php echo e($clientReview->client_id); ?>')">
+                        View Client Review for: <?php echo e($clientReview->client_name ?? 'Unknown Client'); ?>
+
                     </button>
-                @endforeach
-            @elseif(in_array('client', $user_roles))
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php elseif(in_array('client', $user_roles)): ?>
                 <p>Your client review is pending.</p>
-            @endif
+            <?php endif; ?>
 
 
 
@@ -178,7 +178,7 @@
         document.getElementById('employeeDetails').addEventListener('change', function() {
             const selectedYear = this.value;
             const table = document.getElementById('reviewTableContainer');
-            const empId = "{{ $emp_id }}";
+            const empId = "<?php echo e($emp_id); ?>";
 
             if (!selectedYear) {
                 table.style.display = 'none';
@@ -275,4 +275,6 @@
         }
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\well-known\resources\views/delostyleUsers/user-review-report.blade.php ENDPATH**/ ?>

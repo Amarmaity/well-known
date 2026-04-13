@@ -140,7 +140,6 @@ class HomeController extends Controller
 
 
         $empFinancialYear = $employee->financial_year;
-        // Check if the provided financial_year in the request matches the employee's financial year
         if ($empFinancialYear !== $request->input('financial_year')) {
             return response()->json([
                 'success' => false,
@@ -181,7 +180,7 @@ class HomeController extends Controller
         ]);
 
 
-       $evaluatorSignaturePath = $request->hasFile('evaluator_signatur')
+        $evaluatorSignaturePath = $request->hasFile('evaluator_signatur')
             ? $request->file('evaluator_signatur')->store('signatures', 'public') // Store in public directory
             : null;
 
@@ -221,7 +220,6 @@ class HomeController extends Controller
             'comments_problem_solving' => $request->input('comments_problem_solving'),
             'jk_total_rating' => $request->input('jk_total_rating'),
             'total_scoring_system' => $request->input('total_scoring_system'),
-            // 'recomendation' => $request->input('recomendation'),
             'evalutors_name' => $request->input('evalutors_name'),
             'evaluator_signatur' => $evaluatorSignaturePath,
             'evaluator_signatur_date' => $request->input('evaluator_signatur_date'),
@@ -261,10 +259,6 @@ class HomeController extends Controller
                 $hrEmails = SuperAddUser::where('user_type', 'hr')->pluck('email')->toArray();
                 $adminEmails = SuperAddUser::where('user_type', 'admin')->pluck('email')->toArray();
 
-                // $managerEmails = [];
-                // if (in_array('manager', $userRoles)) {
-                //     $managerEmails = SuperAddUser::where('user_roles', 'manager', )->pluck('email')->toArray();
-                // }
                 $managerEmails = [];
 
                 if (!empty($employee->manager_id)) {
