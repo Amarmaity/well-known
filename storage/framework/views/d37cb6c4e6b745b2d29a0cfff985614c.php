@@ -1,16 +1,15 @@
-@extends('layouts.app')
 <!-- Extends app.blade.php (Header, Sidebar, Footer included) -->
 
-@section('title', 'Manager Review')
+<?php $__env->startSection('title', 'Manager Review'); ?>
 <!-- Page Title -->
 
-@section('breadcrumb', 'Manager')
+<?php $__env->startSection('breadcrumb', 'Manager'); ?>
 <!-- Breadcrumb -->
 
-@section('page-title', 'Manager Dashboard')
+<?php $__env->startSection('page-title', 'Manager Dashboard'); ?>
 <!-- Page Title in Breadcrumb -->
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 
     <style>
@@ -31,24 +30,17 @@
     </style>
 
     <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     </head>
 
     <body>
-        <form action="{{ route('manager.review.submit') }}" method="post" id="ManagerReviewSubmit">
-            @csrf
+        <form action="<?php echo e(route('manager.review.submit')); ?>" method="post" id="ManagerReviewSubmit">
+            <?php echo csrf_field(); ?>
             <div class="client">
                 <h1 class="client__heading">MANAGER REVIEW</h1>
 
-                {{-- <select id="financialYear" class="form-select client__select" name="financial_year" required>
-                    <option value="" selected>Financial Year</option>
-                    <option value="2025-2026">2025-2026</option>
-                    <option value="2026-2027">2026-2027</option>
-                    <option value="2027-2028">2027-2028</option>
-                    <option value="2028-2029">2028-2029</option>
-                    <option value="2029-2030">2029-2030</option>
-                </select> --}}
-                @php
+                
+                <?php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
 
@@ -65,21 +57,22 @@
                         $currentFYStart + 1, // Next FY
                         $currentFYStart + 2, // Next +1 FY
                     ];
-                @endphp
+                ?>
 
                 <select id="financialYear" class="form-select client__select" name="financial_year" required>
                     <option value="">Financial Year</option>
 
-                    @foreach ($years as $year)
-                        @php
+                    <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $end = $year + 1;
                             $fy = $year . '-' . $end;
-                        @endphp
+                        ?>
 
-                        <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                            {{ $fy }}
+                        <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                            <?php echo e($fy); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 </select>
 
@@ -325,7 +318,7 @@
 
                 timeout = setTimeout(function() {
                     $.ajax({
-                        url: '{{ route('user-search') }}',
+                        url: '<?php echo e(route('user-search')); ?>',
                         type: 'GET',
                         data: {
                             keyword: keyword
@@ -386,7 +379,7 @@
             formData.append("ManagerTotalReview", totalRating);
 
             $.ajax({
-                url: "{{ route('manager.review.submit') }}",
+                url: "<?php echo e(route('manager.review.submit')); ?>",
                 type: "POST",
                 data: formData,
                 processData: false,
@@ -449,4 +442,6 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/delostyleUsers/manager-review-section.blade.php ENDPATH**/ ?>

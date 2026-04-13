@@ -1,10 +1,8 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Admin Employee Review'); ?>
+<?php $__env->startSection('breadcrumb', 'Admin Review List'); ?>
+<?php $__env->startSection('page-title', 'Admin-Review-Section'); ?>
 
-@section('title', 'Admin Employee Review')
-@section('breadcrumb', 'Admin Review List')
-@section('page-title', 'Admin-Review-Section')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <head>
         <meta charset="UTF-8">
@@ -73,11 +71,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($superAddUser as $user)
+                        <?php $__currentLoopData = $superAddUser; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>{{ $user->fname }} {{ $user->lname }}</td>
-                                <td>{{ $user->employee_id }}</td>
-                                <td>{{ $user->email }}</td>
+                                <td><?php echo e($user->fname); ?> <?php echo e($user->lname); ?></td>
+                                <td><?php echo e($user->employee_id); ?></td>
+                                <td><?php echo e($user->email); ?></td>
                                 <td>
                                     <select name="financial_year" class="form-control financial-year input-block" required>
                                         <option value="" selected>Select Financial Year</option>
@@ -88,7 +86,7 @@
                                         <option value="2029-2030">2029-2030</option>
                                     </select>
                                     <div class="btn-block">
-                                        @php
+                                        <?php
                                             $sessionUserType = session()->get('user_type');
                                             $sessionEmployeeId = session()->get('employee_id');
 
@@ -103,16 +101,16 @@
                                                     '"
                                     class="btn btn-primary view-admin-details">View Details</a>';
                                             }
-                                        @endphp
+                                        ?>
 
 
-                                        <a href="{{ route('user-report-view-evaluation', $user->employee_id) }}"
+                                        <a href="<?php echo e(route('user-report-view-evaluation', $user->employee_id)); ?>"
                                             class="btn btn-primary view-evaluation">View
                                             Evaluation</a>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
@@ -209,4 +207,6 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/reports/adminReportView.blade.php ENDPATH**/ ?>

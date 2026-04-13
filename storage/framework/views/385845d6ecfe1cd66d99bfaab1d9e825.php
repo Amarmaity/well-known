@@ -1,8 +1,7 @@
-@extends('layouts.app')
-@section('title', 'Admin Review')
-@section('breadcrumb', 'Admin')
-@section('page-title', 'Admin-Review-Section Dashboard')
-@section('content')
+<?php $__env->startSection('title', 'Admin Review'); ?>
+<?php $__env->startSection('breadcrumb', 'Admin'); ?>
+<?php $__env->startSection('page-title', 'Admin-Review-Section Dashboard'); ?>
+<?php $__env->startSection('content'); ?>
     <style>
         /* Loading animation */
         .loading {
@@ -21,25 +20,18 @@
     </style>
 
     <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     </head>
 
     <body>
-        <form action="{{ route('admin.review.submit') }}" method="post" id="AdminReviewSubmit"
+        <form action="<?php echo e(route('admin.review.submit')); ?>" method="post" id="AdminReviewSubmit"
             class="form-inline client__form">
-            @csrf
+            <?php echo csrf_field(); ?>
             <div class="client">
                 <h1 class="client__heading">ADMIN REVIEW</h1>
 
-                {{-- <select id="financialYear" class="form-select client__select" name="financial_year" required>
-                    <option value="" selected>Financial Year</option>
-                    <option value="2025-2026">2025-2026</option>
-                    <option value="2026-2027">2026-2027</option>
-                    <option value="2027-2028">2027-2028</option>
-                    <option value="2028-2029">2028-2029</option>
-                    <option value="2029-2030">2029-2030</option>
-                </select> --}}
-                @php
+                
+                <?php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
 
@@ -56,21 +48,22 @@
                         $currentFYStart + 1, // Next FY
                         $currentFYStart + 2, // Next +1 FY
                     ];
-                @endphp
+                ?>
 
                 <select id="financialYear" class="form-select client__select" name="financial_year" required>
                     <option value="">Financial Year</option>
 
-                    @foreach ($years as $year)
-                        @php
+                    <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $end = $year + 1;
                             $fy = $year . '-' . $end;
-                        @endphp
+                        ?>
 
-                        <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                            {{ $fy }}
+                        <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                            <?php echo e($fy); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 </select>
 
@@ -102,9 +95,7 @@
                             </tr>
                         </thead>
                         <tbody id="employeeTableBody">
-                            {{-- <tr id="selectLabelRow">
-                                <td colspan="4"><strong>Select the employee:</strong></td>
-                            </tr> --}}
+                            
                             <tr>
                                 <td colspan="4">Start typing to search...</td>
                             </tr>
@@ -385,7 +376,7 @@
 
                 timeout = setTimeout(function() {
                     $.ajax({
-                        url: '{{ route('user-search') }}', // Replace with your route
+                        url: '<?php echo e(route('user-search')); ?>', // Replace with your route
                         type: 'GET',
                         data: {
                             keyword: keyword
@@ -461,7 +452,7 @@
                     }
 
                     $.ajax({
-                        url: "{{ route('admin.review.submit') }}",
+                        url: "<?php echo e(route('admin.review.submit')); ?>",
                         type: "POST",
                         data: formData,
                         processData: false,
@@ -528,4 +519,6 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/delostyleUsers/admin-review-section.blade.php ENDPATH**/ ?>

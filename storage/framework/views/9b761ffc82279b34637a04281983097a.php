@@ -37,7 +37,8 @@
 
                     </div>
                 <?php endif; ?>
-                <form action="<?php echo e(route('log-in')); ?>" method="post" autocomplete="off" id="login-form" class="login__page--form">
+                <form action="<?php echo e(route('log-in')); ?>" method="post" autocomplete="off" id="login-form"
+                    class="login__page--form">
                     <?php echo csrf_field(); ?>
 
                     <!-- Email Input -->
@@ -110,8 +111,8 @@
 </html>
 
 <script>
-    $(document).ready(function () {
-        $("#send-otp-btn").click(function () {
+    $(document).ready(function() {
+        $("#send-otp-btn").click(function() {
             var email = $("#email").val();
             var userType = $("#user_type_dropdown").val();
             var password = $("#password").val();
@@ -129,18 +130,21 @@
                         user_type: userType,
                         password: password
                     },
-                    success: function (response) {
+                    success: function(response) {
                         alert(response.message);
 
-                        if (response.status === 'success' || response.status === 'new_user') {
+                        if (response.status === 'success' || response.status ===
+                            'new_user') {
                             $("#password-field").hide();
                             $("#otp-field").show();
                             $("#send-otp-btn").hide();
-                            $("#login-btn").text("Verify OTP").removeClass("btn-primary").addClass("btn-success").show();
+                            $("#login-btn").text("Verify OTP").removeClass("btn-primary")
+                                .addClass("btn-success").show();
                         }
                     },
-                    error: function (xhr) {
-                        alert("Failed to send OTP: " + (xhr.responseJSON?.message || xhr.responseText || "Server Error"));
+                    error: function(xhr) {
+                        alert("Failed to send OTP: " + (xhr.responseJSON?.message || xhr
+                            .responseText || "Server Error"));
                     }
                 });
             } else {
@@ -148,7 +152,7 @@
             }
         });
 
-        $("#login-form").submit(function (e) {
+        $("#login-form").submit(function(e) {
             e.preventDefault();
 
             var email = $("#email").val();
@@ -170,14 +174,15 @@
                     email: email,
                     otp: otp
                 },
-                success: function (response) {
+                success: function(response) {
                     alert(response.message);
                     if (response.status === 'success') {
                         window.location.href = response.redirect;
                     }
                 },
-                error: function (xhr) {
-                    alert("OTP verification failed: " + (xhr.responseJSON?.message || xhr.responseText || "Server Error"));
+                error: function(xhr) {
+                    alert("OTP verification failed: " + (xhr.responseJSON?.message || xhr
+                        .responseText || "Server Error"));
                 }
             });
         });

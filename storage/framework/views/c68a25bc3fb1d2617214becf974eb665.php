@@ -1,8 +1,7 @@
-@extends('layouts.app')
-@section('breadcrumb', 'Evaluation/' . $employee_id)
-@section('title', 'Evaluation')
+<?php $__env->startSection('breadcrumb', 'Evaluation/' . $employee_id); ?>
+<?php $__env->startSection('title', 'Evaluation'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 
     <!DOCTYPE html>
@@ -15,7 +14,7 @@
 
 
         <!-- CSRF Token for AJAX -->
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     </head>
     <style>
         button.info-button {
@@ -34,20 +33,13 @@
         <!-- Centered Headings -->
 
 
-        <form action="{{ route('insert-data-evaluation') }}" method="post" id="evaluationSubmit"
+        <form action="<?php echo e(route('insert-data-evaluation')); ?>" method="post" id="evaluationSubmit"
             class="evaluation__form form-block form-block--updated" enctype="multipart/form-data">
-            @csrf
+            <?php echo csrf_field(); ?>
             <div class="client">
                 <h1 class="client__heading">Evaluation</h1>
-                {{-- <select id="financialYear" class="form-select client__select" name="financial_year" required>
-                    <option value="" selected>Financial Year</option>
-                    <option value="2025-2026">2025-2026</option>
-                    <option value="2026-2027">2026-2027</option>
-                    <option value="2027-2028">2027-2028</option>
-                    <option value="2028-2029">2028-2029</option>
-                    <option value="2029-2030">2029-2030</option>
-                </select> --}}
-                @php
+                
+                <?php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
 
@@ -64,21 +56,22 @@
                         $currentFYStart + 1, // Next FY
                         $currentFYStart + 2, // Next +1 FY
                     ];
-                @endphp
+                ?>
 
                 <select id="financialYear" class="form-select client__select" name="financial_year" required>
                     <option value="">Financial Year</option>
 
-                    @foreach ($years as $year)
-                        @php
+                    <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $end = $year + 1;
                             $fy = $year . '-' . $end;
-                        @endphp
+                        ?>
 
-                        <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                            {{ $fy }}
+                        <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                            <?php echo e($fy); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 </select>
             </div>
@@ -91,50 +84,50 @@
                         <div class="row form-div">
                             <div class="col-12 col-sm-6">
                                 <label for="designation" class="forms-label">Designation:</label>
-                                <input type="text" name="designation" id="designation" value="{{ $designation ?? '' }}"
+                                <input type="text" name="designation" id="designation" value="<?php echo e($designation ?? ''); ?>"
                                     placeholder="Enter designation" class="form-control" readonly>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="salary_grade" class="forms-label">Salary Grade/Band:</label>
                                 <input type="text" name="salary_grade" id="salary_grade" placeholder="Enter Salary Grade"
-                                    value="{{ $salary_grade ?? '' }}" class="form-control" readonly>
+                                    value="<?php echo e($salary_grade ?? ''); ?>" class="form-control" readonly>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="employee_name" class="forms-label">Name of Employee:</label>
                                 <input type="text" name="employee_name" id="employee_name"
-                                    value="{{ $employee_name ?? '' }}" placeholder="Enter name" class="form-control"
+                                    value="<?php echo e($employee_name ?? ''); ?>" placeholder="Enter name" class="form-control"
                                     readonly>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="emp_id" class="forms-label">Employee Id:</label>
-                                <input type="text" name="emp_id" id="emp_id" value="{{ $employee_id ?? '' }}"
+                                <input type="text" name="emp_id" id="emp_id" value="<?php echo e($employee_id ?? ''); ?>"
                                     placeholder="Enter Employee Id" class="form-control" readonly>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="evaluation_purpose" class="forms-label">Evaluation Purpose:</label>
                                 <input type="text" name="evaluation_purpose" id="evaluation_purpose"
-                                    value="{{ $evaluation_purpose ?? '' }}" placeholder="Enter Evaluation Purpose" readonly
+                                    value="<?php echo e($evaluation_purpose ?? ''); ?>" placeholder="Enter Evaluation Purpose" readonly
                                     class="form-control">
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="division" class="forms-label">Division:</label>
                                 <input type="text" name="division" id="division" placeholder="Enter Division"
-                                    value="{{ $division ?? '' }}" readonly class="form-control">
+                                    value="<?php echo e($division ?? ''); ?>" readonly class="form-control">
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="manager_name" class="forms-label">Manager Name:</label>
                                 <input type="text" name="manager_name" id="manager_name" placeholder="Enter Manager Name"
-                                    value="{{ $manager_name ?? '' }}" class="form-control" readonly>
+                                    value="<?php echo e($manager_name ?? ''); ?>" class="form-control" readonly>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="joining_date" class="forms-label">Joining Date:</label>
                                 <input type="date" name="joining_date" id="joining_date" class="form-control" readonly
-                                    value="{{ $dob ?? '' }}">
+                                    value="<?php echo e($dob ?? ''); ?>">
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="review_period" class="forms-label">Review Period:</label>
                                 <input type="text" name="review_period" id="review_period"
-                                    placeholder="Enter Review Period" value="{{ $financial_year ?? '' }}"
+                                    placeholder="Enter Review Period" value="<?php echo e($financial_year ?? ''); ?>"
                                     class="form-control" readonly>
                             </div>
                         </div>
@@ -640,7 +633,7 @@
                 </div>
 
 
-                {{-- OVERALL PROGRESS --}}
+                
                 <div class="content-block">
                     <input type="checkbox" name="" id="content7">
                     <label for="content7" class="main-label">F. Overall Progress</label>
@@ -784,7 +777,7 @@
 
 
 
-        {{-- otp modal --}}
+        
         <div id="otpModal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -796,7 +789,7 @@
                     </div>
                     <div class="modal-body">
                         <form id="otpForm">
-                            @csrf
+                            <?php echo csrf_field(); ?>
                             <input type="text" name="otp" class="form-control" placeholder="Enter OTP" required>
                             <button type="submit" class="btn btn-primary mt-3">Verify OTP</button>
                         </form>
@@ -806,7 +799,7 @@
         </div>
     </body>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
 </html>
 
@@ -822,7 +815,7 @@
             }
         });
 
-        const sessionEmail = "{{ session('user_email') }}"; // or use 'otp_email' if more accurate
+        const sessionEmail = "<?php echo e(session('user_email')); ?>"; // or use 'otp_email' if more accurate
 
         $("#evaluationSubmit").submit(function(event) {
             event.preventDefault();
@@ -843,7 +836,7 @@
 
             // Send OTP via AJAX
             $.ajax({
-                url: "{{ route('evaluation-send-otp') }}",
+                url: "<?php echo e(route('evaluation-send-otp')); ?>",
                 type: "POST",
                 data: {
                     email: sessionEmail
@@ -870,12 +863,12 @@
             event.preventDefault();
 
             $.ajax({
-                url: "{{ route('evaluation-verify-otp') }}",
+                url: "<?php echo e(route('evaluation-verify-otp')); ?>",
                 type: "POST",
                 data: {
                     email: sessionEmail,
                     otp: $("input[name='otp']").val(),
-                    _token: "{{ csrf_token() }}"
+                    _token: "<?php echo e(csrf_token()); ?>"
                 },
                 success: function(response) {
                     console.log("OTP Verified Response:", response);
@@ -916,12 +909,12 @@
                 .val(); // or 'input' if you're using text input
 
             $.ajax({
-                url: "{{ route('check-duplicate-evaluation') }}",
+                url: "<?php echo e(route('check-duplicate-evaluation')); ?>",
                 type: "POST",
                 data: {
                     emp_id: empId,
                     financial_year: financialYear,
-                    _token: "{{ csrf_token() }}"
+                    _token: "<?php echo e(csrf_token()); ?>"
                 },
                 success: function(res) {
                     if (res.exists) {
@@ -936,7 +929,7 @@
 
                     // Submit the final form
                     $.ajax({
-                        url: "{{ route('insert-data-evaluation') }}",
+                        url: "<?php echo e(route('insert-data-evaluation')); ?>",
                         type: "POST",
                         data: formData,
                         processData: false,
@@ -1098,3 +1091,5 @@
         updateAllTotals(); // initial calculation in case inputs have default values
     });
 </script>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/evaluationForm/evaluationForm.blade.php ENDPATH**/ ?>
