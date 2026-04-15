@@ -17,7 +17,7 @@ use App\Mail\EvaluationCredentialMail;
 class addUserController extends Controller
 
 {
-    //
+
 
     public function indexAddUser()
     {
@@ -190,7 +190,7 @@ class addUserController extends Controller
                 'division' => $request->input('division'),
                 'manager_id' => $managerId ?: null,
                 // 'manager_name' => $request->input('manager_name'),
-                 'manager_name' => $managerNameFinal,
+                'manager_name' => $managerNameFinal,
                 'designation' => $request->input('designation'),
                 'user_type' => $request->input('user_type'),
                 'user_roles' => json_encode($request->input('user_roles')),

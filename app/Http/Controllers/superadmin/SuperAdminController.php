@@ -729,7 +729,6 @@ class SuperAdminController extends Controller
             'managerReview' => DB::table('manager_review_tables')->where('emp_id', $emp_id)->first(),
             'adminReview' => DB::table('admin_review_tables')->where('emp_id', $emp_id)->first(),
             'hrReview' => DB::table('hr_review_tables')->where('emp_id', $emp_id)->first(),
-            // 'clientReview' => DB::table('client_review_tables')->where('emp_id', $emp_id)->first(),
             'clientReview' => DB::table('client_review_tables')->where('emp_id', $emp_id)->get(),
             'superAddUser' => DB::table('super_add_users')->where('employee_id', $emp_id)->first(),
             'AllClient' => DB::table('all_clients')->get(),
