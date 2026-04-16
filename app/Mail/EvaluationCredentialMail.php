@@ -35,7 +35,7 @@ class EvaluationCredentialMail extends Mailable
                     ->with([
                         'user' => $this->user,
                         'password' => $this->password,
-                        'loginUrl' => url('https://modest-gagarin.74-208-156-247.plesk.page/'), // adjust if you use a custom login URL
+                        'loginUrl' => url('https://evalon.delostylestudio.co.in/'), 
                     ]);
     }
 

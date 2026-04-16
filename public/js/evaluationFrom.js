@@ -26,7 +26,7 @@ $(document).ready(function () {
 
         // Send OTP via AJAX
         $.ajax({
-            url: "{{ route('evaluation-send-otp') }}",
+            url: window.routes.sendOtp,
             type: "POST",
             data: {
                 email: sessionEmail,
@@ -53,7 +53,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         $.ajax({
-            url: "{{ route('evaluation-verify-otp') }}",
+            url: window.routes.verifyOtp,
             type: "POST",
             data: {
                 email: sessionEmail,
@@ -100,7 +100,7 @@ $(document).ready(function () {
         ).val(); // or 'input' if you're using text input
 
         $.ajax({
-            url: "{{ route('check-duplicate-evaluation') }}",
+            url: window.routes.checkDuplicate,
             type: "POST",
             data: {
                 emp_id: empId,
@@ -120,7 +120,7 @@ $(document).ready(function () {
 
                 // Submit the final form
                 $.ajax({
-                    url: "{{ route('insert-data-evaluation') }}",
+                    url: window.routes.submitEvaluation,
                     type: "POST",
                     data: formData,
                     processData: false,

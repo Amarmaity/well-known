@@ -59,13 +59,6 @@ class EvaluationController extends Controller
             'director_signatur_date' => 'Director Signature Date',
         ];
 
-        // var_dump($columnMappings);exit;
-
-        // print_r($columnMappings);
-
-
-        // dd($columnMappings);
-
 
         // Fetch data from database
         // $users = DB::table($table)->get();

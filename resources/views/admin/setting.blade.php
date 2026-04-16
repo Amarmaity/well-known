@@ -54,14 +54,6 @@
                 max="100" step="0.01" required>
 
             <label for="financialYear">Financial Year:</label>
-            {{-- <select id="financialYear" name="financial_year" required>
-                <option >Select Financial Year</option>
-                <option value="2025-2026">2025-2026</option>
-                <option value="2026-2027">2026-2027</option>
-                <option value="2027-2028">2027-2028</option>
-                <option value="2028-2029">2028-2029</option>
-                <option value="2029-2030">2029-2030</option>
-            </select> --}}
             @php
                 $currentMonth = date('m');
                 $currentYear = date('Y');
@@ -98,7 +90,10 @@
             </select>
 
             <div class="mt-3">
-                <span>From April 1, <span id="startYear">2025</span> to March 31, <span id="endYear">2026</span>.</span>
+                <span>
+                    From April 1, <span id="startYear"></span>
+                    to March 31, <span id="endYear"></span>.
+                </span>
             </div>
 
             <button type="submit" class="primary-btn modified-btn d-block mx-auto">Apply to All</button>
@@ -201,11 +196,24 @@
         const startYear = document.getElementById("startYear");
         const endYear = document.getElementById("endYear");
 
-        financialYearSelect.addEventListener("change", function() {
-            const [start, end] = this.value.split("-");
+        function updateFYText() {
+            if (!financialYearSelect.value) {
+                startYear.textContent = '--';
+                endYear.textContent = '--';
+                return;
+            }
+
+            const [start, end] = financialYearSelect.value.split("-");
             startYear.textContent = start;
             endYear.textContent = end;
-        });
+        }
+
+        // Run on change
+        financialYearSelect.addEventListener("change", updateFYText);
+
+        // ✅ Run on page load (IMPORTANT)
+        document.addEventListener("DOMContentLoaded", updateFYText);
+
 
         document.getElementById('appraisalForm').addEventListener('submit', function(e) {
             e.preventDefault();

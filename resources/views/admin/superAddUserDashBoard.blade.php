@@ -6,18 +6,16 @@
 @section('content')
 
     <style>
-    /* Remove the dropdown arrow inside the Select2 box (single select) */
-    .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-        display: none !important;
-    }
+        /* Remove the dropdown arrow inside the Select2 box (single select) */
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            display: none !important;
+        }
 
-    /* Optional: Clean up spacing on the right to account for the missing arrow */
-    .select2-container--bootstrap-5 .select2-selection--single {
-        padding-right: 0.75rem !important;
-        background-image: none !important;
-    }
-
-
+        /* Optional: Clean up spacing on the right to account for the missing arrow */
+        .select2-container--bootstrap-5 .select2-selection--single {
+            padding-right: 0.75rem !important;
+            background-image: none !important;
+        }
     </style>
 
     <body>
@@ -101,23 +99,18 @@
 
 
 
-                                    {{--Division--}}
+                                    {{-- Division --}}
                                     <label for="division" class="forms-label">Division</label>
                                     <select class="form-control" id="division_dropdown" name="division" required>
                                         <option value="" selected disabled>Select Division</option>
                                         <option value="Kasba Office">Kasba Office</option>
                                         <option value="Salt Lake 3B">Salt Lake 3B</option>
                                         <option value="Salt Lake 17B">Salt Lake 17B</option>
+                                        <option value="Salt Lake 504">Salt Lake 504</option>
+
                                     </select>
 
 
-                                    {{-- <div class="client-hide" id="search_manager_div" style="display: block;">
-                                        <label for="manager_name" class="forms-label">Search Manager Name</label>
-                                        <select class="form-control" id="manager_id" name="manager_id" style="width: 100%">
-                                            <!-- Loaded via AJAX -->
-                                        </select>
-
-                                    </div> --}}
                                     <div class="client-hide" id="search_manager_div" style="display: block;">
                                         <label for="manager_name" class="forms-label">Search Manager Name</label>
                                         <select class="form-control" id="manager_name" name="manager_id"
@@ -137,7 +130,7 @@
 
 
                                     <script>
-                                        document.getElementById('designation_dropdown').addEventListener('change', function () {
+                                        document.getElementById('designation_dropdown').addEventListener('change', function() {
                                             const selectedValue = this.value.trim();
                                             const searchDiv = document.getElementById('search_manager_div');
                                             const managerDiv = document.getElementById('manager_name_div');
@@ -164,8 +157,10 @@
 
 
                                     {{-- Evaluation Purpose --}}
-                                    <div class="client-hide" style="display: none;>
-                                        <label for="Evaluation Purpose" class="forms-label">Evaluation Purpose</label>
+                                    <div class="client-hide"
+                                        style="display: none;>
+                                        <label for="Evaluation
+                                        Purpose" class="forms-label">Evaluation Purpose</label>
                                         <select class="form-control" id="evaluation_purpose" name="evaluation_purpose">
                                             <option value="" selected>Select Purpose</option>
                                             <option value="Appraisal" selected>Appraisal</option>
@@ -175,8 +170,8 @@
 
                                     <div class="client-hide">
                                         <label for="client_id" class="forms-label">Select Client</label>
-                                        <select class="form-control" id="client_id" name="client_id[]" multiple="multiple"
-                                            style="width: 100%">
+                                        <select class="form-control" id="client_id" name="client_id[]"
+                                            multiple="multiple" style="width: 100%">
                                             <!-- Options loaded via AJAX -->
                                         </select>
                                     </div>
@@ -320,8 +315,8 @@
 
 
     <script>
-        $(document).ready(function () {
-            $('#userForm').on('submit', function (e) {
+        $(document).ready(function() {
+            $('#userForm').on('submit', function(e) {
                 e.preventDefault();
                 $('#saveBtn').prop('disabled', true);
 
@@ -358,11 +353,11 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status === "success") {
                             alert(response.message);
                             $('#userForm')[0].reset();
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 $('#saveBtn').prop('disabled', false);
                                 location.reload();
                             }, 3000);
@@ -371,14 +366,14 @@
                             $('#saveBtn').prop('disabled', false);
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         console.log(xhr.responseText);
 
                         if (xhr.status === 422) {
                             var errors = xhr.responseJSON.errors;
                             var errorMessages = '';
 
-                            $.each(errors, function (field, messages) {
+                            $.each(errors, function(field, messages) {
                                 errorMessages += messages.join("\n") + "\n";
                             });
 
@@ -395,7 +390,7 @@
 
 
 
-        $('#user_type_dropdown').on('change', function () {
+        $('#user_type_dropdown').on('change', function() {
             const selectedDesignation = $(this).val().toLowerCase().trim();
 
             // Show the review section by default
@@ -432,7 +427,7 @@
         });
 
 
-        $('#designation_dropdown').on('change', function () {
+        $('#designation_dropdown').on('change', function() {
             const selectedDesignation = $(this).val().toLowerCase().trim();
 
             // Show the review section and all checkboxes by default
@@ -494,15 +489,15 @@
 
 
         //Get Manager Name
-        $(function () {
+        $(function() {
             $("#manager_name").autocomplete({
-                source: function (request, response) {
+                source: function(request, response) {
                     $.ajax({
                         url: "{{ route('get.managers') }}",
                         data: {
                             term: request.term
                         },
-                        success: function (data) {
+                        success: function(data) {
                             response(data);
                         }
                     });
@@ -522,9 +517,9 @@
                 url: "{{ route('get.clients') }}",
                 dataType: 'json',
                 delay: 250,
-                processResults: function (data) {
+                processResults: function(data) {
                     return {
-                        results: $.map(data, function (client) {
+                        results: $.map(data, function(client) {
                             return {
                                 id: client.id,
                                 text: client.client_name + ' (' + client.company_name + ')',
@@ -536,11 +531,12 @@
                 },
                 cache: true
             },
-            templateResult: function (data) {
+            templateResult: function(data) {
                 if (!data.id) return data.text;
-                return $('<div><strong>' + data.client_name + '</strong><br><small>' + data.company_name + '</small></div>');
+                return $('<div><strong>' + data.client_name + '</strong><br><small>' + data.company_name +
+                    '</small></div>');
             },
-            templateSelection: function (data) {
+            templateSelection: function(data) {
                 return data.text || data.client_name;
             }
         });
@@ -548,7 +544,7 @@
 
 
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const designationDropdown = document.getElementById('designation_dropdown');
             const userTypeDropdown = document.getElementById('user_type_dropdown');
             const userTypeHidden = document.getElementById('user_type_hidden');
@@ -579,14 +575,14 @@
 
         const mobInput = document.getElementById('mobno');
 
-        mobInput.addEventListener('input', function () {
+        mobInput.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
         });
 
 
 
         //Manager name srarch Using select 2
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#manager_name').select2({
                 theme: 'bootstrap-5',
                 placeholder: "Select Manager",
@@ -595,18 +591,18 @@
                     url: "{{ route('get.manager') }}",
                     dataType: 'json',
                     delay: 250,
-                    processResults: function (data) {
+                    processResults: function(data) {
                         return {
                             results: data
                         };
                     },
                     cache: true
                 },
-                templateResult: function (data) {
+                templateResult: function(data) {
                     if (!data.id) return data.text;
                     return $('<div><strong>' + data.text + '</strong></div>');
                 },
-                templateSelection: function (data) {
+                templateSelection: function(data) {
                     return data.text || data.id;
                 }
             });

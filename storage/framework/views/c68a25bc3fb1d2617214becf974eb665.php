@@ -38,7 +38,6 @@
             <?php echo csrf_field(); ?>
             <div class="client">
                 <h1 class="client__heading">Evaluation</h1>
-                
                 <?php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -57,7 +56,6 @@
                         $currentFYStart + 2, // Next +1 FY
                     ];
                 ?>
-
                 <select id="financialYear" class="form-select client__select" name="financial_year" required>
                     <option value="">Financial Year</option>
 
@@ -67,12 +65,16 @@
                             $fy = $year . '-' . $end;
                         ?>
 
-                        <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                        <option value="<?php echo e($fy); ?>"
+                            <?php echo e(isset($financial_year) && $financial_year == $fy
+                                ? 'selected'
+                                : (!isset($financial_year) && $year == $currentFYStart
+                                    ? 'selected'
+                                    : '')); ?>>
                             <?php echo e($fy); ?>
 
                         </option>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
                 </select>
             </div>
             <!-- Form Section -->
@@ -765,6 +767,7 @@
                     <button type="reset" class="btn btn-outlined d-none" id="evaluationCancle">Clear</button>
                 </div>
         </form>
+
         </div>
 
 
@@ -996,6 +999,9 @@
     });
 
 
+
+
+
     // Utility: safely parse integer from input by id, fallback 0
     function getIntValue(id) {
         const el = document.getElementById(id);
@@ -1052,6 +1058,7 @@
 
         const part1 = (total);
         const average = (part1 / 100) * 100;
+
 
         document.getElementById("total-score").innerText = total;
         document.getElementById("total_scoring_system").value = average.toFixed(2);

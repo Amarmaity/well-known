@@ -17,7 +17,6 @@
 
         <div class="col-12 col-sm-6 search-container">
             <label for="financialYear" class="forms-label">Financial Years:</label>
-            
             <?php
                 $currentMonth = date('m');
                 $currentYear = date('Y');
@@ -37,7 +36,7 @@
                 ];
             ?>
 
-            <select id="financialYear" class="form-select client__select" name="financial_year" required>
+            <select id="employeeDetails" class="form-select client__select" name="financial_year" required>
                 <option value="">Financial Year</option>
 
                 <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

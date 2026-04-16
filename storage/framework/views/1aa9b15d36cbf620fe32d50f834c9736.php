@@ -52,7 +52,6 @@
                 max="100" step="0.01" required>
 
             <label for="financialYear">Financial Year:</label>
-            
             <?php
                 $currentMonth = date('m');
                 $currentYear = date('Y');
@@ -90,7 +89,10 @@
             </select>
 
             <div class="mt-3">
-                <span>From April 1, <span id="startYear">2025</span> to March 31, <span id="endYear">2026</span>.</span>
+                <span>
+                    From April 1, <span id="startYear"></span>
+                    to March 31, <span id="endYear"></span>.
+                </span>
             </div>
 
             <button type="submit" class="primary-btn modified-btn d-block mx-auto">Apply to All</button>
@@ -193,11 +195,24 @@
         const startYear = document.getElementById("startYear");
         const endYear = document.getElementById("endYear");
 
-        financialYearSelect.addEventListener("change", function() {
-            const [start, end] = this.value.split("-");
+        function updateFYText() {
+            if (!financialYearSelect.value) {
+                startYear.textContent = '--';
+                endYear.textContent = '--';
+                return;
+            }
+
+            const [start, end] = financialYearSelect.value.split("-");
             startYear.textContent = start;
             endYear.textContent = end;
-        });
+        }
+
+        // Run on change
+        financialYearSelect.addEventListener("change", updateFYText);
+
+        // ✅ Run on page load (IMPORTANT)
+        document.addEventListener("DOMContentLoaded", updateFYText);
+
 
         document.getElementById('appraisalForm').addEventListener('submit', function(e) {
             e.preventDefault();

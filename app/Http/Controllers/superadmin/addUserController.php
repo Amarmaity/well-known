@@ -206,9 +206,9 @@ class addUserController extends Controller
                 'status' => 1
             ]);
 
-            if ($user) {
-                Mail::to($user->email)->send(new EvaluationCredentialMail($user, $request->input('password')));
-            }
+            // if ($user) {
+            //     Mail::to($user->email)->send(new EvaluationCredentialMail($user, $request->input('password')));
+            // }
 
             return response()->json([
                 'status' => 'success',
