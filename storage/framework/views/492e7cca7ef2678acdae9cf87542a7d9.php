@@ -1,25 +1,26 @@
-@extends('layouts.app') <!-- Extends app.blade.php (Header, Sidebar, Footer included) -->
+ <!-- Extends app.blade.php (Header, Sidebar, Footer included) -->
 
-@section('title', 'Super Admin | Employee Review') <!-- Page Title -->
+<?php $__env->startSection('title', 'Super Admin | Employee Review'); ?> <!-- Page Title -->
 
-@section('breadcrumb', "Super view / Employee {$emp_id}") <!-- Breadcrumb -->
+<?php $__env->startSection('breadcrumb', "Super view / Employee {$emp_id}"); ?> <!-- Breadcrumb -->
 
-@section('page-title', 'Super Admin Dashboard') <!-- Page Title in Breadcrumb -->
+<?php $__env->startSection('page-title', 'Super Admin Dashboard'); ?> <!-- Page Title in Breadcrumb -->
 
-@section('body-class', 'special-page')
+<?php $__env->startSection('body-class', 'special-page'); ?>
 
-@section('content')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<?php $__env->startSection('content'); ?>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
 
-    {{-- <div class="container"> --}}
-    <h2 class="heading">Employee Review Details:{{ $emp_id }}</h2>
+    
+    <h2 class="heading">Employee Review Details:<?php echo e($emp_id); ?></h2>
     <div class="mt-3">
         <button onclick="history.back()" class="btn btn-secondary">Back</button>
     </div>
     <div class="col-12 col-sm-6 search-container forms-block">
         <label for="financialYear" class="forms-label">Financial Years:</label>
-        @php
+        
+        <?php
             $currentMonth = date('m');
             $currentYear = date('Y');
 
@@ -36,21 +37,22 @@
                 $currentFYStart + 1, // Next FY
                 $currentFYStart + 2, // Next +1 FY
             ];
-        @endphp
+        ?>
 
         <select id="employeeDetails" class="form-select client__select" name="financial_year" required>
             <option value="">Financial Year</option>
 
-            @foreach ($years as $year)
-                @php
+            <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     $end = $year + 1;
                     $fy = $year . '-' . $end;
-                @endphp
+                ?>
 
-                <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                    {{ $fy }}
+                <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                    <?php echo e($fy); ?>
+
                 </option>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
         </select>
 
@@ -86,78 +88,86 @@
 
 
     <div class="evaluation-report">
-        @php $userRoles = $user_roles ?? []; @endphp
-        @if (optional($users['evaluation'])->emp_id)
-            <button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $users['evaluation']->emp_id }}')">
+        <?php $userRoles = $user_roles ?? []; ?>
+        <?php if(optional($users['evaluation'])->emp_id): ?>
+            <button class="btn secondary-btn" onclick="loadReport('evaluation', '<?php echo e($users['evaluation']->emp_id); ?>')">
                 Evaluation Details
             </button>
-        @else
+        <?php else: ?>
             <p>Evaluation review is pending.</p>
-        @endif
+        <?php endif; ?>
 
 
-        @php
+        <?php
             $userRoles = $user_roles ?? [];
-        @endphp
+        ?>
 
-        {{-- Admin --}}
-        @if (in_array('admin', $userRoles))
-            @if (optional($users['adminReview'])->emp_id)
+        
+        <?php if(in_array('admin', $userRoles)): ?>
+            <?php if(optional($users['adminReview'])->emp_id): ?>
                 <button class="btn secondary-btn"
-                    onclick="loadReport('adminReport', '{{ $users['adminReview']->emp_id }}')">
+                    onclick="loadReport('adminReport', '<?php echo e($users['adminReview']->emp_id); ?>')">
                     View Admin Review
                 </button>
-            @else
+            <?php else: ?>
                 <p>Admin review is pending.</p>
-            @endif
-        @endif
+            <?php endif; ?>
+        <?php endif; ?>
 
-        {{-- HR --}}
-        @if (in_array('hr', $userRoles))
-            @if (optional($users['hrReview'])->emp_id)
-                <button class="btn secondary-btn" onclick="loadReport('hrReport', '{{ $users['hrReview']->emp_id }}')">
+        
+        <?php if(in_array('hr', $userRoles)): ?>
+            <?php if(optional($users['hrReview'])->emp_id): ?>
+                <button class="btn secondary-btn" onclick="loadReport('hrReport', '<?php echo e($users['hrReview']->emp_id); ?>')">
                     View HR Review
                 </button>
-            @else
+            <?php else: ?>
                 <p>HR review is pending.</p>
-            @endif
-        @endif
+            <?php endif; ?>
+        <?php endif; ?>
 
-        {{-- Manager --}}
-        @if (in_array('manager', $userRoles))
-            @if (optional($users['managerReview'])->emp_id)
+        
+        <?php if(in_array('manager', $userRoles)): ?>
+            <?php if(optional($users['managerReview'])->emp_id): ?>
                 <button class="btn secondary-btn"
-                    onclick="loadReport('managerReport', '{{ $users['managerReview']->emp_id }}')">
+                    onclick="loadReport('managerReport', '<?php echo e($users['managerReview']->emp_id); ?>')">
                     View Manager Review
                 </button>
-            @else
+            <?php else: ?>
                 <p>Manager review is pending.</p>
-            @endif
-        @endif
+            <?php endif; ?>
+        <?php endif; ?>
 
-        @if ($clientReviews->isNotEmpty())
-            @foreach ($clientReviews as $clientReview)
+        <?php if($clientReviews->isNotEmpty()): ?>
+            <?php $__currentLoopData = $clientReviews; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $clientReview): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <button class="btn secondary-btn"
-                    onclick="loadClientReport('{{ $clientReview->emp_id }}', '{{ $clientReview->client_id }}')">
-                    View Client Review for: {{ $clientReview->client_name ?? 'Unknown Client' }}
-                </button>
-            @endforeach
-        @elseif(in_array('client', $user_roles))
-            <p>Your client review is pending.</p>
-        @endif
+                    onclick="loadClientReport('<?php echo e($clientReview->emp_id); ?>', '<?php echo e($clientReview->client_id); ?>')">
+                    View Client Review for: <?php echo e($clientReview->client_name ?? 'Unknown Client'); ?>
 
-        @if ($clientReviews->isNotEmpty())
-            @foreach ($clientReviews as $clientReview)
-                <button class="btn secondary-btn"
-                    onclick="loadClientReport('{{ $clientReview->emp_id }}', '{{ $clientReview->client_id }}')">
-                    View Client Review for: {{ $clientReview->client_name ?? 'Unknown Client' }}
                 </button>
-            @endforeach
-        @elseif(in_array('client', $user_roles))
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        <?php elseif(in_array('client', $user_roles)): ?>
             <p>Your client review is pending.</p>
-        @endif
+        <?php endif; ?>
+
+
+
+
+        <?php if($clientReviews->isNotEmpty()): ?>
+            <?php $__currentLoopData = $clientReviews; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $clientReview): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <button class="btn secondary-btn"
+                    onclick="loadClientReport('<?php echo e($clientReview->emp_id); ?>', '<?php echo e($clientReview->client_id); ?>')">
+                    View Client Review for: <?php echo e($clientReview->client_name ?? 'Unknown Client'); ?>
+
+                </button>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        <?php elseif(in_array('client', $user_roles)): ?>
+            <p>Your client review is pending.</p>
+        <?php endif; ?>
 
     </div>
+
+
+
 
     <div id="reportDetails" class="" style=""></div>
 
@@ -221,12 +231,100 @@
             }
         }
 
+
         // Get employee ID and optionally default year from Blade variables
-        const empId = {!! json_encode($users['evaluation']->emp_id ?? ($users['superAddUser']->employee_id ?? null)) !!};
-        const defaultYear = {!! json_encode($users['evaluation']->financial_year ?? ($users['superAddUser']->financial_year ?? '')) !!};
+        const empId = <?php echo json_encode($users['evaluation']->emp_id ?? ($users['superAddUser']->employee_id ?? null)); ?>;
+        const defaultYear = <?php echo json_encode($users['evaluation']->financial_year ?? ($users['superAddUser']->financial_year ?? '')); ?>;
+
+        // document.getElementById('employeeDetails').addEventListener('change', function () {
+        //     const selectedYear = this.value;
+        //     const table = document.getElementById('reviewTableContainer');
+
+        //     if (!selectedYear) {
+        //         table.style.display = 'none';
+        //         return;
+        //     }
+        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        //     fetch('/employee/review-score/super-user', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-TOKEN': csrfToken
+        //         },
+        //         body: JSON.stringify({
+        //             financial_year: selectedYear,
+        //             emp_id: empId
+        //         })
+        //     })
+        //         .then(response => {
+        //             if (response.status === 204) {
+        //                 console.log("No review data available.");
+        //                 table.style.display = 'none';
+        //                 return null;
+        //             }
+        //             if (!response.ok) {
+        //                 throw new Error('Network error');
+        //             }
+        //             return response.json();
+        //         })
+
+        //         .then(data => {
+        //             const table = document.getElementById("reviewTableContainer");
+
+        //             const totalCell = document.getElementById("totalScoreCell");
+        //             const adminCell = document.getElementById("adminScoreCell");
+        //             const hrCell = document.getElementById("hrScoreCell");
+        //             const managerCell = document.getElementById("managerScoreCell");
+        //             const clientCell = document.getElementById("clientScoreCell");
+
+        //             const evalHeader = document.getElementById("evaluationColumnHeader");
+        //             const adminHeader = document.getElementById("adminColumnHeader");
+        //             const hrHeader = document.getElementById("hrColumnHeader");
+        //             const managerHeader = document.getElementById("managerColumnHeader");
+        //             const clientHeader = document.getElementById("clientColumnHeader");
+
+        //             // Always show the table and headers
+        //             table.style.display = '';
+        //             evalHeader.style.display = '';
+        //             adminHeader.style.display = '';
+        //             hrHeader.style.display = '';
+        //             managerHeader.style.display = '';
+
+        //             // Helper function
+        //             function setCellContent(cell, score, max) {
+        //                 if (score !== null && score !== undefined && score !== '') {
+        //                     const rounded = Math.round(score);  // round to nearest whole number
+        //                     cell.textContent = `${rounded} / ${max}`;
+        //                 } else {
+        //                     cell.textContent = ''; // just blank, no " / xx"
+        //                 }
+        //                 cell.style.display = '';
+        //             }
+
+
+        //             // Set content
+        //             setCellContent(totalCell, data?.total, 100);
+        //             setCellContent(adminCell, data?.adminTotal, 45);
+        //             setCellContent(hrCell, data?.hrTotal, 30);
+        //             setCellContent(managerCell, data?.managerTotal, 35);
+
+        //             if (data?.showClient) {
+        //                 clientHeader.style.display = '';
+        //                 clientCell.style.display = '';
+        //                 setCellContent(clientCell, data?.clientTotal, 100);
+        //             } else {
+        //                 clientHeader.style.display = 'none';
+        //                 clientCell.style.display = 'none';
+        //             }
+        //         });
+
+
+        // });
+
 
         //Fetch client data 
-        const userRoles = @json($userRoles);
+        const userRoles = <?php echo json_encode($userRoles, 15, 512) ?>;
         document.addEventListener('DOMContentLoaded', function() {
 
             const dropdown = document.getElementById('employeeDetails');
@@ -322,6 +420,11 @@
         });
 
 
+
+
+
+
+
         function loadClientReport(empId, clientId) {
             $('#reportDetails').empty();
 
@@ -348,4 +451,6 @@
     </script>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/review/viewDetails.blade.php ENDPATH**/ ?>
