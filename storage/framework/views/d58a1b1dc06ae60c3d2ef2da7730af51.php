@@ -1,11 +1,10 @@
-@extends('layouts.app')
-@section('title', 'Financial Dashboard')
-@section('breadcrumb', 'Financial')
-@section('page-title', 'Financial-Section')
-@section('content')
+<?php $__env->startSection('title', 'Financial Dashboard'); ?>
+<?php $__env->startSection('breadcrumb', 'Financial'); ?>
+<?php $__env->startSection('page-title', 'Financial-Section'); ?>
+<?php $__env->startSection('content'); ?>
 
     <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
 
@@ -13,15 +12,8 @@
     <div class="client">
         <h1 class="client__heading">Employee Financial Year(%)</h1>
 
-        {{-- <select id="financialYear" class="form-select client__select" name="financial_year" required>
-            <option value="" selected>Financial Year</option>
-            <option value="2025-2026">2025-2026</option>
-            <option value="2026-2027">2026-2027</option>
-            <option value="2027-2028">2027-2028</option>
-            <option value="2028-2029">2028-2029</option>
-            <option value="2029-2030">2029-2030</option>
-        </select> --}}
-        @php
+        
+        <?php
             $currentMonth = date('m');
             $currentYear = date('Y');  
 
@@ -38,21 +30,22 @@
                 $currentFYStart + 1, // Next FY
                 $currentFYStart + 2, // Next +1 FY
             ];
-        @endphp
+        ?>
 
         <select id="financialYear" class="form-select client__select" name="financial_year" required>
             <option value="">Financial Year</option>
 
-            @foreach ($years as $year)
-                @php
+            <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     $end = $year + 1;
                     $fy = $year . '-' . $end;
-                @endphp
+                ?>
 
-                <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                    {{ $fy }}
+                <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                    <?php echo e($fy); ?>
+
                 </option>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
         </select>
 
@@ -61,7 +54,7 @@
             <input type="search" id="employee_search" name="search" class="form-control client__search"
                 placeholder="Search" aria-label="Search">
             <button class="client__btn" type="submit">
-                <img src="{{ asset('images/search.png') }}" alt="Search">
+                <img src="<?php echo e(asset('images/search.png')); ?>" alt="Search">
             </button>
         </div>
         <input type="hidden" name="emp_id" id="selectedEmpId">
@@ -71,8 +64,8 @@
     </div>
     <div class="container table-container financial-page">
         <!-- Appraisal Table -->
-        <form action="{{ route('financial-data-store') }}" method="POST" id="financial-data" enctype="multipart/form-data">
-            @csrf
+        <form action="<?php echo e(route('financial-data-store')); ?>" method="POST" id="financial-data" enctype="multipart/form-data">
+            <?php echo csrf_field(); ?>
             <div class="table-responsive table-wrapper">
                 <table class="table table-bordered table-hover main-table table-view financial-table"
                     class="financial view-table table-view">
@@ -129,7 +122,7 @@
                 }
 
                 $.ajax({
-                    url: "{{ route('financial.data') }}",
+                    url: "<?php echo e(route('financial.data')); ?>",
                     method: "GET",
                     data: {
                         search: employeeSearch,
@@ -276,12 +269,12 @@
                 }
 
                 $.ajax({
-                    url: '{{ route('financial-data-store') }}',
+                    url: '<?php echo e(route('financial-data-store')); ?>',
                     method: 'POST',
                     contentType: "application/json",
                     dataType: 'json',
                     data: JSON.stringify({
-                        _token: '{{ csrf_token() }}',
+                        _token: '<?php echo e(csrf_token()); ?>',
                         employees: employees
                     }),
                     success: function(response) {
@@ -308,4 +301,6 @@
         });
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/admin/financial.blade.php ENDPATH**/ ?>

@@ -1,8 +1,8 @@
-@extends('layouts.app') <!-- Extends app.blade.php (Header, Sidebar, Footer included) -->
+@extends('layouts.app')
 
-@section('title', 'Super Admin | Employee Review') <!-- Page Title -->
+@section('title', 'Super Admin | Employee Review')
 
-@section('breadcrumb', "Super view / Employee {$emp_id}") <!-- Breadcrumb -->
+@section('breadcrumb', "Super view / Employee {$emp_id}")
 
 @section('page-title', 'Super Admin Dashboard') <!-- Page Title in Breadcrumb -->
 
@@ -11,8 +11,6 @@
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
-    {{-- <div class="container"> --}}
     <h2 class="heading">Employee Review Details:{{ $emp_id }}</h2>
     <div class="mt-3">
         <button onclick="history.back()" class="btn btn-secondary">Back</button>
@@ -145,18 +143,6 @@
         @elseif(in_array('client', $user_roles))
             <p>Your client review is pending.</p>
         @endif
-
-        @if ($clientReviews->isNotEmpty())
-            @foreach ($clientReviews as $clientReview)
-                <button class="btn secondary-btn"
-                    onclick="loadClientReport('{{ $clientReview->emp_id }}', '{{ $clientReview->client_id }}')">
-                    View Client Review for: {{ $clientReview->client_name ?? 'Unknown Client' }}
-                </button>
-            @endforeach
-        @elseif(in_array('client', $user_roles))
-            <p>Your client review is pending.</p>
-        @endif
-
     </div>
 
     <div id="reportDetails" class="" style=""></div>
@@ -166,7 +152,6 @@
     <!-- JavaScript for Navigation -->
     <script>
         function loadReport(reportType, empId) {
-            // console.log('Employee ID:', empId);
 
             $('#reportDetails').empty();
 

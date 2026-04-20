@@ -31,10 +31,10 @@
                 }
 
                 $years = [
-                    $currentFYStart - 1, // Previous FY
-                    $currentFYStart, // Current FY
-                    $currentFYStart + 1, // Next FY
-                    $currentFYStart + 2, // Next +1 FY
+                    $currentFYStart - 1,
+                    $currentFYStart, 
+                    $currentFYStart + 1,
+                    $currentFYStart + 2,
                 ];
             @endphp
 
@@ -112,12 +112,6 @@
             @elseif(in_array('client', $user_roles))
                 <p>Your client review is pending.</p>
             @endif
-
-
-
-
-
-
         </div>
     </div>
 

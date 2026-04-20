@@ -1,8 +1,6 @@
- <!-- Extends app.blade.php (Header, Sidebar, Footer included) -->
+<?php $__env->startSection('title', 'Super Admin | Employee Review'); ?>
 
-<?php $__env->startSection('title', 'Super Admin | Employee Review'); ?> <!-- Page Title -->
-
-<?php $__env->startSection('breadcrumb', "Super view / Employee {$emp_id}"); ?> <!-- Breadcrumb -->
+<?php $__env->startSection('breadcrumb', "Super view / Employee {$emp_id}"); ?>
 
 <?php $__env->startSection('page-title', 'Super Admin Dashboard'); ?> <!-- Page Title in Breadcrumb -->
 
@@ -11,15 +9,12 @@
 <?php $__env->startSection('content'); ?>
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-
-    
     <h2 class="heading">Employee Review Details:<?php echo e($emp_id); ?></h2>
     <div class="mt-3">
         <button onclick="history.back()" class="btn btn-secondary">Back</button>
     </div>
     <div class="col-12 col-sm-6 search-container forms-block">
         <label for="financialYear" class="forms-label">Financial Years:</label>
-        
         <?php
             $currentMonth = date('m');
             $currentYear = date('Y');
@@ -149,25 +144,9 @@
             <p>Your client review is pending.</p>
         <?php endif; ?>
 
-
-
-
-        <?php if($clientReviews->isNotEmpty()): ?>
-            <?php $__currentLoopData = $clientReviews; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $clientReview): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <button class="btn secondary-btn"
-                    onclick="loadClientReport('<?php echo e($clientReview->emp_id); ?>', '<?php echo e($clientReview->client_id); ?>')">
-                    View Client Review for: <?php echo e($clientReview->client_name ?? 'Unknown Client'); ?>
-
-                </button>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        <?php elseif(in_array('client', $user_roles)): ?>
-            <p>Your client review is pending.</p>
-        <?php endif; ?>
+        
 
     </div>
-
-
-
 
     <div id="reportDetails" class="" style=""></div>
 
@@ -176,7 +155,6 @@
     <!-- JavaScript for Navigation -->
     <script>
         function loadReport(reportType, empId) {
-            // console.log('Employee ID:', empId);
 
             $('#reportDetails').empty();
 
@@ -231,97 +209,9 @@
             }
         }
 
-
         // Get employee ID and optionally default year from Blade variables
         const empId = <?php echo json_encode($users['evaluation']->emp_id ?? ($users['superAddUser']->employee_id ?? null)); ?>;
         const defaultYear = <?php echo json_encode($users['evaluation']->financial_year ?? ($users['superAddUser']->financial_year ?? '')); ?>;
-
-        // document.getElementById('employeeDetails').addEventListener('change', function () {
-        //     const selectedYear = this.value;
-        //     const table = document.getElementById('reviewTableContainer');
-
-        //     if (!selectedYear) {
-        //         table.style.display = 'none';
-        //         return;
-        //     }
-        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        //     fetch('/employee/review-score/super-user', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'X-CSRF-TOKEN': csrfToken
-        //         },
-        //         body: JSON.stringify({
-        //             financial_year: selectedYear,
-        //             emp_id: empId
-        //         })
-        //     })
-        //         .then(response => {
-        //             if (response.status === 204) {
-        //                 console.log("No review data available.");
-        //                 table.style.display = 'none';
-        //                 return null;
-        //             }
-        //             if (!response.ok) {
-        //                 throw new Error('Network error');
-        //             }
-        //             return response.json();
-        //         })
-
-        //         .then(data => {
-        //             const table = document.getElementById("reviewTableContainer");
-
-        //             const totalCell = document.getElementById("totalScoreCell");
-        //             const adminCell = document.getElementById("adminScoreCell");
-        //             const hrCell = document.getElementById("hrScoreCell");
-        //             const managerCell = document.getElementById("managerScoreCell");
-        //             const clientCell = document.getElementById("clientScoreCell");
-
-        //             const evalHeader = document.getElementById("evaluationColumnHeader");
-        //             const adminHeader = document.getElementById("adminColumnHeader");
-        //             const hrHeader = document.getElementById("hrColumnHeader");
-        //             const managerHeader = document.getElementById("managerColumnHeader");
-        //             const clientHeader = document.getElementById("clientColumnHeader");
-
-        //             // Always show the table and headers
-        //             table.style.display = '';
-        //             evalHeader.style.display = '';
-        //             adminHeader.style.display = '';
-        //             hrHeader.style.display = '';
-        //             managerHeader.style.display = '';
-
-        //             // Helper function
-        //             function setCellContent(cell, score, max) {
-        //                 if (score !== null && score !== undefined && score !== '') {
-        //                     const rounded = Math.round(score);  // round to nearest whole number
-        //                     cell.textContent = `${rounded} / ${max}`;
-        //                 } else {
-        //                     cell.textContent = ''; // just blank, no " / xx"
-        //                 }
-        //                 cell.style.display = '';
-        //             }
-
-
-        //             // Set content
-        //             setCellContent(totalCell, data?.total, 100);
-        //             setCellContent(adminCell, data?.adminTotal, 45);
-        //             setCellContent(hrCell, data?.hrTotal, 30);
-        //             setCellContent(managerCell, data?.managerTotal, 35);
-
-        //             if (data?.showClient) {
-        //                 clientHeader.style.display = '';
-        //                 clientCell.style.display = '';
-        //                 setCellContent(clientCell, data?.clientTotal, 100);
-        //             } else {
-        //                 clientHeader.style.display = 'none';
-        //                 clientCell.style.display = 'none';
-        //             }
-        //         });
-
-
-        // });
-
 
         //Fetch client data 
         const userRoles = <?php echo json_encode($userRoles, 15, 512) ?>;
@@ -418,11 +308,6 @@
                 loadTableData(dropdown.value);
             }
         });
-
-
-
-
-
 
 
         function loadClientReport(empId, clientId) {

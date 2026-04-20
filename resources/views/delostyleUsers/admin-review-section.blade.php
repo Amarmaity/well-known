@@ -30,15 +30,6 @@
             @csrf
             <div class="client">
                 <h1 class="client__heading">ADMIN REVIEW</h1>
-
-                {{-- <select id="financialYear" class="form-select client__select" name="financial_year" required>
-                    <option value="" selected>Financial Year</option>
-                    <option value="2025-2026">2025-2026</option>
-                    <option value="2026-2027">2026-2027</option>
-                    <option value="2027-2028">2027-2028</option>
-                    <option value="2028-2029">2028-2029</option>
-                    <option value="2029-2030">2029-2030</option>
-                </select> --}}
                 @php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -80,7 +71,7 @@
                         placeholder="search employee" aria-label="Search">
 
                     <button class="client__btn" type="submit">
-                        <img src="https://modest-gagarin.74-208-156-247.plesk.page/images/search.png" alt="Search">
+                        <img src="{{ asset('images/search.png') }}" alt="Search">
                     </button>
                 </div>
             </div>

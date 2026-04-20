@@ -57,7 +57,7 @@
                 <input type="search" id="employee_search" name="search" class="form-control client__search"
                     placeholder="Search" aria-label="Search">
                 <button class="client__btn" type="submit">
-                    <img src="https://modest-gagarin.74-208-156-247.plesk.page/images/search.png" alt="Search">
+                    <img src="{{ asset('images/search.png') }}" alt="Search">
                 </button>
             </div>
         </div>
@@ -79,13 +79,40 @@
                                 <td>{{ $user->employee_id }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    <select name="financial_year" class="form-control financial-year input-block" required>
-                                        <option value="" selected>Select Financial Year</option>
-                                        <option value="2025-2026">2025-2026</option>
-                                        <option value="2026-2027">2026-2027</option>
-                                        <option value="2027-2028">2027-2028</option>
-                                        <option value="2028-2029">2028-2029</option>
-                                        <option value="2029-2030">2029-2030</option>
+                                    @php
+                                        $currentMonth = date('m');
+                                        $currentYear = date('Y');
+
+                                        // Indian FY logic (April start)
+                                        if ($currentMonth < 4) {
+                                            $currentFYStart = $currentYear - 1;
+                                        } else {
+                                            $currentFYStart = $currentYear;
+                                        }
+
+                                        $years = [
+                                            $currentFYStart - 1, // Previous FY
+                                            $currentFYStart, // Current FY
+                                            $currentFYStart + 1, // Next FY
+                                            $currentFYStart + 2, // Next +1 FY
+                                        ];
+                                    @endphp
+
+                                    <select id="financial_year" class="form-control financial-year input-block" required>
+                                        <option value="">Financial Year</option>
+
+                                        @foreach ($years as $year)
+                                            @php
+                                                $end = $year + 1;
+                                                $fy = $year . '-' . $end;
+                                            @endphp
+
+                                            <option value="{{ $fy }}"
+                                                {{ $year == $currentFYStart ? 'selected' : '' }}>
+                                                {{ $fy }}
+                                            </option>
+                                        @endforeach
+
                                     </select>
                                     <div class="btn-block">
                                         @php

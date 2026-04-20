@@ -4,8 +4,6 @@
 
 <?php $__env->startSection('content'); ?>
 
-    
-
     <!DOCTYPE html>
     <html lang="en">
 
@@ -86,7 +84,7 @@
                 <input type="search" id="employee_search" name="search" class="form-control client__search"
                     placeholder="Search" aria-label="Search">
                 <button class="client__btn" type="submit">
-                    <img src="https://modest-gagarin.74-208-156-247.plesk.page/images/search.png" alt="Search">
+                    <img src="<?php echo e(asset('images/search.png')); ?>" alt="Search">
                 </button>
             </div>
             <input type="hidden" name="emp_id" id="selectedEmpId">
@@ -105,20 +103,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Example data, replace it with dynamic data from PHP -->
                         <?php $__currentLoopData = $superAddUser; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
                                 <td><?php echo e($user->fname); ?> <?php echo e($user->lname); ?></td>
                                 <td><?php echo e($user->employee_id); ?></td>
                                 <td><?php echo e($user->email); ?></td>
                                 <td>
-                                    <select name="financial_year" class="form-control financial-year input-block" required>
-                                        <option value="" selected>Select Financial Year</option>
-                                        <option value="2025-2026">2025-2026</option>
-                                        <option value="2026-2027">2026-2027</option>
-                                        <option value="2027-2028">2027-2028</option>
-                                        <option value="2028-2029">2028-2029</option>
-                                        <option value="2029-2030">2029-2030</option>
+                                    
+                                    <?php
+                                        $currentMonth = date('m');
+                                        $currentYear = date('Y');
+
+                                        // Indian FY logic (April start)
+                                        if ($currentMonth < 4) {
+                                            $currentFYStart = $currentYear - 1;
+                                        } else {
+                                            $currentFYStart = $currentYear;
+                                        }
+
+                                        $years = [
+                                            $currentFYStart - 1, // Previous FY
+                                            $currentFYStart, // Current FY
+                                            $currentFYStart + 1, // Next FY
+                                            $currentFYStart + 2, // Next +1 FY
+                                        ];
+                                    ?>
+
+                                    <select id="financial_year" class="form-control financial-year input-block" required>
+                                        <option value="">Financial Year</option>
+
+                                        <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
+                                                $end = $year + 1;
+                                                $fy = $year . '-' . $end;
+                                            ?>
+
+                                            <option value="<?php echo e($fy); ?>"
+                                                <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                                                <?php echo e($fy); ?>
+
+                                            </option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
                                     </select>
                                     <div class="btn-block">
                                         <?php if($user->user_type !== 'manager'): ?>
@@ -136,9 +162,9 @@
                 </table>
             </div>
         </div>
-        <!-- Initialize DataTables with search functionality -->
+        
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
                 var table = $('#employeeReviewTable').DataTable({
                     "paging": false,
                     "searching": true, // keep this true to allow external filtering
@@ -147,14 +173,14 @@
                 });
 
                 // Bind the custom search input
-                $('#employee_search').on('keyup', function () {
+                $('#employee_search').on('keyup', function() {
                     table.search(this.value).draw();
                 });
             });
 
             //Manager Details
-            $(document).ready(function () {
-                $('.view-manager-details').click(function (e) {
+            $(document).ready(function() {
+                $('.view-manager-details').click(function(e) {
                     e.preventDefault();
 
                     let $row = $(this).closest('tr');
@@ -169,7 +195,7 @@
                     $.ajax({
                         url: baseUrl + '?financial_year=' + financialYear,
                         type: 'GET',
-                        success: function (response) {
+                        success: function(response) {
                             if (response.message) {
                                 alert(response.message);
                             } else {
@@ -177,7 +203,7 @@
                                     financialYear;
                             }
                         },
-                        error: function () {
+                        error: function() {
                             alert('Something went wrong. Please try again.');
                         }
                     });
@@ -186,8 +212,8 @@
 
 
             //Evaluation Details
-            $(document).ready(function () {
-                $('.view-evaluation').click(function (e) {
+            $(document).ready(function() {
+                $('.view-evaluation').click(function(e) {
                     e.preventDefault();
 
                     const $row = $(this).closest('tr');
@@ -202,7 +228,7 @@
                     $.ajax({
                         url: baseUrl + '?financial_year=' + financialYear,
                         method: 'GET',
-                        success: function (response) {
+                        success: function(response) {
                             if (response.message) {
                                 alert(response
                                     .message); // You can use SweetAlert here if preferred
@@ -211,7 +237,7 @@
                                     financialYear;
                             }
                         },
-                        error: function () {
+                        error: function() {
                             alert('Something went wrong. Please try again.');
                         }
                     });
@@ -227,4 +253,5 @@
 
 
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/reports/managerReportView.blade.php ENDPATH**/ ?>

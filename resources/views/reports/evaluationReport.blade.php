@@ -79,12 +79,14 @@
             background-color: #007bff;
             border-color: #007bff;
         }
-        .span-tage .span-data{
+
+        .span-tage .span-data {
             display: flex;
             justify-content: space-between;
             padding-right: 105px !important;
         }
-        .span-tage tr{
+
+        .span-tage tr {
             /* border-bottom: 1px solid #000; */
             margin-bottom: 30px;
         }
@@ -95,7 +97,7 @@
     <div>
         <div class="table-responsive">
             <table class="table table-bordered">
-                @if(Session::get('user_type') === 'Super User')
+                @if (Session::get('user_type') === 'Super User')
                     <tr>
                         <th>Employee Name</th>
                         <td>{{ $user->employee_name }}</td>
@@ -136,10 +138,10 @@
             </table>
         </div>
 
-                <!-- Ratings and Comments -->
-            <div class="table-responsive">
-                 <table class="table table-bordered">
-                     <thead>
+        <!-- Ratings and Comments -->
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
                     <tr>
                         <th>Field</th>
                         <th>Rating</th>
@@ -162,7 +164,7 @@
                     <td>{{ $user->comments_synchronization }}</td>
                 </tr>
                 <tr>
-                    <td >Quality of Work Total Rating </td>
+                    <td>Quality of Work Total Rating </td>
                     <td>{{ $user->qualityworktotalrating }}</td>
                 </tr>
                 <tr>
@@ -186,7 +188,7 @@
                     <td>{{ $user->comments_submits_reports }}</td>
                 </tr>
                 <tr>
-                    <td >Work Habits Total Rating </td>
+                    <td>Work Habits Total Rating </td>
                     <td>{{ $user->work_habits_rating }}</td>
                 </tr>
                 <tr>
@@ -195,7 +197,7 @@
                     <td>{{ $user->comments_skill_ability }}</td>
                 </tr>
                 <tr>
-                    <td >2. Shown interest in learning and improving </td>
+                    <td>2. Shown interest in learning and improving </td>
                     <td>({{ $user->learning_improving }}/5)</td>
                     <td>{{ $user->comments_learning_improving }}</td>
                 </tr>
@@ -292,9 +294,9 @@
                 </tr>
                 <tr>
                     <td>Total score in evaluation: </td>
-                    <td >{{$user->total_scoring_system}}</td>
+                    <td>{{ $user->total_scoring_system }}</td>
                 </tr>
-                {{-- @if(in_array(Session::get('user_type'), ['admin', 'hr', 'manage', 'Super User', 'users']))
+                {{-- @if (in_array(Session::get('user_type'), ['admin', 'hr', 'manage', 'Super User', 'users']))
                     <tr>
                         <td>FINAL COMMENTS</td>
                         <td>{{ $user->final_comment }}</td>
@@ -316,10 +318,10 @@
                         <td>{{ $user->director_signatur_date }}</td>
                     </tr>
                 @endif --}}
-                 </table>
-            </div>
-        {{-- @if($user->director_feedback_flag == 0)
-                @if(Session::get('user_type') === 'Super User')
+            </table>
+        </div>
+        {{-- @if ($user->director_feedback_flag == 0)
+                @if (Session::get('user_type') === 'Super User')
                     <form action="{{ route('director-submit-from', $user->emp_id) }}" method="POST" id="evaluationSubmit"
                         class="evaluation__form" enctype="multipart/form-data">
                         @csrf
@@ -356,48 +358,84 @@
     </div> --}}
 </body>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    // document.getElementById('evaluationSubmit').addEventListener('submit', function (e) {
+    //     e.preventDefault();
 
 
-    document.getElementById('evaluationSubmit').addEventListener('submit', function (e) {
-        e.preventDefault();
+    //     var formData = new FormData(this);
 
 
-        var formData = new FormData(this);
+    //     var emp_id = '{{ $user->emp_id ?? '' }}';
 
 
-        var emp_id = '{{ $user->emp_id ?? "" }}';
+    //     if (!emp_id) {
+    //         alert('Employee ID is missing. Cannot submit the form.');
+    //         return;
+    //     }
 
 
-        if (!emp_id) {
-            alert('Employee ID is missing. Cannot submit the form.');
-            return;
-        }
+    //     fetch(`/evaluation-report-submit/${emp_id}`, {
+    //         method: 'POST',
+    //         body: formData,
+    //         headers: {
+    //             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    //         }
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.success) {
+    //                 alert('Director evaluation submitted successfully!');
+    //                 document.getElementById('evaluationSubmit').reset(); // Reset the form after submission
+    //                 location.reload();
+    //             } else {
+    //                 alert(data.message || 'There was an error submitting the form.');
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //             alert('There was an error submitting the form. Please try again.');
+    //         });
+    // });
 
 
-        fetch(`/evaluation-report-submit/${emp_id}`, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    const form = document.getElementById('evaluationSubmit');
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            var emp_id = '{{ $user->emp_id ?? '' }}';
+
+            if (!emp_id) {
+                alert('Employee ID is missing.');
+                return;
             }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Director evaluation submitted successfully!');
-                    document.getElementById('evaluationSubmit').reset(); // Reset the form after submission
-                    location.reload();
-                } else {
-                    alert(data.message || 'There was an error submitting the form.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('There was an error submitting the form. Please try again.');
-            });
-    });
+
+            fetch(`/evaluation-report-submit/${emp_id}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Submitted!');
+                        form.reset();
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        });
+    }
 </script>

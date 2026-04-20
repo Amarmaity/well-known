@@ -750,9 +750,6 @@ class allUserController extends Controller
         $financialYear = $request->get('financial_year');
         $clientId = $request->get('client_id');
 
-        // $user = ClientReviewTable::where('emp_id', $emp_id)
-        //     ->where('financial_year', $financialYear)
-        //     ->firstOrFail();
         $user = ClientReviewTable::with('client') // <-- Eager load the client relationship
             ->where('emp_id', $emp_id)
             ->where('financial_year', $financialYear)
@@ -932,7 +929,7 @@ class allUserController extends Controller
             ->toArray();
 
         // Step 2: Get active users from SuperAddUser
-        $superAddUser = SuperAddUser::where('status', 1)
+        $superAddUser = SuperAddUser::where('status', 1)->whereJsonContains('user_roles', 'manager')
             ->whereIn('employee_id', $validEmployeeIds)
             ->get();
 
@@ -1058,8 +1055,6 @@ class allUserController extends Controller
         return view('reports.userDetailsClientView', compact('employee', 'reviews', 'employee_id', 'financial_year'));
     }
 
-
-    //Handle User Review table in side User Review Report for Employee blade file
     public function getReviewScores(Request $request)
     {
         // $empId = session('employee_id');
