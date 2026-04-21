@@ -470,8 +470,33 @@ class HomeController extends Controller
             'evalutors_name' => $request->input('evalutors_name'),
             'evaluator_signatur' => $evaluatorSignaturePath,
             'evaluator_signatur_date' => $request->input('evaluator_signatur_date'),
+            'respond_contributes' => $request->input('respond_contributes'),
+            'comments_respond_contributes' => $request->input('comments_respond_contributes'),
+            'responds_positively' => $request->input('responds_positively'),
+            'comments_responds_positively' => $request->input('comments_responds_positively'),
+            'supervisor' => $request->input('supervisor'),
+            'comments_supervisor' => $request->input('comments_supervisor'),
+            'adapts_changing' => $request->input('adapts_changing'),
+            'comments_adapts_changing' => $request->input('comments_adapts_changing'),
+            'seeks_feedback' => $request->input('seeks_feedback'),
+            'comments_seeks_feedback' => $request->input('comments_seeks_feedback'),
+            'ir_total_rating' => $request->input('ir_total_rating'),
+            'challenges' => $request->input('challenges'),
+            'comments_challenges' => $request->input('comments_challenges'),
+            'personal_growth' => $request->input('personal_growth'),
+            'comments_personal_growth' => $request->input('comments_personal_growth'),
+            'work_motivation' => $request->input('work_motivation'),
+            'comments_work_motivation' => $request->input('comments_work_motivation'),
+            'leadership_rating' => $request->input('leadership_rating'),
+            'progress_unsatisfactory' => $request->input('progress_unsatisfactory'),
+            'comments_unsatisfactory' => $request->input('comments_unsatisfactory'),
+            'progress_acceptable' => $request->input('progress_acceptable'),
+            'comments_acceptable' => $request->input('comments_acceptable'),
+            'progress_outstanding' => $request->input('progress_outstanding'),
+            'comments_outstanding' => $request->input('comments_outstanding'),
             'financial_year' => $request->input('financial_year')
         ];
+
 
         try {
             $evaluation = evaluationTable::create($data);

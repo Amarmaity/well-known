@@ -143,9 +143,6 @@
         <?php elseif(in_array('client', $user_roles)): ?>
             <p>Your client review is pending.</p>
         <?php endif; ?>
-
-        
-
     </div>
 
     <div id="reportDetails" class="" style=""></div>

@@ -973,7 +973,6 @@ class allUserController extends Controller
         return view('reports.userDetailsManagerView', compact('employee', 'reviews', 'employee_id', 'financial_year'));
     }
 
-
     public function getClientReviewList(Request $request)
     {
         // 1. Get the client_id from session
@@ -992,7 +991,7 @@ class allUserController extends Controller
         // 4. Filter employees:
         $superAddUser = SuperAddUser::where('status', 1)
             ->whereIn('employee_id', $validEmployeeIds)
-            ->where('client_id', 'like', '%"' . $targetClientId . '"%')  // ✅ Compatible with MySQL < 5.7
+            ->where('client_id', 'like', '%"' . $targetClientId . '"%')
             ->get();
 
         // 5. Filter reviews for these employees
@@ -1003,26 +1002,6 @@ class allUserController extends Controller
         // 6. Return to view
         return view('reports.clientReportView', compact('superAddUser', 'clientReviewTable'));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public function showDetailsClient($employee_id)

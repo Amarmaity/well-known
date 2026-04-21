@@ -75,7 +75,7 @@
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
                         placeholder="search employee" aria-label="Search">
                     <button class="client__btn" type="submit">
-                        <img src="https://modest-gagarin.74-208-156-247.plesk.page/images/search.png" alt="Search">
+                        <img src="<?php echo e(asset('images/search.png')); ?>" alt="Search">
                     </button>
                 </div>
             </div>
@@ -83,9 +83,6 @@
 
             <div class="employee-table" id="employeeDetails" style="display:none; border: 1px solid #ddd;">
                 <div class="table-wrapper">
-                    <!-- <div id="selectLabel" class="hidden-label"
-                            style="margin-bottom: 10px; font-weight: bold; display: none;">
-                        </div> -->
                     <table class="table table-bordered table-hover client-table">
                         <thead>
                             <tr>

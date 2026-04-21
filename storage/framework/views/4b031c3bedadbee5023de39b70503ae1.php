@@ -114,14 +114,43 @@
                         <td><?php echo e($user->email); ?></td>
                         <td>
 
-                            <select name="financial_year" class="form-control financial-year" required>
-                                <option value="" selected>Select Financial Year</option>
-                                <option value="2025-2026">2025-2026</option>
-                                <option value="2026-2027">2026-2027</option>
-                                <option value="2027-2028">2027-2028</option>
-                                <option value="2028-2029">2028-2029</option>
-                                <option value="2029-2030">2029-2030</option>
-                            </select>
+                            
+                             <?php
+                                        $currentMonth = date('m');
+                                        $currentYear = date('Y');
+
+                                        // Indian FY logic (April start)
+                                        if ($currentMonth < 4) {
+                                            $currentFYStart = $currentYear - 1;
+                                        } else {
+                                            $currentFYStart = $currentYear;
+                                        }
+
+                                        $years = [
+                                            $currentFYStart - 1, // Previous FY
+                                            $currentFYStart, // Current FY
+                                            $currentFYStart + 1, // Next FY
+                                            $currentFYStart + 2, // Next +1 FY
+                                        ];
+                                    ?>
+
+                                    <select  class="form-control financial-year input-block" required>
+                                        <option value="">Financial Year</option>
+
+                                        <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
+                                                $end = $year + 1;
+                                                $fy = $year . '-' . $end;
+                                            ?>
+
+                                            <option value="<?php echo e($fy); ?>"
+                                                <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                                                <?php echo e($fy); ?>
+
+                                            </option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                                    </select>
 
                         <div class="btn-block">
                             <a href="<?php echo e(route('user-client-details', $user->employee_id)); ?>"
