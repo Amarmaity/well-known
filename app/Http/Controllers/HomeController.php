@@ -380,7 +380,7 @@ class HomeController extends Controller
         if ($lastEvaluation) {
             $lastEvalDate = Carbon::parse($lastEvaluation->created_at);
 
-            if (now()->lt($lastEvalDate->copy()->addYear())) {
+            if (now()->lt($lastEvalDate->copy()->addYear()->subWeek())) {
                 return response()->json([
                     'success' => false,
                     'message' => 'You can submit next evaluation only after 1 year from last submission.'

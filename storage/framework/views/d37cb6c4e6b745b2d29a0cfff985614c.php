@@ -38,8 +38,6 @@
             <?php echo csrf_field(); ?>
             <div class="client">
                 <h1 class="client__heading">MANAGER REVIEW</h1>
-
-                
                 <?php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -80,7 +78,7 @@
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
                         placeholder="search employee" aria-label="Search">
                     <button class="client__btn" type="submit">
-                        <img src="https://modest-gagarin.74-208-156-247.plesk.page/images/search.png" alt="Search">
+                        <img src="<?php echo e(asset('images/search.png')); ?>" alt="Search">
                     </button>
                 </div>
 

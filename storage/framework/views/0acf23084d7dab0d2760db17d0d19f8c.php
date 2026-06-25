@@ -109,7 +109,6 @@
                                 <td><?php echo e($user->employee_id); ?></td>
                                 <td><?php echo e($user->email); ?></td>
                                 <td>
-                                    
                                     <?php
                                         $currentMonth = date('m');
                                         $currentYear = date('Y');
@@ -162,7 +161,7 @@
                 </table>
             </div>
         </div>
-        
+
         <script>
             $(document).ready(function() {
                 var table = $('#employeeReviewTable').DataTable({
