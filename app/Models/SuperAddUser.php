@@ -10,6 +10,10 @@ class SuperAddUser extends Model
     use HasFactory;
 
     protected $table = 'super_add_users';
+
+    protected $casts = [
+        'client_id' => 'array', // ← ADD THIS
+    ];
     protected $fillable = [
         'fname',
         'lname',
@@ -42,7 +46,7 @@ class SuperAddUser extends Model
         return $this->hasOne(FinancialData::class, 'emp_id', 'employee_id');
     }
 
-     public function manager()
+    public function manager()
     {
         return $this->belongsTo(SuperAddUser::class, 'manager_id');
     }

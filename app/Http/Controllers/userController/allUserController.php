@@ -746,11 +746,10 @@ class allUserController extends Controller
 
     public function clientReport(Request $request, $emp_id)
     {
-
         $financialYear = $request->get('financial_year');
         $clientId = $request->get('client_id');
 
-        $user = ClientReviewTable::with('client') // <-- Eager load the client relationship
+        $user = ClientReviewTable::with('client')
             ->where('emp_id', $emp_id)
             ->where('financial_year', $financialYear)
             ->where('client_id', $clientId)
@@ -946,6 +945,7 @@ class allUserController extends Controller
         // Optional: pass filtered users only
         $superAddUser = $superAddUser->whereIn('employee_id', $nonHrAdminEmployeeIds)->values();
 
+    
         return view('reports.managerReportView', compact('superAddUser', 'managerReviewTable', 'evaluation'));
     }
 
@@ -999,8 +999,14 @@ class allUserController extends Controller
 
         $clientReviewTable = ClientReviewTable::whereIn('emp_id', $filteredEmployeeIds)->get();
 
-        // 6. Return to view
-        return view('reports.clientReportView', compact('superAddUser', 'clientReviewTable'));
+        // 6. Remove the users from superAddUser who do not have any review
+        $usersWithReviewIds = $clientReviewTable->pluck('emp_id')->unique()->toArray();
+        $superAddUser = $superAddUser->whereIn('employee_id', $usersWithReviewIds);
+
+        $evaluation = evaluationTable::whereIn('emp_id', $filteredEmployeeIds)->get();
+
+        // 7. Return to view
+        return view('reports.clientReportView', compact('superAddUser', 'clientReviewTable', 'evaluation'));
     }
 
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\allReviews;
 
 use App\Http\Controllers\Controller;
-use App\Models\evaluationTable;
 use Illuminate\Support\Facades\DB;
 
 
