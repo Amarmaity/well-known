@@ -184,12 +184,18 @@ class SuperAdminController extends Controller
     //view All Review's 
     public function searchUser()
     {
-
         $currentDate = Carbon::now()->toDateString();
 
-        $employees = SuperAddUser::where('probation_date', '<=', $currentDate)->get();
+        $evaluationEmployeeIds = evaluationTable::pluck('emp_id')->unique()->toArray();
+
+        $employees = SuperAddUser::where('probation_date', '<=', $currentDate)
+            ->whereIn('employee_id', $evaluationEmployeeIds)
+            ->get();
         return view('admin.superView', compact('employees'));
     }
+
+
+
 
     //View details of view all reviews
     public function showEvaluationReview($id)

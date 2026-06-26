@@ -20,6 +20,15 @@
             font-weight: bold;
             margin-left: 28px;
         }
+
+        .is-invalid {
+            border: 2px solid red !important;
+        }
+
+        .text-danger {
+            color: red;
+            font-size: 13px;
+        }
     </style>
 
     <head>
@@ -196,6 +205,7 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
+                                <span class="invalid-feedback"></span>
 
                                 <div class="review-block">
                                     <label for="comments_responsive_reach_project" class="third-label">Tell us more about
@@ -203,7 +213,9 @@
                                         experience:</label>
                                     <textarea name="comments_responsive_reach_project" id="comments" class="form-control" rows="1"
                                         cols="50" maxlength="255"
-                                        placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                        placeholder="What made you give this rating? Share specific examples or feedback to help us improve.">
+                                    </textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -219,6 +231,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_comfortable_discussing" class="third-label">Tell us more about
@@ -227,6 +240,7 @@
                                     <textarea name="comments_comfortable_discussing" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
 
@@ -244,6 +258,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_regular_updates" class="third-label">Tell us more about your
@@ -251,6 +266,7 @@
                                     <textarea name="comments_regular_updates" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -267,6 +283,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_concerns_addressed" class="third-label">Tell us more about your
@@ -274,6 +291,7 @@
                                     <textarea name="comments_concerns_addressed" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                             </div>
                         </div>
@@ -293,6 +311,7 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
+                                <span class="invalid-feedback"></span>
 
                                 <div class="review-block">
                                     <label for="comments_technical_expertise" class="third-label">Tell us more about your
@@ -300,6 +319,7 @@
                                     <textarea name="comments_technical_expertise" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
 
@@ -317,6 +337,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_best_practices" class="third-label">Tell us more about your
@@ -324,6 +345,7 @@
                                     <textarea name="comments_best_practices" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -339,6 +361,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_suggest_innovative" class="third-label">Tell us more about your
@@ -346,6 +369,7 @@
                                     <textarea name="comments_suggest_innovative" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                             </div>
                         </div>
@@ -366,6 +390,7 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
+                                <span class="invalid-feedback"></span>
 
                                 <div class="review-block">
                                     <label for="comments_quality_code" class="third-label">Tell us more about your
@@ -373,6 +398,7 @@
                                     <textarea name="comments_quality_code" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -388,6 +414,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_encounter_issues" class="third-label">Tell us more about your
@@ -395,6 +422,7 @@
                                     <textarea name="comments_encounter_issues" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -410,6 +438,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_code_scalable" class="third-label">Tell us more about your
@@ -417,6 +446,7 @@
                                     <textarea name="comments_code_scalable" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -433,6 +463,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_solution_perform" class="third-label">Tell us more about your
@@ -440,6 +471,7 @@
                                     <textarea name="comments_solution_perform" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                             </div>
                         </div>
@@ -459,12 +491,14 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
+                                <span class="invalid-feedback"></span>
                                 <div class="review-block">
                                     <label for="comments_project_delivered" class="third-label">Tell us more about your
                                         experience:</label>
                                     <textarea name="comments_project_delivered" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -481,6 +515,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_communicated_handled" class="third-label">Tell us more about your
@@ -488,6 +523,7 @@
                                     <textarea name="comments_communicated_handled" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -503,6 +539,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_development_process" class="third-label">Tell us more about your
@@ -510,6 +547,7 @@
                                     <textarea name="comments_development_process" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                             </div>
                         </div>
@@ -530,6 +568,7 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
+                                <span class="invalid-feedback"></span>
                                 <div class="review-block">
                                     <label for="comments_unexpected_challenges" class="third-label">Tell us more about
                                         your
@@ -537,6 +576,7 @@
                                     <textarea name="comments_unexpected_challenges" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -553,6 +593,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_effective_workarounds" class="third-label">Tell us more about
@@ -561,6 +602,7 @@
                                     <textarea name="comments_effective_workarounds" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
 
                                 <div>
@@ -577,6 +619,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_bugs_issues" class="third-label">Tell us more about your
@@ -584,6 +627,7 @@
                                     <textarea name="comments_bugs_issues" id="comments" class="form-control" rows="1" cols="50"
                                         maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
+                                    <span class="invalid-feedback"></span>
                                 </div>
                             </div>
                         </div>
@@ -664,7 +708,7 @@
                             alert("An error occurred. Please try again.");
                         }
                     });
-                }, 1000); // debounce
+                }, 1000); 
             }
 
             $('#employee_search').on('keyup', searchUser);
@@ -726,6 +770,42 @@
                     try {
                         const errorData = JSON.parse(xhr.responseText);
 
+                        // Handle Laravel validation errors
+                        if (xhr.status == 422) {
+
+                            let errors = xhr.responseJSON.errors;
+
+                            // Remove old errors
+                            $(".text-danger").html("");
+                            $(".is-invalid").removeClass("is-invalid");
+
+                            let firstField = null;
+
+                            $.each(errors, function(field, messages) {
+
+                                let input = $("[name='" + field + "']");
+
+                                input.addClass("is-invalid");
+
+                                $(".error-" + field).html(messages[0]);
+
+                                if (!firstField) {
+                                    firstField = input;
+                                }
+                            });
+
+                            // Scroll and focus to first invalid field
+                            if (firstField) {
+                                $("html, body").animate({
+                                    scrollTop: firstField.offset().top - 120
+                                }, 500);
+
+                                firstField.focus();
+                            }
+
+                            return;
+                        }
+
                         if (xhr.status === 403) {
                             alert("⛔ " + (errorData.message || "This User has no Client."));
                         } else if (xhr.status === 404) {
@@ -737,6 +817,7 @@
                             alert("❌ " + (errorData.message ||
                                 "Something went wrong! Please try again."));
                         }
+
                     } catch (e) {
                         alert("⚠️ Unexpected error occurred.");
                         console.error("Parsing error:", e);

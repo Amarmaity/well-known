@@ -596,50 +596,51 @@ class allUserController extends Controller
                 ],
 
                 // Rating fields
-                'understand_requirements' => 'numeric|max:20',
-                'business_needs' => 'numeric|max:20',
-                'detailed_project_scope' => 'numeric|max:20',
-                'responsive_reach_project' => 'numeric|max:20',
-                'comfortable_discussing' => 'numeric|max:20',
-                'regular_updates' => 'numeric|max:20',
-                'concerns_addressed' => 'numeric|max:20',
-                'technical_expertise' => 'numeric|max:20',
-                'best_practices' => 'numeric|max:20',
-                'suggest_innovative' => 'numeric|max:20',
-                'quality_code' => 'numeric|max:20',
-                'encounter_issues' => 'numeric|max:20',
-                'code_scalable' => 'numeric|max:20',
-                'solution_perform' => 'numeric|max:20',
-                'project_delivered' => 'numeric|max:20',
-                'communicated_handled' => 'numeric|max:20',
-                'development_process' => 'numeric|max:20',
-                'unexpected_challenges' => 'numeric|max:20',
-                'effective_workarounds' => 'numeric|max:20',
-                'bugs_issues' => 'numeric|max:20',
-                'ClientTotalReview' => 'numeric|max:200',
+                'understand_requirements' => 'required|numeric|max:20',
+                'business_needs' => 'required|numeric|max:20',
+                'detailed_project_scope' => 'required|numeric|max:20',
+                'responsive_reach_project' => 'required|numeric|max:20',
+                'comfortable_discussing' => 'required|numeric|max:20',
+                'regular_updates' => 'required|numeric|max:20',
+                'concerns_addressed' => 'required|numeric|max:20',
+                'technical_expertise' => 'required|numeric|max:20',
+                'best_practices' => 'required|numeric|max:20',
+                'suggest_innovative' => 'required|numeric|max:20',
+                'quality_code' => 'required|numeric|max:20',
+                'encounter_issues' => 'required|numeric|max:20',
+                'code_scalable' => 'required|numeric|max:20',
+                'solution_perform' => 'required|numeric|max:20',
+                'project_delivered' => 'required|numeric|max:20',
+                'communicated_handled' => 'required|numeric|max:20',
+                'development_process' => 'required|numeric|max:20',
+                'unexpected_challenges' => 'required|numeric|max:20',
+                'effective_workarounds' => 'required|numeric|max:20',
+                'bugs_issues' => 'required|numeric|max:20',
+                'ClientTotalReview' => 'required|numeric|max:200',
 
                 // Comment fields (nullable + max 255)
-                'comment_understand_requirements' => 'nullable|string|max:255',
-                'comments_business_needs' => 'nullable|string|max:255',
-                'comments_detailed_project_scope' => 'nullable|string|max:255',
-                'comments_responsive_reach_project' => 'nullable|string|max:255',
-                'comments_comfortable_discussing' => 'nullable|string|max:255',
-                'comments_regular_updates' => 'nullable|string|max:255',
-                'comments_concerns_addressed' => 'nullable|string|max:255',
-                'comments_technical_expertise' => 'nullable|string|max:255',
-                'comments_best_practices' => 'nullable|string|max:255',
-                'comments_suggest_innovative' => 'nullable|string|max:255',
-                'comments_quality_code' => 'nullable|string|max:255',
-                'comments_encounter_issues' => 'nullable|string|max:255',
-                'comments_code_scalable' => 'nullable|string|max:255',
-                'comments_solution_perform' => 'nullable|string|max:255',
-                'comments_project_delivered' => 'nullable|string|max:255',
-                'comments_communicated_handled' => 'nullable|string|max:255',
-                'comments_development_process' => 'nullable|string|max:255',
-                'comments_unexpected_challenges' => 'nullable|string|max:255',
-                'comments_effective_workarounds' => 'nullable|string|max:255',
-                'comments_bugs_issues' => 'nullable|string|max:255',
+                'comment_understand_requirements' => 'required|string|max:255',
+                'comments_business_needs' => 'required|string|max:255',
+                'comments_detailed_project_scope' => 'required|string|max:255',
+                'comments_responsive_reach_project' => 'required|string|max:255',
+                'comments_comfortable_discussing' => 'required|string|max:255',
+                'comments_regular_updates' => 'required|string|max:255',
+                'comments_concerns_addressed' => 'required|string|max:255',
+                'comments_technical_expertise' => 'required|string|max:255',
+                'comments_best_practices' => 'required|string|max:255',
+                'comments_suggest_innovative' => 'required|string|max:255',
+                'comments_quality_code' => 'required|string|max:255',
+                'comments_encounter_issues' => 'required|string|max:255',
+                'comments_code_scalable' => 'required|string|max:255',
+                'comments_solution_perform' => 'required|string|max:255',
+                'comments_project_delivered' => 'required|string|max:255',
+                'comments_communicated_handled' => 'required|string|max:255',
+                'comments_development_process' => 'required|string|max:255',
+                'comments_unexpected_challenges' => 'required|string|max:255',
+                'comments_effective_workarounds' => 'required|string|max:255',
+                'comments_bugs_issues' => 'required|string|max:255',
             ], [
+                '*.required' => 'This field is required.',
                 'financial_year.unique' => 'You already submitted a review for this financial year.'
             ]);
 
@@ -653,9 +654,18 @@ class allUserController extends Controller
             }
 
             return response()->json(['error' => 'You are not authorized to submit this review.'], 403);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
-            Log::error('❌ Client review submission failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Something went wrong! Check logs.'], 500);
+            Log::error($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -951,7 +961,7 @@ class allUserController extends Controller
 
 
 
-    
+
     public function showDetailsManager($employee_id)
     {
         $financial_year = request()->query('financial_year');
