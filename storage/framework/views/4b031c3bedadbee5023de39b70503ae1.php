@@ -103,67 +103,66 @@
                     </thead>
                     <tbody>
                         <!-- Example data, replace it with dynamic data from PHP -->
+                        
                         <?php $__currentLoopData = $superAddUser; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <?php
-                                // Find corresponding review for this user
                                 $review = $clientReviewTable->firstWhere('emp_id', $user->employee_id);
                             ?>
-                            <?php if($review): ?>
-                                <!-- Only display if there is a review for the user -->
-                                <tr>
-                                    <td><?php echo e($user->fname); ?> <?php echo e($user->lname); ?></td>
-                                    <td><?php echo e($user->employee_id); ?></td>
-                                    <td><?php echo e($user->email); ?></td>
-                                    <td>
 
-                                        
-                                        <?php
-                                            $currentMonth = date('m');
-                                            $currentYear = date('Y');
+                            <tr>
+                                <td><?php echo e($user->fname); ?> <?php echo e($user->lname); ?></td>
+                                <td><?php echo e($user->employee_id); ?></td>
+                                <td><?php echo e($user->email); ?></td>
+                                <td>
 
-                                            // Indian FY logic (April start)
-                                            if ($currentMonth < 4) {
-                                                $currentFYStart = $currentYear - 1;
-                                            } else {
-                                                $currentFYStart = $currentYear;
-                                            }
+                                    <?php
+                                        $currentMonth = date('m');
+                                        $currentYear = date('Y');
 
-                                            $years = [
-                                                $currentFYStart - 1, // Previous FY
-                                                $currentFYStart, // Current FY
-                                                $currentFYStart + 1, // Next FY
-                                                $currentFYStart + 2, // Next +1 FY
-                                            ];
-                                        ?>
+                                        if ($currentMonth < 4) {
+                                            $currentFYStart = $currentYear - 1;
+                                        } else {
+                                            $currentFYStart = $currentYear;
+                                        }
 
-                                        <select class="form-control financial-year input-block" required>
-                                            <option value="">Financial Year</option>
+                                        $years = [
+                                            $currentFYStart - 1,
+                                            $currentFYStart,
+                                            $currentFYStart + 1,
+                                            $currentFYStart + 2,
+                                        ];
+                                    ?>
 
-                                            <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <?php
-                                                    $end = $year + 1;
-                                                    $fy = $year . '-' . $end;
-                                                ?>
+                                    <select class="form-control financial-year input-block" required>
+                                        <option value="">Financial Year</option>
 
-                                                <option value="<?php echo e($fy); ?>"
-                                                    <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
-                                                    <?php echo e($fy); ?>
+                                        <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
+                                                $fy = $year . '-' . ($year + 1);
+                                            ?>
 
-                                                </option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($fy); ?>"
+                                                <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                                                <?php echo e($fy); ?>
 
-                                        </select>
+                                            </option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
 
-                                        <div class="btn-block">
-                                            <a href="<?php echo e(route('user-client-details', $user->employee_id)); ?>"
-                                                class="btn btn-primary view-client-details">View Details</a>
+                                    <div class="btn-block">
+                                        <a href="<?php echo e(route('user-client-details', $user->employee_id)); ?>"
+                                            class="btn btn-primary view-client-details">
+                                            View Details
+                                        </a>
 
-                                            <a href="<?php echo e(route('user-report-view-evaluation', $user->employee_id)); ?>"
-                                                class="btn btn-primary view-evaluation">View Evaluation</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
+                                        <a href="<?php echo e(route('user-report-view-evaluation', $user->employee_id)); ?>"
+                                            class="btn btn-primary view-evaluation">
+                                            View Evaluation
+                                        </a>
+                                    </div>
+
+                                </td>
+                            </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>

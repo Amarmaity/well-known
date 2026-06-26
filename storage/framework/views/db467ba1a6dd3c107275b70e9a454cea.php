@@ -132,7 +132,7 @@
 
                 if (!financialYear) {
                     $('#appraisal-body').html(
-                    '<tr><td colspan="7">Please select a valid financial year.</td></tr>');
+                        '<tr><td colspan="7">Please select a valid financial year.</td></tr>');
                     return;
                 }
 
@@ -156,8 +156,10 @@
                         const isAdminAppraisal = query.includes('admin');
                         const isHrAppraisal = query.includes('hr');
 
-                        const showClient = response.clientReviewData?.length > 0;
-                        const showManager = response.managerReviewData?.length > 0;
+                        //const showClient = response.clientReviewData?.length > 0;
+                        //const showManager = response.managerReviewData?.length > 0;
+                        const showManager = response.showManager;
+                        const showClient = response.showClient;
                         const showHr = !isHrAppraisal;
                         const showAdmin = !isAdminAppraisal;
 
@@ -190,7 +192,8 @@
                             const admin = isNaN(Number(response.adminReviewData?.[i])) ? 0 : Number(
                                 response.adminReviewData[i]);
                             const manager = showManager ? (isNaN(Number(response.managerReviewData?.[
-                                i])) ? 0 : Number(response.managerReviewData[i])) : 0;
+                                i
+                            ])) ? 0 : Number(response.managerReviewData[i])) : 0;
                             const client = showClient ? (isNaN(Number(response.clientReviewData?.[i])) ?
                                 0 : Number(response.clientReviewData[i])) : 0;
 

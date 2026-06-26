@@ -945,11 +945,13 @@ class allUserController extends Controller
         // Optional: pass filtered users only
         $superAddUser = $superAddUser->whereIn('employee_id', $nonHrAdminEmployeeIds)->values();
 
-    
+
         return view('reports.managerReportView', compact('superAddUser', 'managerReviewTable', 'evaluation'));
     }
 
 
+
+    
     public function showDetailsManager($employee_id)
     {
         $financial_year = request()->query('financial_year');
@@ -973,42 +975,73 @@ class allUserController extends Controller
         return view('reports.userDetailsManagerView', compact('employee', 'reviews', 'employee_id', 'financial_year'));
     }
 
+    // public function getClientReviewList(Request $request)
+    // {
+    //     $targetClientId = session('client_id');
+
+    //     if (!$targetClientId) {
+    //         return back()->with('error', 'Client session expired or not logged in.');
+    //     }
+
+    //     $validEmployeeIds = evaluationTable::pluck('emp_id')
+    //         ->unique()
+    //         ->toArray();
+
+    //     $superAddUser = SuperAddUser::where('status', 1)
+    //         ->whereIn('employee_id', $validEmployeeIds)
+    //         ->where('client_id', 'like', '%"' . $targetClientId . '"%')
+    //         ->get();
+
+    //     $filteredEmployeeIds = $superAddUser->pluck('employee_id')->toArray();
+
+    //     $clientReviewTable = ClientReviewTable::whereIn('emp_id', $filteredEmployeeIds)->get();
+
+    //     $evaluation = evaluationTable::whereIn('emp_id', $filteredEmployeeIds)->get();
+
+    //     return view('reports.clientReportView', compact(
+    //         'superAddUser',
+    //         'clientReviewTable',
+    //         'evaluation'
+    //     ));
+    // }
+
+
+
     public function getClientReviewList(Request $request)
     {
-        // 1. Get the client_id from session
         $targetClientId = session('client_id');
 
-        // 2. If session doesn't have client_id, return error
         if (!$targetClientId) {
             return back()->with('error', 'Client session expired or not logged in.');
         }
 
-        // 3. Get all employee IDs that have reviews
         $validEmployeeIds = ClientReviewTable::pluck('emp_id')
+            ->merge(evaluationTable::pluck('emp_id'))
             ->unique()
             ->toArray();
 
-        // 4. Filter employees:
         $superAddUser = SuperAddUser::where('status', 1)
             ->whereIn('employee_id', $validEmployeeIds)
             ->where('client_id', 'like', '%"' . $targetClientId . '"%')
             ->get();
 
-        // 5. Filter reviews for these employees
-        $filteredEmployeeIds = $superAddUser->pluck('employee_id')->toArray();
+        $filteredEmployeeIds = $superAddUser
+            ->pluck('employee_id')
+            ->toArray();
 
         $clientReviewTable = ClientReviewTable::whereIn('emp_id', $filteredEmployeeIds)->get();
 
-        // 6. Remove the users from superAddUser who do not have any review
-        $usersWithReviewIds = $clientReviewTable->pluck('emp_id')->unique()->toArray();
-        $superAddUser = $superAddUser->whereIn('employee_id', $usersWithReviewIds);
-
         $evaluation = evaluationTable::whereIn('emp_id', $filteredEmployeeIds)->get();
 
-        // 7. Return to view
-        return view('reports.clientReportView', compact('superAddUser', 'clientReviewTable', 'evaluation'));
+        return view(
+            'reports.clientReportView',
+            compact(
+                'superAddUser',
+                'clientReviewTable',
+                'evaluation'
+            )
+        );
     }
-
 
     public function showDetailsClient($employee_id)
     {

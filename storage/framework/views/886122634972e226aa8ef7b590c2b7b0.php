@@ -109,7 +109,6 @@
                                 <td><?php echo e($user->employee_id); ?></td>
                                 <td><?php echo e($user->email); ?></td>
                                 <td>
-                                    
                                     <?php
                                         $currentMonth = date('m');
                                         $currentYear = date('Y');
@@ -165,7 +164,6 @@
                                     </div>
                                 </td>
                             </tr>
-                            
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                     </tbody>

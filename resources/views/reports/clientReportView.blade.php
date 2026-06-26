@@ -105,32 +105,20 @@
                     </thead>
                     <tbody>
                         <!-- Example data, replace it with dynamic data from PHP -->
-                        @foreach ($superAddUser as $user)
+                        {{-- @foreach ($superAddUser as $user)
                             @php
-                                // Find corresponding review for this user
                                 $review = $clientReviewTable->firstWhere('emp_id', $user->employee_id);
                             @endphp
                             @if ($review)
-                                <!-- Only display if there is a review for the user -->
                                 <tr>
                                     <td>{{ $user->fname }} {{ $user->lname }}</td>
                                     <td>{{ $user->employee_id }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>
-
-                                        {{-- <select name="financial_year" class="form-control financial-year" required>
-                                <option value="" selected>Select Financial Year</option>
-                                <option value="2025-2026">2025-2026</option>
-                                <option value="2026-2027">2026-2027</option>
-                                <option value="2027-2028">2027-2028</option>
-                                <option value="2028-2029">2028-2029</option>
-                                <option value="2029-2030">2029-2030</option>
-                            </select> --}}
                                         @php
                                             $currentMonth = date('m');
                                             $currentYear = date('Y');
 
-                                            // Indian FY logic (April start)
                                             if ($currentMonth < 4) {
                                                 $currentFYStart = $currentYear - 1;
                                             } else {
@@ -138,10 +126,10 @@
                                             }
 
                                             $years = [
-                                                $currentFYStart - 1, // Previous FY
-                                                $currentFYStart, // Current FY
-                                                $currentFYStart + 1, // Next FY
-                                                $currentFYStart + 2, // Next +1 FY
+                                                $currentFYStart - 1,
+                                                $currentFYStart,
+                                                $currentFYStart + 1,
+                                                $currentFYStart + 2,
                                             ];
                                         @endphp
 
@@ -172,6 +160,65 @@
                                     </td>
                                 </tr>
                             @endif
+                        @endforeach --}}
+                        @foreach ($superAddUser as $user)
+                            @php
+                                $review = $clientReviewTable->firstWhere('emp_id', $user->employee_id);
+                            @endphp
+
+                            <tr>
+                                <td>{{ $user->fname }} {{ $user->lname }}</td>
+                                <td>{{ $user->employee_id }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>
+
+                                    @php
+                                        $currentMonth = date('m');
+                                        $currentYear = date('Y');
+
+                                        if ($currentMonth < 4) {
+                                            $currentFYStart = $currentYear - 1;
+                                        } else {
+                                            $currentFYStart = $currentYear;
+                                        }
+
+                                        $years = [
+                                            $currentFYStart - 1,
+                                            $currentFYStart,
+                                            $currentFYStart + 1,
+                                            $currentFYStart + 2,
+                                        ];
+                                    @endphp
+
+                                    <select class="form-control financial-year input-block" required>
+                                        <option value="">Financial Year</option>
+
+                                        @foreach ($years as $year)
+                                            @php
+                                                $fy = $year . '-' . ($year + 1);
+                                            @endphp
+
+                                            <option value="{{ $fy }}"
+                                                {{ $year == $currentFYStart ? 'selected' : '' }}>
+                                                {{ $fy }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <div class="btn-block">
+                                        <a href="{{ route('user-client-details', $user->employee_id) }}"
+                                            class="btn btn-primary view-client-details">
+                                            View Details
+                                        </a>
+
+                                        <a href="{{ route('user-report-view-evaluation', $user->employee_id) }}"
+                                            class="btn btn-primary view-evaluation">
+                                            View Evaluation
+                                        </a>
+                                    </div>
+
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>

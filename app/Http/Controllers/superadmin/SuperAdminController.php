@@ -373,6 +373,10 @@ class SuperAdminController extends Controller
             ->filter()
             ->toArray();
 
+        if (empty($managerReviewData)) {
+            $managerReviewData = [0];
+        }
+
         $evaluationScore = evaluationTable::where('emp_id', $employeeIdentifier)
             ->where('financial_year', $financialYear)
             ->pluck('total_scoring_system')
@@ -389,6 +393,7 @@ class SuperAdminController extends Controller
             $clientReviews = ClientReviewTable::where('emp_id', $employeeIdentifier)
                 ->where('financial_year', $financialYear)
                 ->get();
+
 
             if ($clientReviews->isNotEmpty()) {
                 $clientScores = [];
@@ -409,7 +414,11 @@ class SuperAdminController extends Controller
                     $clientReviewData[] = min(($clientAverage / 100) * 100, 100);
                 }
             }
+            if (empty($clientReviewData)) {
+                $clientReviewData = [0];
+            }
         }
+
 
         // Average all component scores
         $eval = count($evaluationScore) ? array_sum($evaluationScore) / count($evaluationScore) : null;
@@ -448,10 +457,14 @@ class SuperAdminController extends Controller
             'showEvaluation' => !empty($evaluationScore),
             'showAdmin' => !empty($adminReviewData),
             'showHR' => !empty($hrReviewData),
-            'showManager' => !empty($managerReviewData),
-            'showClient' => $hasClient && !empty($clientReviewData),
+            // 'showManager' => !empty($managerReviewData),
+            // 'showClient' => $hasClient && !empty($clientReviewData),
+            'showManager' => true,
+            'showClient' => $hasClient,
         ]);
     }
+
+
 
 
     public function toggleStatus($user_type, $identifier)
@@ -915,9 +928,6 @@ class SuperAdminController extends Controller
         $empId = $request->input('emp_id') ?? $request->input('employee_id');
         // $empId = $request->input('emp_id');
         $year = $request->input('financial_year');
-
-        // Debug (optional)
-        // var_dump($empId, $year); exit;
 
         // Get user info
         $user = SuperAddUser::where('employee_id', $empId)->first();
