@@ -163,6 +163,8 @@ class SuperAdminController extends Controller
     }
 
 
+
+    
     //Super Admin Dash Board view
     public function indexSuperAdminDashBoard()
     {

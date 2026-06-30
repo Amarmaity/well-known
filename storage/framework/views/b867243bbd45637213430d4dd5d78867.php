@@ -205,17 +205,17 @@
                 </div>
                 <h1>Sign in to your Evalon Panel</h1>
                 <?php if(session('success')): ?>
-                    <div id="alert-message" class="alert alert-success text-center">
-                        <?php echo e(session('success')); ?>
+                <div id="alert-message" class="alert alert-success text-center">
+                    <?php echo e(session('success')); ?>
 
-                    </div>
+                </div>
                 <?php endif; ?>
 
                 <?php if(session('error')): ?>
-                    <div id="alert-message" class="alert alert-danger text-center">
-                        <?php echo e(session('error')); ?>
+                <div id="alert-message" class="alert alert-danger text-center">
+                    <?php echo e(session('error')); ?>
 
-                    </div>
+                </div>
                 <?php endif; ?>
                 <form method="post" autocomplete="off" id="login-form" class="login__page--form">
                     <?php echo csrf_field(); ?>
@@ -247,6 +247,7 @@
                             <?php endif; ?>
                         </select>
                     </div>
+                    
 
                     <!-- Password Input (Initially Shown) -->
                     <div id="password-field" class="form-group">

@@ -21,7 +21,7 @@ class UserOnbordController extends Controller
     public function indexUserLogin()
     {
         $superUser = null;
-        return view("loginusers/userlogin", compact('superUser'));
+        return view("loginusers.userlogin", compact('superUser'));
     }
 
     public function loginUserAutenticacaon(Request $request)

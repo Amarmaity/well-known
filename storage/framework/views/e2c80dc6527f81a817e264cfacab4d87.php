@@ -1,11 +1,12 @@
 <style>
-.app-sidebar {
-    position: absolute;
-    left: 15px;
-}
-.close{
-    display: none;
-}
+    .app-sidebar {
+        position: absolute;
+        left: 15px;
+    }
+
+    .close {
+        display: none;
+    }
 </style>
 <aside class="app-sidebar">
     <span class="close">✖</span>
@@ -198,12 +199,13 @@
                     </a>
                 </li>
                 <?php endif; ?>
-                
-                 <?php
-                    $employee = \App\Models\SuperAddUser::where('employee_id', session('employee_id'))->first();
+
+                <?php
+                $employee = \App\Models\SuperAddUser::where('employee_id', session('employee_id'))->first();
                 ?>
 
-                <?php if(in_array($userType, ['users', 'admin', 'hr', 'manager']) && optional($employee)->employee_status === 'Employee'): ?>
+                <?php if(in_array($userType, ['users', 'admin', 'hr', 'manager']) && optional($employee)->employee_status ===
+                'Employee'): ?>
                 <li class="nav-item">
                     <a href="<?php echo e(route('input-evaluation', ['employee_id' => session('employee_id')])); ?>"
                         class="nav-link <?php echo e(request()->routeIs('input-evaluation') ? 'active' : ''); ?>">
@@ -235,7 +237,7 @@
                     </form>
 
                     <script>
-                    function confirmLogout() {
+                        function confirmLogout() {
                         if (confirm("Are you sure you want to log out?")) {
                             document.getElementById('logout-form').submit();
                         }
@@ -247,7 +249,7 @@
         </nav>
         <?php if(session()->has('logout_reload')): ?>
         <script>
-        location.reload();
+            location.reload();
         </script>
         <?php endif; ?>
     </div>

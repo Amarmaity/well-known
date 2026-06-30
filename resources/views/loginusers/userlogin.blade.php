@@ -205,15 +205,15 @@
                 </div>
                 <h1>Sign in to your Evalon Panel</h1>
                 @if(session('success'))
-                    <div id="alert-message" class="alert alert-success text-center">
-                        {{ session('success') }}
-                    </div>
+                <div id="alert-message" class="alert alert-success text-center">
+                    {{ session('success') }}
+                </div>
                 @endif
 
                 @if(session('error'))
-                    <div id="alert-message" class="alert alert-danger text-center">
-                        {{ session('error') }}
-                    </div>
+                <div id="alert-message" class="alert alert-danger text-center">
+                    {{ session('error') }}
+                </div>
                 @endif
                 <form method="post" autocomplete="off" id="login-form" class="login__page--form">
                     @csrf
@@ -245,6 +245,23 @@
                             @endif
                         </select>
                     </div>
+                    {{-- <div class="form-group">
+                        <label for="user_type_dropdown" class="form-label">User Type:</label>
+
+                        <select class="form-control" id="user_type_dropdown" name="user_type" required>
+                            <option value="" selected disabled>Select User Type</option>
+
+                            <option value="super user">Super User</option>
+
+                            @if($superUser == null)
+                            @foreach($designations as $designation)
+                            <option value="{{ strtolower($designation->designation_name) }}">
+                                {{ $designation->designation_name }}
+                            </option>
+                            @endforeach
+                            @endif
+                        </select>
+                    </div> --}}
 
                     <!-- Password Input (Initially Shown) -->
                     <div id="password-field" class="form-group">

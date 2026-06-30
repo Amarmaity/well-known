@@ -36,6 +36,7 @@ class DesignationController extends Controller
 
         return response()->json($designation);
     }
+    
     public function update(Request $request, $id)
     {
         $request->validate([

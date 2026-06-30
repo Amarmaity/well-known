@@ -1,11 +1,9 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Setting'); ?>
+<?php $__env->startSection('breadcrumb', 'Setting'); ?>
+<?php $__env->startSection('page-title', 'Setting'); ?>
+<?php $__env->startSection('body-class', 'special-page'); ?>
 
-@section('title', 'Setting')
-@section('breadcrumb', 'Setting')
-@section('page-title', 'Setting')
-@section('body-class', 'special-page')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         .appraisal-container {
             max-width: 400px;
@@ -44,7 +42,7 @@
 
    
  <div class="d-flex align-items-right gap-3 mb-3">
-    <a href="{{ route('access-management') }}" class="btn btn-primary">
+    <a href="<?php echo e(route('access-management')); ?>" class="btn btn-primary">
         <i class="bi bi-shield-lock"></i>
         Access Management
     </a>
@@ -55,12 +53,12 @@
         <h2 class="heading">Set Appraisal Percentage</h2>
 
         <form id="appraisalForm" class="forms-block">
-            @csrf
+            <?php echo csrf_field(); ?>
             <label for="companyPercentage">Company % for Appraisal:</label>
             <input type="number" id="companyPercentage" name="company_percentage" placeholder="Enter percentage" min="0" max="100" step="0.01" required>
 
             <label for="financialYear">Financial Year:</label>
-            @php
+            <?php
                 $currentMonth = date('m');
                 $currentYear = date('Y');
 
@@ -77,21 +75,22 @@
                     $currentFYStart + 1, // Next FY
                     $currentFYStart + 2, // Next +1 FY
                 ];
-            @endphp
+            ?>
 
             <select id="financialYear" class="form-select client__select" name="financial_year" required>
                 <option value="">Financial Year</option>
 
-                @foreach ($years as $year)
-                    @php
+                <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
                         $end = $year + 1;
                         $fy = $year . '-' . $end;
-                    @endphp
+                    ?>
 
-                    <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                        {{ $fy }}
+                    <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                        <?php echo e($fy); ?>
+
                     </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </select>
 
@@ -137,22 +136,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($allowPercentage as $user)
+                    <?php $__currentLoopData = $allowPercentage; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td>{{ $user->financial_year }}</td>
-                            <td>{{ $user->company_percentage }}</td>
-                            <td>{{ $user->created_at->format('d M Y') }}</td>
+                            <td><?php echo e($user->financial_year); ?></td>
+                            <td><?php echo e($user->company_percentage); ?></td>
+                            <td><?php echo e($user->created_at->format('d M Y')); ?></td>
                             <td>
                                 <a href="javascript:void(0);" class="edit-user btn btn-sm btn-outline-primary edit-icon"
-                                   data-id="{{ $user->id }}"
-                                   data-financial-year="{{ $user->financial_year }}"
-                                   data-percentage="{{ $user->company_percentage }}">
-                                    {{-- <span class="icon"><img src="{{'images/modalicon.webp'}}" alt="Edit Icon" width="16" height="16"></span> --}}
+                                   data-id="<?php echo e($user->id); ?>"
+                                   data-financial-year="<?php echo e($user->financial_year); ?>"
+                                   data-percentage="<?php echo e($user->company_percentage); ?>">
+                                    
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
@@ -168,8 +167,8 @@
                 </div>
                 <div class="modal-body">
                     <form id="editPercentageForm">
-                        @csrf
-                        @method('PUT')
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
                         <input type="hidden" id="edit_id">
 
                         <div class="mb-3">
@@ -235,7 +234,7 @@
 
             const formData = new FormData(form);
 
-            fetch("{{ route('submit-apprisal-all') }}", {
+            fetch("<?php echo e(route('submit-apprisal-all')); ?>", {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
@@ -283,7 +282,7 @@
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                     },
                     body: JSON.stringify({ company_percentage: percentage })
                 })
@@ -302,4 +301,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\well-known\resources\views/admin/setting.blade.php ENDPATH**/ ?>

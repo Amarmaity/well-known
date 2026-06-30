@@ -1,15 +1,13 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Access Management'); ?>
+<?php $__env->startSection('breadcrumb', 'Access Management'); ?>
+<?php $__env->startSection('page-title', 'Access Management'); ?>
+<?php $__env->startSection('body-class', 'special-page'); ?>
 
-@section('title', 'Access Management')
-@section('breadcrumb', 'Access Management')
-@section('page-title', 'Access Management')
-@section('body-class', 'special-page')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="container-fluid">
     <div class="back-button">
-        <a href="{{ route('setting-view') }}" class="btn btn-secondary mb-3">
+        <a href="<?php echo e(route('setting-view')); ?>" class="btn btn-secondary mb-3">
             <i class="bi bi-arrow-left"></i>
             Back
         </a>
@@ -44,11 +42,12 @@
                         <option value="">
                             Select Designation
                         </option>
-                        @foreach ($designations as $designation)
-                        <option value="{{ $designation->id }}">
-                            {{ ucwords($designation->designation_name) }}
+                        <?php $__currentLoopData = $designations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $designation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($designation->id); ?>">
+                            <?php echo e(ucwords($designation->designation_name)); ?>
+
                         </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
             </div>
@@ -62,58 +61,61 @@
                 </div>
             </div>
             <div class="accordion" id="permissionAccordion">
-                @foreach ($modules as $parent)
+                <?php $__currentLoopData = $modules; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $parent): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="accordion-item mb-2">
-                    <h2 class="accordion-header" id="heading{{ $parent->id }}">
+                    <h2 class="accordion-header" id="heading<?php echo e($parent->id); ?>">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapse{{ $parent->id }}">
+                            data-bs-target="#collapse<?php echo e($parent->id); ?>">
                             <div class="d-flex align-items-center w-100">
                                 <input type="checkbox" class="form-check-input me-3 parent-checkbox"
-                                    data-parent="{{ $parent->id }}">
+                                    data-parent="<?php echo e($parent->id); ?>">
                                 <strong>
-                                    {{ $parent->module_name }}
+                                    <?php echo e($parent->module_name); ?>
+
                                 </strong>
                             </div>
                         </button>
                     </h2>
-                    <div id="collapse{{ $parent->id }}" class="accordion-collapse collapse">
+                    <div id="collapse<?php echo e($parent->id); ?>" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            @if ($parent->children->count())
+                            <?php if($parent->children->count()): ?>
                             <div class="row">
-                                @foreach ($parent->children as $child)
+                                <?php $__currentLoopData = $parent->children; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="col-md-4 mb-3">
                                     <div class="form-check">
                                         <input class="form-check-input child-checkbox" type="checkbox"
-                                            value="{{ $child->id }}" data-parent="{{ $parent->id }}"
-                                            id="module{{ $child->id }}">
-                                        <label class="form-check-label" for="module{{ $child->id }}">
-                                            {{ $child->module_name }}
+                                            value="<?php echo e($child->id); ?>" data-parent="<?php echo e($parent->id); ?>"
+                                            id="module<?php echo e($child->id); ?>">
+                                        <label class="form-check-label" for="module<?php echo e($child->id); ?>">
+                                            <?php echo e($child->module_name); ?>
+
                                         </label>
                                     </div>
                                 </div>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
-                            @else
+                            <?php else: ?>
                             <div class="form-check">
                                 <input class="form-check-input single-checkbox" type="checkbox"
-                                    value="{{ $parent->id }}" id="module{{ $parent->id }}">
+                                    value="<?php echo e($parent->id); ?>" id="module<?php echo e($parent->id); ?>">
                                 <label class="form-check-label">
-                                    {{ $parent->module_name }}
+                                    <?php echo e($parent->module_name); ?>
+
                                 </label>
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
 
-@section('script')
+<?php $__env->startSection('script'); ?>
 
 <script>
     $(function() {
@@ -178,4 +180,5 @@
         });
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\well-known\resources\views/admin/accessmanagement.blade.php ENDPATH**/ ?>

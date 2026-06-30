@@ -1,15 +1,14 @@
-@extends('layouts.app')
-@section('title', 'Designation Management')
+<?php $__env->startSection('title', 'Designation Management'); ?>
 
-@section('breadcrumb', 'Designation Management')
+<?php $__env->startSection('breadcrumb', 'Designation Management'); ?>
 
-@section('page-title', 'Designation Management')
-@section('body-class', 'special-page')
+<?php $__env->startSection('page-title', 'Designation Management'); ?>
+<?php $__env->startSection('body-class', 'special-page'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container">
     <div class="back-button">
-        <a href="{{ route('setting-view') }}" class="btn btn-secondary mb-3">
+        <a href="<?php echo e(route('setting-view')); ?>" class="btn btn-secondary mb-3">
             <i class="bi bi-arrow-left"></i>
             Back
         </a>
@@ -19,8 +18,8 @@
             <h4>Designation Management</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('designation-store') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('designation-store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="row">
                     <div class="col-md-8">
                         <input type="text" name="designation_name" class="form-control" placeholder="Designation Name">
@@ -44,37 +43,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($designations as $designation)
+                    <?php $__currentLoopData = $designations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $designation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $designation->designation_name }}</td>
+                        <td><?php echo e($loop->iteration); ?></td>
+                        <td><?php echo e($designation->designation_name); ?></td>
                         <td>
-                            @if ($designation->status)
+                            <?php if($designation->status): ?>
                             <span class="badge bg-success">
                                 Active
                             </span>
-                            @else
+                            <?php else: ?>
                             <span class="badge bg-danger">
                                 Inactive
                             </span>
-                            @endif
+                            <?php endif; ?>
                         </td>
                         <td>
                             <button type="button" class="btn btn-warning btn-sm editDesignation"
-                                data-id="{{ $designation->id }}">
+                                data-id="<?php echo e($designation->id); ?>">
                                 Edit
                             </button>
                             <button type="button" class="btn btn-info btn-sm changeStatus"
-                                data-id="{{ $designation->id }}">
-                                {{ $designation->status ? 'Deactivate' : 'Activate' }}
+                                data-id="<?php echo e($designation->id); ?>">
+                                <?php echo e($designation->status ? 'Deactivate' : 'Activate'); ?>
+
                             </button>
                             <button type="button" class="btn btn-danger btn-sm deleteDesignation"
-                                data-id="{{ $designation->id }}">
+                                data-id="<?php echo e($designation->id); ?>">
                                 Delete
                             </button>
                         </td>
                     </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
@@ -83,7 +83,7 @@
             <div class="modal-dialog">
                 <form id="updateDesignationForm">
 
-                    @csrf
+                    <?php echo csrf_field(); ?>
 
                     <div class="modal-content">
 
@@ -137,7 +137,7 @@
             $(document).on('click', '.editDesignation', function() {
 
                 let id = $(this).data('id');
-                let url = "{{ route('designation-edit', ':id') }}";
+                let url = "<?php echo e(route('designation-edit', ':id')); ?>";
                 url = url.replace(':id', id);
                 $.get(url, function(res) {
 
@@ -159,13 +159,13 @@
                 e.preventDefault();
 
                 let id = $('#designation_id').val();
-                let url = "{{ route('designation-update', ':id') }}";
+                let url = "<?php echo e(route('designation-update', ':id')); ?>";
                 url = url.replace(':id', id);
                 $.ajax({
                     url: url,
                     type: 'POST',
                     data: {
-                        _token: '{{ csrf_token() }}',
+                        _token: '<?php echo e(csrf_token()); ?>',
                         designation_name: $('#designation_name').val()
                     },
                     success: function(res) {
@@ -184,7 +184,7 @@
             $(document).on('click', '.changeStatus', function() {
 
                 let id = $(this).data('id');
-                let url = "{{ route('designation-status', ':id') }}";
+                let url = "<?php echo e(route('designation-status', ':id')); ?>";
                 url = url.replace(':id', id);
 
                 $.ajax({
@@ -194,7 +194,7 @@
                     type: 'POST',
 
                     data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: '<?php echo e(csrf_token()); ?>'
                     },
 
                     success: function(res) {
@@ -216,14 +216,14 @@
 
                 if (confirm('Are you sure?')) {
 
-                    let url = "{{ route('designation-destroy', ':id') }}";
+                    let url = "<?php echo e(route('designation-destroy', ':id')); ?>";
                     url = url.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         data: {
-                            _token: '{{ csrf_token() }}'
+                            _token: '<?php echo e(csrf_token()); ?>'
                         },
                         success: function(res) {
                             alert(res.message);
@@ -240,4 +240,5 @@
 
         });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\well-known\resources\views/admin/Designation/index.blade.php ENDPATH**/ ?>

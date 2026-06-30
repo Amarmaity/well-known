@@ -46,7 +46,9 @@ class CheckRole
             'client' => ['client-dashboard', 'client-review', 'client-dashboard','user-client-details', 'user-report-view-evaluation'],
             'Super User' => ['super-user-dashboard', 'super-user-review', 'add-user', 'userlist', 'super.search',
             'appraisal-view', 'financial.view', 'logout-users', 'user-search', 'super-admin-search', 'super-user-search-bar', 'active-user', 'financial-view', 'super-admin-view',
-            'financial-view-tables', 'employee.details', 'evaluation.details', 'hr.review.details','manager.review.details','admin.review.details','setting-view','create-client', 'client-list','get-probation','financial-view-tables', 'get-pending-apprasil','setting-view', 'edit-user']
+            'financial-view-tables', 'employee.details', 'evaluation.details', 'hr.review.details','manager.review.details','admin.review.details','setting-view',
+            'create-client', 'client-list','get-probation','financial-view-tables', 'get-pending-apprasil','setting-view', 'edit-user',
+            'designation-index', 'access-management', 'designation-index', 'designation-store', 'designation-edit', 'designation-update', 'designation-status', 'designation-destroy' ]
         ];
 
         // Get the current route name
