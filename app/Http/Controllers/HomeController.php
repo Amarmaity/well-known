@@ -118,7 +118,12 @@ class HomeController extends Controller
         ], 400);
     }
 
+<<<<<<< HEAD
    
+=======
+
+
+>>>>>>> f271335 (Before setup barir r kora kaj)
     public function submitEvaluation(Request $request)
     {
         $employeeId = $request->input('emp_id');
@@ -197,8 +202,8 @@ class HomeController extends Controller
         =============================== */
 
         $request->validate([
-            'evaluator_signatur' => 'required|mimes:jpg,png,pdf|max:2048',
-            'director_signatur' => 'nullable|mimes:jpg,png,pdf|max:2048',
+            'evaluator_signatur' => 'required|mimes:jpg,jpeg,png|max:2048',
+            'director_signatur' => 'nullable|mimes:jpg,jpeg,png|max:2048',
             'financial_year' => [
                 'required',
                 Rule::unique('evaluation_tables', 'financial_year')->where(function ($query) use ($request) {
