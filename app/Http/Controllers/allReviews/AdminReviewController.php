@@ -41,6 +41,6 @@ class AdminReviewController extends Controller
         }
 
         // Fixing compact: Variable names shouldn't have '$' inside compact()
-        return view('review.adminReviewDetails', compact('adminColumnMappings', 'users', 'emp_id'));
+        return view('review/adminReviewDetails', compact('adminColumnMappings', 'users', 'emp_id'));
     }
 }

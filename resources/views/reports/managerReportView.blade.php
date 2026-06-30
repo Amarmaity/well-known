@@ -6,6 +6,8 @@
 
 @section('content')
 
+    {{-- {{dd($superAddUser, $managerReviewTable)}} --}}
+
     <!DOCTYPE html>
     <html lang="en">
 
@@ -105,12 +107,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($superAddUser as $user)
+                        <!-- Example data, replace it with dynamic data from PHP -->
+                        @foreach($superAddUser as $user)
                             <tr>
                                 <td>{{ $user->fname }} {{ $user->lname }}</td>
                                 <td>{{ $user->employee_id }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
+                                    <!--<select name="financial_year" class="form-control financial-year input-block" required>-->
+                                    <!--    <option value="" selected>Select Financial Year</option>-->
+                                    <!--    <option value="2025-2026">2025-2026</option>-->
+                                    <!--    <option value="2026-2027">2026-2027</option>-->
+                                    <!--    <option value="2027-2028">2027-2028</option>-->
+                                    <!--    <option value="2028-2029">2028-2029</option>-->
+                                    <!--    <option value="2029-2030">2029-2030</option>-->
+                                    <!--</select>-->
                                     @php
                                         $currentMonth = date('m');
                                         $currentYear = date('Y');
@@ -147,12 +158,12 @@
 
                                     </select>
                                     <div class="btn-block">
-                                        @if ($user->user_type !== 'manager')
+                                        @if($user->user_type !== 'manager')
                                             <a href="{{ route('user-manager-details', $user->employee_id) }}"
                                                 class="btn btn-primary view-manager-details">View
                                                 Details</a>
                                         @endif
-                                        <a href="{{ route('user-report-view-evaluation', $user->employee_id) }}"
+                                        <a href="{{route('user-report-view-evaluation', $user->employee_id)}}"
                                             class="btn btn-primary view-evaluation">View Evaluation</a>
                                     </div>
                                 </td>
@@ -162,9 +173,9 @@
                 </table>
             </div>
         </div>
-
+        <!-- Initialize DataTables with search functionality -->
         <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
                 var table = $('#employeeReviewTable').DataTable({
                     "paging": false,
                     "searching": true, // keep this true to allow external filtering
@@ -173,14 +184,14 @@
                 });
 
                 // Bind the custom search input
-                $('#employee_search').on('keyup', function() {
+                $('#employee_search').on('keyup', function () {
                     table.search(this.value).draw();
                 });
             });
 
             //Manager Details
-            $(document).ready(function() {
-                $('.view-manager-details').click(function(e) {
+            $(document).ready(function () {
+                $('.view-manager-details').click(function (e) {
                     e.preventDefault();
 
                     let $row = $(this).closest('tr');
@@ -195,7 +206,7 @@
                     $.ajax({
                         url: baseUrl + '?financial_year=' + financialYear,
                         type: 'GET',
-                        success: function(response) {
+                        success: function (response) {
                             if (response.message) {
                                 alert(response.message);
                             } else {
@@ -203,7 +214,7 @@
                                     financialYear;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             alert('Something went wrong. Please try again.');
                         }
                     });
@@ -212,8 +223,8 @@
 
 
             //Evaluation Details
-            $(document).ready(function() {
-                $('.view-evaluation').click(function(e) {
+            $(document).ready(function () {
+                $('.view-evaluation').click(function (e) {
                     e.preventDefault();
 
                     const $row = $(this).closest('tr');
@@ -228,7 +239,7 @@
                     $.ajax({
                         url: baseUrl + '?financial_year=' + financialYear,
                         method: 'GET',
-                        success: function(response) {
+                        success: function (response) {
                             if (response.message) {
                                 alert(response
                                     .message); // You can use SweetAlert here if preferred
@@ -237,7 +248,7 @@
                                     financialYear;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             alert('Something went wrong. Please try again.');
                         }
                     });

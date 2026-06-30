@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\Mail\EvaluationOtpMail;
+use App\Mail\EvaluationSubmitted;
+use App\Models\AllClient;
 use App\Models\SuperAddUser;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
@@ -19,40 +21,52 @@ class HomeController extends Controller
 
     public function index($employee_id = null)
     {
-        $sessionEmployeeId = session('employee_id');
+    
+    
+    $sessionEmployeeId = session('employee_id');
+    $userType = session('user_type');
 
-        if (!$sessionEmployeeId) {
-            return redirect()->route('all-user-login')
-                ->with('error', 'Please log in to continue.');
-        }
+    if (!$sessionEmployeeId) {
+        return redirect()->route('all-user-login')
+            ->with('error', 'Please log in to continue.');
+    }
+
+    // Employee and Manager can only fill their own evaluation
+    if (in_array($userType, ['users', 'manager'])) {
 
         if ($employee_id !== null && $employee_id !== $sessionEmployeeId) {
             Session::flush();
+
             request()->session()->invalidate();
             request()->session()->regenerateToken();
 
             return redirect()->route('all-user-login')
-                ->with('error', 'Unauthorized access. Please log in again.');
+                ->with('error', 'Unauthorized access.');
         }
 
         $employee_id = $sessionEmployeeId;
-
-        $employee = SuperAddUser::where('employee_id', $employee_id)->firstOrFail();
-
-        return view("evaluationForm.evaluationForm", [
-            'employee_id' => $employee->employee_id,
-            'employee_name' => $employee->fname . ' ' . $employee->lname,
-            'designation' => $employee->designation,
-            'salary_grade' => $employee->salary_grade,
-            'evaluation_purpose' => $employee->evaluation_purpose,
-            'manager_name' => $employee->manager_name,
-            'division' => $employee->division,
-            'dob' => $employee->dob,
-            'financial_year' => $employee->financial_year,
-            'employee_status' => $employee->employee_status,
-        ]);
     }
 
+    // HR/Admin/Super User
+    if (in_array($userType, ['hr', 'admin', 'Super User'])) {
+        $employee_id = $employee_id ?? $sessionEmployeeId;
+    }
+
+    $employee = SuperAddUser::where('employee_id', $employee_id)->firstOrFail();
+
+    return view('evaluationForm.evaluationForm', [
+        'employee_id'        => $employee->employee_id,
+        'employee_name'      => $employee->fname.' '.$employee->lname,
+        'designation'        => $employee->designation,
+        'salary_grade'       => $employee->salary_grade,
+        'evaluation_purpose' => $employee->evaluation_purpose,
+        'manager_name'       => $employee->manager_name,
+        'division'           => $employee->division,
+        'dob'                => $employee->dob,
+        'financial_year'     => $employee->financial_year,
+        'employee_status' => $employee->employee_status,
+    ]);
+}
 
     // Send OTP to user email
     public function sendOtp(Request $request)
@@ -118,13 +132,8 @@ class HomeController extends Controller
         ], 400);
     }
 
-<<<<<<< HEAD
-   
-=======
-
-
->>>>>>> f271335 (Before setup barir r kora kaj)
-    public function submitEvaluation(Request $request)
+  
+     public function submitEvaluation(Request $request)
     {
         $employeeId = $request->input('emp_id');
         $employee = SuperAddUser::where('employee_id', $employeeId)->first();
@@ -174,7 +183,7 @@ class HomeController extends Controller
         $joiningDate = Carbon::parse($employee->dob);
 
         // must complete 1 year
-        if (now()->lt($joiningDate->copy()->addYear())) {
+        if (now()->lt($joiningDate->copy()->addYear()->subWeek())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Evaluation cannot be submitted before completing 1 year from joining date.'
@@ -189,7 +198,7 @@ class HomeController extends Controller
         if ($lastEvaluation) {
             $lastEvalDate = Carbon::parse($lastEvaluation->created_at);
 
-            if (now()->lt($lastEvalDate->copy()->addYear()->subWeek())) {
+            if (now()->lt($lastEvalDate->copy()->addYear())) {
                 return response()->json([
                     'success' => false,
                     'message' => 'You can submit next evaluation only after 1 year from last submission.'
@@ -203,7 +212,7 @@ class HomeController extends Controller
 
         $request->validate([
             'evaluator_signatur' => 'required|mimes:jpg,jpeg,png|max:2048',
-            'director_signatur' => 'nullable|mimes:jpg,jpeg,png|max:2048',
+            'director_signatur' => 'nullable|mimes:jpg,png,pdf|max:2048',
             'financial_year' => [
                 'required',
                 Rule::unique('evaluation_tables', 'financial_year')->where(function ($query) use ($request) {
@@ -330,6 +339,8 @@ class HomeController extends Controller
         }
     }
 
+
+
     public function checkDuplicateSubmission(Request $request)
     {
         try {
@@ -356,6 +367,7 @@ class HomeController extends Controller
             return response()->json(['exists' => false, 'message' => 'Server error.'], 500);
         }
     }
+
 
     public function submitEvaluationDirector(Request $request, $emp_id)
     {

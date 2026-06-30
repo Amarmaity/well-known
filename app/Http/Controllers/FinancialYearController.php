@@ -6,11 +6,15 @@ use App\Models\ApprisalTable;
 use App\Models\FinancialData;
 use App\Models\SuperAddUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
 
 class FinancialYearController extends Controller
 {
 
+   
     public function storeFinancialData(Request $request)
     {
         $employeeData = $request->input('employees');
@@ -134,14 +138,6 @@ class FinancialYearController extends Controller
 
 
 
-
-
-
-
-
-
-
-
     public function searchEmployee(Request $request)
     {
         $query = $request->input('query');
@@ -173,10 +169,11 @@ class FinancialYearController extends Controller
         return view('admin.setting', compact('allowPercentage'));
     }
 
+    
 
     public function setApprisalPercentage(Request $request)
     {
-        //Log::info('HIT setApprisalPercentage', $request->all());
+        Log::info('HIT setApprisalPercentage', $request->all());
         // Step 1: Validate input
         $request->validate([
             'financial_year' => 'required|string',
@@ -219,6 +216,7 @@ class FinancialYearController extends Controller
                 'financial_year' => $financialYear,
                 'company_percentage' => $companyPercentage,
             ]);
+        
         // Step 7
         SuperAddUser::where('employee_status', 'Employee')
             ->whereNull('company_percentage')
@@ -227,6 +225,7 @@ class FinancialYearController extends Controller
                 'financial_year' => $financialYear,
                 'company_percentage' => $companyPercentage,
             ]);
+
 
         // Step 8: Insert record into ApprisalTable
         ApprisalTable::create([
@@ -246,42 +245,44 @@ class FinancialYearController extends Controller
     }
 
 
+   
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'company_percentage' => 'required|numeric|min:0|max:100',
+{
+    $request->validate([
+        'company_percentage' => 'required|numeric|min:0|max:100',
+    ]);
+
+    // Step 1: Find the ApprisalTable record
+    $record = ApprisalTable::findOrFail($id);
+    $financialYear = $record->financial_year;
+
+    // Step 2: Check if FinancialData already has entries for this financial year
+    $financialDataExists = FinancialData::where('financial_year', $financialYear)->exists();
+
+    if ($financialDataExists) {
+        return response()->json([
+            'error' => 'FinancialData already exists for this year. Cannot update company percentage.',
+        ], 409);
+    }
+
+    // Step 3: Update ApprisalTable company_percentage
+    $record->company_percentage = $request->company_percentage;
+    $record->save();
+
+    // Step 4: Get employee IDs who have already completed their appraisal
+    $empIdsWithFinancialData = FinancialData::where('financial_year', $financialYear)
+        ->pluck('emp_id')
+        ->toArray();
+
+    // Step 5: Update only eligible SuperAddUser entries
+    SuperAddUser::where('employee_status', 'Employee')
+        ->where('financial_year', $financialYear)
+        ->whereNotIn('employee_id', $empIdsWithFinancialData)
+        ->update([
+            'company_percentage' => $request->company_percentage
         ]);
 
-        // Step 1: Find the ApprisalTable record
-        $record = ApprisalTable::findOrFail($id);
-        $financialYear = $record->financial_year;
+    return response()->json(['status' => 'success']);
+}
 
-        // Step 2: Check if FinancialData already has entries for this financial year
-        $financialDataExists = FinancialData::where('financial_year', $financialYear)->exists();
-
-        if ($financialDataExists) {
-            return response()->json([
-                'error' => 'FinancialData already exists for this year. Cannot update company percentage.',
-            ], 409);
-        }
-
-        // Step 3: Update ApprisalTable company_percentage
-        $record->company_percentage = $request->company_percentage;
-        $record->save();
-
-        // Step 4: Get employee IDs who have already completed their appraisal
-        $empIdsWithFinancialData = FinancialData::where('financial_year', $financialYear)
-            ->pluck('emp_id')
-            ->toArray();
-
-        // Step 5: Update only eligible SuperAddUser entries
-        SuperAddUser::where('employee_status', 'Employee')
-            ->where('financial_year', $financialYear)
-            ->whereNotIn('employee_id', $empIdsWithFinancialData)
-            ->update([
-                'company_percentage' => $request->company_percentage
-            ]);
-
-        return response()->json(['status' => 'success']);
-    }
 }

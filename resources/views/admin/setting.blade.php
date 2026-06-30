@@ -21,9 +21,7 @@
             margin-top: 15px;
         }
 
-        input,
-        select,
-        button {
+        input, select, button {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -50,8 +48,7 @@
         <form id="appraisalForm" class="forms-block">
             @csrf
             <label for="companyPercentage">Company % for Appraisal:</label>
-            <input type="number" id="companyPercentage" name="company_percentage" placeholder="Enter percentage" min="0"
-                max="100" step="0.01" required>
+            <input type="number" id="companyPercentage" name="company_percentage" placeholder="Enter percentage" min="0" max="100" step="0.01" required>
 
             <label for="financialYear">Financial Year:</label>
             @php
@@ -138,8 +135,9 @@
                             <td>{{ $user->created_at->format('d M Y') }}</td>
                             <td>
                                 <a href="javascript:void(0);" class="edit-user btn btn-sm btn-outline-primary edit-icon"
-                                    data-id="{{ $user->id }}" data-financial-year="{{ $user->financial_year }}"
-                                    data-percentage="{{ $user->company_percentage }}">
+                                   data-id="{{ $user->id }}"
+                                   data-financial-year="{{ $user->financial_year }}"
+                                   data-percentage="{{ $user->company_percentage }}">
                                     {{-- <span class="icon"><img src="{{'images/modalicon.webp'}}" alt="Edit Icon" width="16" height="16"></span> --}}
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -172,8 +170,7 @@
 
                         <div class="mb-3">
                             <label for="edit_company_percentage">Company Percentage</label>
-                            <input type="number" id="edit_company_percentage" class="form-control" required min="0"
-                                max="100" step="0.01">
+                            <input type="number" id="edit_company_percentage" class="form-control" required min="0" max="100" step="0.01">
                         </div>
                     </form>
                 </div>
@@ -187,7 +184,7 @@
 
     <!-- Bootstrap CSS & JS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
@@ -214,8 +211,7 @@
         // ✅ Run on page load (IMPORTANT)
         document.addEventListener("DOMContentLoaded", updateFYText);
 
-
-        document.getElementById('appraisalForm').addEventListener('submit', function(e) {
+        document.getElementById('appraisalForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const percentage = parseFloat(document.getElementById("companyPercentage").value);
             if (percentage < 0 || percentage > 100) {
@@ -231,31 +227,31 @@
             const formData = new FormData(form);
 
             fetch("{{ route('submit-apprisal-all') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                    },
-                    body: formData,
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === true) {
-                        const modal = new bootstrap.Modal(document.getElementById('successModal'));
-                        modal.show();
-                        setTimeout(() => location.reload(), 2000);
-                    } else {
-                        const modal = new bootstrap.Modal(document.getElementById('errorModal'));
-                        modal.show();
-                        submitButton.disabled = false;
-                        submitButton.textContent = "Apply to All";
-                    }
-                })
-                .catch(() => {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                },
+                body: formData,
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === true) {
+                    const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                    modal.show();
+                    setTimeout(() => location.reload(), 2000);
+                } else {
                     const modal = new bootstrap.Modal(document.getElementById('errorModal'));
                     modal.show();
                     submitButton.disabled = false;
                     submitButton.textContent = "Apply to All";
-                });
+                }
+            })
+            .catch(() => {
+                const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+                modal.show();
+                submitButton.disabled = false;
+                submitButton.textContent = "Apply to All";
+            });
         });
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -264,10 +260,8 @@
             document.querySelectorAll('.edit-user').forEach(button => {
                 button.addEventListener('click', () => {
                     document.getElementById('edit_id').value = button.dataset.id;
-                    document.getElementById('edit_financial_year').value = button.dataset
-                        .financialYear;
-                    document.getElementById('edit_company_percentage').value = button.dataset
-                        .percentage;
+                    document.getElementById('edit_financial_year').value = button.dataset.financialYear;
+                    document.getElementById('edit_company_percentage').value = button.dataset.percentage;
                     editModal.show();
                 });
             });
@@ -277,27 +271,25 @@
                 const percentage = document.getElementById('edit_company_percentage').value;
 
                 fetch(`/update-financial-year/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            company_percentage: percentage
-                        })
-                    })
-                    .then(res => {
-                        if (res.ok) {
-                            alert('Updated successfully.');
-                            editModal.hide();
-                            location.reload();
-                        } else {
-                            throw new Error("Update failed");
-                        }
-                    })
-                    .catch(() => {
-                        alert('Already Started with the Appraisal for this Financial Year.');
-                    });
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ company_percentage: percentage })
+                })
+                .then(res => {
+                    if (res.ok) {
+                        alert('Updated successfully.');
+                        editModal.hide();
+                        location.reload();
+                    } else {
+                        throw new Error("Update failed");
+                    }
+                })
+                .catch(() => {
+                    alert('Already Started with the Appraisal for this Financial Year.');
+                });
             });
         });
     </script>

@@ -12,6 +12,14 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+
     public function handle(Request $request, Closure $next)
     {
         // Log entire session data for debugging
@@ -33,46 +41,12 @@ class CheckRole
         $roleRoutes = [
             'admin' => ['admin-dashboard', 'admin-review', 'input-evaluation', 'admin-review-section', 'admin-review-list', 'user-admin-details', 'user-report-view-evaluation'],
             'hr' => ['hr-dashboard', 'hr-review', 'input-evaluation', 'hr-review-list', 'user-hr-details', 'user-report-view-evaluation'],
-            'manager' => ['manager-dashboard', 'manager-review', 'input-evaluation', 'manager-review-list', 'user-manager-details', 'manager-review-list', 'user-manager-details', 'user-report-view-evaluation'],
-            'users' => ['users-dashboard', 'input-evaluation', 'log-out-users', 'get-review-reports'],
-            'client' => ['client-dashboard', 'client-review', 'client-dashboard', 'user-client-details', 'user-report-view-evaluation'],
-            'Super User' => [
-                'super-user-dashboard',
-                'super-user-review',
-                'add-user',
-                'userlist',
-                'super.search',
-                'appraisal-view',
-                'financial.view',
-                'logout-users',
-                'user-search',
-                'super-admin-search',
-                'super-user-search-bar',
-                'active-user',
-                'financial-view',
-                'super-admin-view',
-                'financial-view-tables',
-                'employee.details',
-                'evaluation.details',
-                'hr.review.details',
-                'manager.review.details',
-                'admin.review.details',
-                'setting-view',
-                'create-client',
-                'client-list',
-                'get-probation',
-                'financial-view-tables',
-                'get-pending-apprasil',
-                'setting-view',
-                'edit-user',
-                'access-management',
-                'designation-index',
-                'designation-store',
-                'designation-update',
-                'designation-destroy',
-                'designation-edit',
-                'designation-status',
-            ]
+            'manager' => ['manager-dashboard', 'manager-review', 'input-evaluation', 'manager-review-list', 'user-manager-details','manager-review-list', 'user-manager-details', 'user-report-view-evaluation'],
+            'users' => ['users-dashboard', 'input-evaluation', 'log-out-users','get-review-reports'],
+            'client' => ['client-dashboard', 'client-review', 'client-dashboard','user-client-details', 'user-report-view-evaluation'],
+            'Super User' => ['super-user-dashboard', 'super-user-review', 'add-user', 'userlist', 'super.search',
+            'appraisal-view', 'financial.view', 'logout-users', 'user-search', 'super-admin-search', 'super-user-search-bar', 'active-user', 'financial-view', 'super-admin-view',
+            'financial-view-tables', 'employee.details', 'evaluation.details', 'hr.review.details','manager.review.details','admin.review.details','setting-view','create-client', 'client-list','get-probation','financial-view-tables', 'get-pending-apprasil','setting-view', 'edit-user']
         ];
 
         // Get the current route name

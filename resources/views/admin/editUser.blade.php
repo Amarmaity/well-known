@@ -2,8 +2,6 @@
 
 @section('title', 'Update User Details')
 @section('breadcrumb' ,'Update User Details')
-{{-- Update {{ $user->fname }} {{ $user->lname }} {{ $user->employee_id }} --}}
-{{-- @endsection --}}
 
 @section('page-title', 'Update User')
 @section('body-class', 'special-page')

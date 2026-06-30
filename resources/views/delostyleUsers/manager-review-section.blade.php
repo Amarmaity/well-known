@@ -35,10 +35,19 @@
     </head>
 
     <body>
-        <form action="{{ route('manager.review.submit') }}" method="post" id="ManagerReviewSubmit">
+        <form action="{{route('manager.review.submit')}}" method="post" id="ManagerReviewSubmit">
             @csrf
             <div class="client">
                 <h1 class="client__heading">MANAGER REVIEW</h1>
+
+                <!--<select id="financialYear" class="form-select client__select" name="financial_year" required>-->
+                <!--    <option value="" selected>Financial Year</option>-->
+                <!--    <option value="2025-2026">2025-2026</option>-->
+                <!--    <option value="2026-2027">2026-2027</option>-->
+                <!--    <option value="2027-2028">2027-2028</option>-->
+                <!--    <option value="2028-2029">2028-2029</option>-->
+                <!--    <option value="2029-2030">2029-2030</option>-->
+                <!--</select>-->
                 @php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -86,7 +95,7 @@
             <div class="container table-container" id="employeeDetails" style="display:none;">
                 <div class="table-wrapper">
                     <!-- <div id="selectLabel" class="hidden-label" style="margin-bottom: 10px; font-weight: bold; display: none;">
-                        </div> -->
+                    </div> -->
                     <table class="table  table-bordered table-hover client-table">
                         <thead>
                             <tr>
@@ -130,8 +139,8 @@
                             <div class="review-block">
                                 <label for="comments_employee_work_quality" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_rate_employee_quality" id="comments" class="form-control" rows="1" cols="50"
-                                    maxlength="255"
+                                <textarea name="comments_rate_employee_quality" id="comments" class="form-control" rows="1"
+                                    cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
                             <label for="organizational_goals" class="second-label">2. Does the employee align their work
@@ -152,8 +161,8 @@
                             <div class="review-block">
                                 <label for="comments_organizational_goals" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_organizational_goals" id="comments" class="form-control" rows="1" cols="50"
-                                    maxlength="255"
+                                <textarea name="comments_organizational_goals" id="comments" class="form-control" rows="1"
+                                    cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -175,8 +184,8 @@
                             <div class="review-block">
                                 <label for="comments_collaborate_colleagues" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_collaborate_colleagues" id="comments" class="form-control" rows="1" cols="50"
-                                    maxlength="255"
+                                <textarea name="comments_collaborate_colleagues" id="comments" class="form-control" rows="1"
+                                    cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -222,14 +231,13 @@
                                 <label for="comments_leadership_responsibilities" class="third-label">Tell us more about
                                     your
                                     experience:</label>
-                                <textarea name="comments_leadership_responsibilities" id="comments" class="form-control" rows="1"
-                                    cols="50" maxlength="255"
+                                <textarea name="comments_leadership_responsibilities" id="comments" class="form-control"
+                                    rows="1" cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
                             <div>
-                                <label for="thinking_contribution" class="second-label">6. How would you rate the
-                                    employee’s
+                                <label for="thinking_contribution" class="second-label">6. How would you rate the employee’s
                                     innovative
                                     thinking
                                     and contribution to team success?:</label>
@@ -246,8 +254,8 @@
                             <div class="review-block">
                                 <label for="comments_thinking_contribution" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_thinking_contribution" id="comments" class="form-control" rows="1" cols="50"
-                                    maxlength="255"
+                                <textarea name="comments_thinking_contribution" id="comments" class="form-control" rows="1"
+                                    cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -270,8 +278,8 @@
                             <div class="review-block">
                                 <label for="comments_informed_progress" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_comments_informed_progress" id="comments" class="form-control" rows="1"
-                                    cols="50" maxlength="255"
+                                <textarea name="comments_comments_informed_progress" id="comments" class="form-control"
+                                    rows="1" cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
                         </div>
@@ -296,7 +304,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             let timeout = null;
 
             function searchUser() {
@@ -314,20 +322,20 @@
 
                 clearTimeout(timeout);
 
-                timeout = setTimeout(function() {
+                timeout = setTimeout(function () {
                     $.ajax({
-                        url: '{{ route('user-search') }}',
+                        url: '{{ route("user-search") }}',
                         type: 'GET',
                         data: {
                             keyword: keyword
                         },
-                        success: function(response) {
+                        success: function (response) {
                             $('#employeeTableBody').empty();
 
                             if (response.success && response.users.length > 0) {
                                 $('#selectLabel').show(); // Show label when results found
 
-                                response.users.forEach(function(user) {
+                                response.users.forEach(function (user) {
                                     $('#employeeTableBody').append(`
                                         <tr class="selectable-row" data-emp-id="${user.employee_id}">
                                             <td>${user.employee_id}</td>
@@ -344,7 +352,7 @@
                                 );
                             }
                         },
-                        error: function() {
+                        error: function () {
                             alert("An error occurred. Please try again.");
                         }
                     });
@@ -355,7 +363,7 @@
             $('#employee_search').on('keyup', searchUser);
 
             // Handle row click
-            $(document).on('click', '.selectable-row', function() {
+            $(document).on('click', '.selectable-row', function () {
                 var empId = $(this).data('emp-id');
                 $('#emp_id_input').val(empId);
 
@@ -366,7 +374,7 @@
             });
         });
 
-        document.getElementById("ManagerReviewSubmit").addEventListener("submit", function(event) {
+        document.getElementById("ManagerReviewSubmit").addEventListener("submit", function (event) {
             event.preventDefault();
 
             let form = this;
@@ -383,10 +391,9 @@
                 processData: false,
                 contentType: false,
                 headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').getAttribute(
-                        "content")
+                    "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').getAttribute("content")
                 },
-                success: function(response) {
+                success: function (response) {
                     console.log("Success:", response);
                     alert("✅ " + (response.message || "Review submitted successfully!"));
 
@@ -409,13 +416,13 @@
                     });
                     location.reload();
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Error:", xhr.responseText);
                     alert("❌ An error occurred while submitting the review.");
                 }
             });
         });
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             function managerTotalReview() {
                 let totalRating = 0;
 

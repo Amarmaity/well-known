@@ -12,6 +12,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Side by Side Form</title>
+
+
         <!-- CSRF Token for AJAX -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
@@ -25,8 +27,13 @@
             height: 30px !important;
         }
     </style>
+
+
     <body>
+
         <!-- Centered Headings -->
+
+
         <form action="{{ route('insert-data-evaluation') }}" method="post" id="evaluationSubmit"
             class="evaluation__form form-block form-block--updated" enctype="multipart/form-data">
             @csrf

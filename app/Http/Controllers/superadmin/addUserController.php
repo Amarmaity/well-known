@@ -9,18 +9,19 @@ use App\Models\SuperAddUser;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
-use App\Models\Designation;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EvaluationCredentialMail;
+
+
 
 class addUserController extends Controller
-{
 
+{
+    //
 
     public function indexAddUser()
     {
-        $designations = Designation::where('status', 1)
-            ->orderBy('designation_name')
-            ->paginate(10);
-        return view("admin.superAddUserDashBoard", compact('designations'));
+        return view("admin/superAddUserDashBoard");
     }
 
 
@@ -73,7 +74,7 @@ class addUserController extends Controller
                     'mobno.regex' => 'Please enter a valid 10-digit Indian mobile number.',
                 ],
                 [
-                    'mobno' => 'Mobile Number',
+                    'mobno' => 'Mobile No',
                     'fname' => 'First Name',
                     'lname' => 'Last Name',
                     'dob' => 'Date of Birth',
@@ -191,7 +192,8 @@ class addUserController extends Controller
                 'evaluation_purpose' => $isClient ? null : $request->input('evaluation_purpose'),
                 'division' => $request->input('division'),
                 'manager_id' => $managerId ?: null,
-                'manager_name' => $managerNameFinal,
+                // 'manager_name' => $request->input('manager_name'),
+                 'manager_name' => $managerNameFinal,
                 'designation' => $request->input('designation'),
                 'user_type' => $request->input('user_type'),
                 'user_roles' => json_encode($request->input('user_roles')),
@@ -207,9 +209,9 @@ class addUserController extends Controller
                 'status' => 1
             ]);
 
-            // if ($user) {
-            //     Mail::to($user->email)->send(new EvaluationCredentialMail($user, $request->input('password')));
-            // }
+            if ($user) {
+                Mail::to($user->email)->send(new EvaluationCredentialMail($user, $request->input('password')));
+            }
 
             return response()->json([
                 'status' => 'success',

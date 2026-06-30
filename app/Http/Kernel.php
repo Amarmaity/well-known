@@ -70,6 +70,5 @@ class Kernel extends HttpKernel
         'CheckRole' => \App\Http\Middleware\CheckRole::class,
         'DissableBladeBtn' => \App\Http\Middleware\DissableBackBtn::class,
         'employee.access' => \App\Http\Middleware\CheckEmployeeAccess::class,
-
     ];
 }
