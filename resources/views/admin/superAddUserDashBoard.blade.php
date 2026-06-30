@@ -78,13 +78,9 @@
 
                         <div class="form-section">
                             <h5 class="heading-three">Work Information</h5>
-
-
                             <div class="row g-3">
-
-
                                 <div class="col-md-6">
-                                    <label for="designation" class="forms-label">Designation</label>
+                                    {{-- <label for="designation" class="forms-label">Designation</label>
                                     <select class="form-control" id="designation_dropdown" name="designation" required>
                                         <option value="" selected disabled>Select Designation</option>
                                         <option value=" Hr">Hr</option>
@@ -95,8 +91,14 @@
                                         <option value="Software Developer">Software Developer</option>
                                         <option value="Manager">Manager</option>
                                         <option value="Business Development">Business Development(Sales)</option>
+                                    </select> --}}
+                                    <label for="designation_dropdown" class="form-label">Designation</label>
+                                    <select class="form-control" name="designation" required>
+                                        <option value="" selected disabled>Select Designation</option>
+                                        @foreach ($designations as $designation)
+                                            <option value="{{ $designation->id }}">{{ $designation->designation_name }}</option>
+                                        @endforeach
                                     </select>
-
 
 
                                     {{-- Division --}}
@@ -107,7 +109,6 @@
                                         <option value="Salt Lake 3B">Salt Lake 3B</option>
                                         <option value="Salt Lake 17B">Salt Lake 17B</option>
                                         <option value="Salt Lake 504">Salt Lake 504</option>
-
                                     </select>
 
 
@@ -311,7 +312,6 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 
 
     <script>
@@ -608,4 +608,5 @@
             });
         });
     </script>
+
 @endsection

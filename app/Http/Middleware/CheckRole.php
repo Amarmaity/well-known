@@ -64,7 +64,14 @@ class CheckRole
                 'financial-view-tables',
                 'get-pending-apprasil',
                 'setting-view',
-                'edit-user'
+                'edit-user',
+                'access-management',
+                'designation-index',
+                'designation-store',
+                'designation-update',
+                'designation-destroy',
+                'designation-edit',
+                'designation-status',
             ]
         ];
 

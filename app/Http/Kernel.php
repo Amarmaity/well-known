@@ -69,5 +69,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'CheckRole' => \App\Http\Middleware\CheckRole::class,
         'DissableBladeBtn' => \App\Http\Middleware\DissableBackBtn::class,
+        'employee.access' => \App\Http\Middleware\CheckEmployeeAccess::class,
+
     ];
 }

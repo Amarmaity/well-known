@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\accessmanagement\AccessManagementController;
+use App\Http\Controllers\accessmanagement\DesignationController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Middleware\CheckRole;
@@ -10,6 +12,7 @@ use App\Http\Controllers\superadmin\addUserController;
 use App\Http\Controllers\superadmin\SuperAdminController;
 use App\Http\Controllers\userController\allUserController;
 use App\Http\Middleware\DissableBackBtn;
+use App\Http\Middleware\CheckEmployeeAccess;
 use App\Models\SuperAddUser;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
@@ -35,19 +38,19 @@ Route::post('/insert-evaluation', [HomeController::class, 'submitEvaluation'])->
 // //Forget Password
 // Step 1: Show email form
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('forgot-password');
- 
+
 // Step 2: Send OTP
 Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp'])->name('forgot-password.sendOtp');
- 
+
 // Step 3: Show verify OTP form
 Route::get('/forgot-password/verify-otp', [ForgotPasswordController::class, 'showVerifyOtpForm'])->name('forgot-password.verifyForm');
- 
+
 // Step 4: Verify OTP
 Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('forgot-password.verifyOtp');
- 
+
 // Step 5: Show reset password form
 Route::get('/forgot-password/reset-password', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('forgot-password.resetForm');
- 
+
 // Step 6: Reset password
 Route::post('/forgot-password/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('forgot-password.resetPassword');
 
@@ -80,31 +83,45 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
 
         Route::get('/add-user', [addUserController::class, 'indexAddUser'])->name('add-user');
         Route::get('/create-client', [SuperAdminController::class, 'viewAddClient'])->name('create-client');
-        Route::get('/client-list',[SuperAdminController::class, 'viewClints'])->name('client-list');
+        Route::get('/client-list', [SuperAdminController::class, 'viewClints'])->name('client-list');
         Route::get('/super-admin-search', [SuperAdminController::class, 'searchUser'])->name('super.search');
         Route::get('/super-admin-search-bar', [SuperAdminController::class, 'superAdminSearchUser'])->name('super-user-search-bar');
         Route::get('/user-list', [SuperAdminController::class, 'userListView'])->name('userlist');
         Route::get('/get-active-users', [SuperAdminController::class, 'getActiveUsers'])->name('active-user');
         Route::get('/appraisal', [SuperAdminController::class, 'appraisalView'])->name('appraisal-view');
         Route::get('/financial', [SuperAdminController::class, 'financialView'])->name('financial.view');
-        Route::get('/probation-period',[SuperAdminController::class,'getProbationPeriod'])->name('get-probation');
-        Route::get('/financial-view-table',[FinancialYearController::class,'financialTableView'])->name('financial-view-tables');
-        Route::get('/appraisal-pending',[SuperAdminController::class,'getPendingAppraisalView'])->name('get-pending-apprasil');
-        Route::get('/setting',[FinancialYearController::class,'getSettingView'])->name('setting-view');
+        Route::get('/probation-period', [SuperAdminController::class, 'getProbationPeriod'])->name('get-probation');
+        Route::get('/financial-view-table', [FinancialYearController::class, 'financialTableView'])->name('financial-view-tables');
+        Route::get('/appraisal-pending', [SuperAdminController::class, 'getPendingAppraisalView'])->name('get-pending-apprasil');
+        Route::get('/setting', [FinancialYearController::class, 'getSettingView'])->name('setting-view');
         Route::get('/view-super-admin-dashboard', [SuperAdminController::class, 'indexSuperAdminDashBoard'])->name('super-admin-view');
 
-        Route::get('/edit-user/{id}',[SuperAdminController::class, 'editUserView'])->name('edit-user');
-        Route::get('/employee/details/{emp_id}', [SuperAdminController::class, 'viewDetailsAll'])->name('employee.details');
-        Route::get('/user/details/hr/{employee_id}',[allUserController::class,'showDetailsHr'])->name('user-hr-details');
-        Route::get('/evaluation-view/{employee_id}',[allUserController::class,'showEvaluationDetails'])->name('user-report-view-evaluation');
-        Route::get('/input-evaluation/{employee_id?}', [HomeController::class, 'index'])->name('input-evaluation');
-        Route::get('/review-reports/{emp_id}', [allUserController::class, 'reviewUserReport'])->name('get-review-reports');
-        Route::get('/user/details/admin/{employee_id}', [allUserController::class, 'showDetailsAdmin'])->name('user-admin-details');
-        Route::get('/manager-review-list',[allUserController::class,'getManagerReviewList'])->name('manager-review-list');
-        Route::get('/user/details/manager/{employee_id}',[allUserController::class,'showDetailsManager'])->name('user-manager-details');
-        Route::get('/user/details/client/{employee_id}',[allUserController::class,'showDetailsClient'])->name('user-client-details');
+        // Access Management
+        Route::get('/access-management', [AccessManagementController::class, 'index'])->name('access-management');
 
-       // Route::post('/loged-out', [addUserController::class, 'logedOut'])->name('logged-Out');
+
+        // Designation
+        Route::get('/designation', [DesignationController::class, 'index'])->name('designation-index');
+        Route::post('/designation/store', [DesignationController::class, 'store'])->name('designation-store');
+        Route::get('/designation/edit/{id}', [DesignationController::class, 'edit'])->name('designation-edit');
+        Route::post('/designation/update/{id}', [DesignationController::class, 'update'])->name('designation-update');
+        Route::post('/designation/{id}/status', [DesignationController::class, 'changeStatus'])->name('designation-status');
+        Route::delete('/designation/delete/{id}', [DesignationController::class, 'destroy'])->name('designation-destroy');
+
+
+
+        Route::get('/edit-user/{id}', [SuperAdminController::class, 'editUserView'])->name('edit-user');
+        Route::get('/employee/details/{emp_id}', [SuperAdminController::class, 'viewDetailsAll'])->name('employee.details');
+        Route::get('/user/details/hr/{employee_id}', [allUserController::class, 'showDetailsHr'])->name('user-hr-details')->middleware(CheckEmployeeAccess::class);
+        Route::get('/evaluation-view/{employee_id}', [allUserController::class, 'showEvaluationDetails'])->name('user-report-view-evaluation')->middleware(CheckEmployeeAccess::class);
+        Route::get('/input-evaluation/{employee_id?}', [HomeController::class, 'index'])->name('input-evaluation')->middleware(CheckEmployeeAccess::class);
+        Route::get('/review-reports/{emp_id}', [allUserController::class, 'reviewUserReport'])->name('get-review-reports')->middleware(CheckEmployeeAccess::class);
+        Route::get('/user/details/admin/{employee_id}', [allUserController::class, 'showDetailsAdmin'])->name('user-admin-details')->middleware(CheckEmployeeAccess::class);
+        Route::get('/manager-review-list', [allUserController::class, 'getManagerReviewList'])->name('manager-review-list');
+        Route::get('/user/details/manager/{employee_id}', [allUserController::class, 'showDetailsManager'])->name('user-manager-details')->middleware(CheckEmployeeAccess::class);
+        Route::get('/user/details/client/{employee_id}', [allUserController::class, 'showDetailsClient'])->name('user-client-details')->middleware(CheckEmployeeAccess::class);
+
+        // Route::post('/loged-out', [addUserController::class, 'logedOut'])->name('logged-Out');
     });
 });
 
@@ -133,7 +150,7 @@ Route::post('/submit-manager-review', [allUserController::class, 'managerReviewS
 Route::post('/submit-client-review', [allUserController::class, 'clientReviewStore'])->name('client.review.submit');
 
 //Client
-Route::get('/client-search-user',[allUserController::class,'clientSearch'])->name('client-search');
+Route::get('/client-search-user', [allUserController::class, 'clientSearch'])->name('client-search');
 
 
 
@@ -155,32 +172,32 @@ Route::get('/super/user/search', [FinancialYearController::class, 'searchEmploye
 
 
 
-Route::get('/hr/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminHrReview'])->name('hr.review.details');
-Route::get('/admin/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminAdminReview'])->name('admin.review.details');
-Route::get('/manager/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminManagerReview'])->name('manager.review.details');
-Route::get('/employee/evaluation/{emp_id}', [SuperAdminController::class, 'getSuperAdminEvaluationView'])->name('evaluation.details');
-Route::get('/client/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminClientReview'])->name('client.review.details');
+Route::get('/hr/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminHrReview'])->name('hr.review.details')->middleware(CheckEmployeeAccess::class);
+Route::get('/admin/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminAdminReview'])->name('admin.review.details')->middleware(CheckEmployeeAccess::class);
+Route::get('/manager/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminManagerReview'])->name('manager.review.details')->middleware(CheckEmployeeAccess::class);
+Route::get('/employee/evaluation/{emp_id}', [SuperAdminController::class, 'getSuperAdminEvaluationView'])->name('evaluation.details')->middleware(CheckEmployeeAccess::class);
+Route::get('/client/review/details/{emp_id}', [SuperAdminController::class, 'getSuperAdminClientReview'])->name('client.review.details')->middleware(CheckEmployeeAccess::class);
 
 
 
 
 
-Route::get('evaluation/details/{emp_id}', [allUserController::class, 'evaluationDetails'])->name('evaluation.details');
-Route::get('manager/report/{emp_id}', [allUserController::class, 'managerReport'])->name('manager.report');
-Route::get('admin/report/{emp_id}', [allUserController::class, 'adminReport'])->name('admin.report');
-Route::get('hr/report/{emp_id}', [allUserController::class, 'hrReport'])->name('hr.report');
-Route::get('client/report/{emp_id}', [allUserController::class, 'clientReport'])->name('client.report');
-Route::get('report/{reportType}/{emp_id}', [allUserController::class, 'loadReport'])->name('report.load');
+Route::get('evaluation/details/{emp_id}', [allUserController::class, 'evaluationDetails'])->name('evaluation.details')->middleware(CheckEmployeeAccess::class);
+Route::get('manager/report/{emp_id}', [allUserController::class, 'managerReport'])->name('manager.report')->middleware(CheckEmployeeAccess::class);
+Route::get('admin/report/{emp_id}', [allUserController::class, 'adminReport'])->name('admin.report')->middleware(CheckEmployeeAccess::class);
+Route::get('hr/report/{emp_id}', [allUserController::class, 'hrReport'])->name('hr.report')->middleware(CheckEmployeeAccess::class);
+Route::get('client/report/{emp_id}', [allUserController::class, 'clientReport'])->name('client.report')->middleware(CheckEmployeeAccess::class);
+Route::get('report/{reportType}/{emp_id}', [allUserController::class, 'loadReport'])->name('report.load')->middleware(CheckEmployeeAccess::class);
 
 
-Route::get('/hr-review-list',[allUserController::class,'getHrReviewsList'])->name('hr-review-list');
-Route::get('/admin-review-list',[allUserController::class,'getAdminReviewList'])->name('admin-review-list');
-Route::get('/client-review-list',[allUserController::class,'getClientReviewList'])->name('client-review-list');
+Route::get('/hr-review-list', [allUserController::class, 'getHrReviewsList'])->name('hr-review-list');
+Route::get('/admin-review-list', [allUserController::class, 'getAdminReviewList'])->name('admin-review-list');
+Route::get('/client-review-list', [allUserController::class, 'getClientReviewList'])->name('client-review-list');
 //Evaluation View
-Route::post('/evaluation-report-submit/{emp_id}',[HomeController::class,'submitEvaluationDirector'])->name('director-submit-from');
+Route::post('/evaluation-report-submit/{emp_id}', [HomeController::class, 'submitEvaluationDirector'])->name('director-submit-from');
 
 
-Route::post('save-apprisal',[FinancialYearController::class,'setApprisalPercentage'])->name('submit-apprisal-all');
+Route::post('save-apprisal', [FinancialYearController::class, 'setApprisalPercentage'])->name('submit-apprisal-all');
 Route::put('/update-financial-year/{id}', [FinancialYearController::class, 'update'])->name('update-financial-year');
 
 
@@ -193,14 +210,14 @@ Route::post('/check-duplicate-evaluation', [HomeController::class, 'checkDuplica
 Route::post('/employees/filter-financial-year', [FinancialYearController::class, 'filterByFinancialYear']);
 Route::post('/financial/filter-financial-year', [FinancialYearController::class, 'filterFinancialTableByYear']);
 Route::post('/filter-by-financial-year', [SuperAdminController::class, 'filterByFinancialYear'])->name('appraisal.filter.by.year');
-Route::post('/employees/filter-financial-year-employee-review',[SuperAdminController::class,'filterByFinancialYearEmployeeReview'])->name('employees-filter-financial-year-employee-review');
+Route::post('/employees/filter-financial-year-employee-review', [SuperAdminController::class, 'filterByFinancialYearEmployeeReview'])->name('employees-filter-financial-year-employee-review');
 
 //test mail
 // Route::get('/test-email', [\App\Http\Controllers\superadmin\SuperAdminController::class, 'testEmail']);
 
 Route::get('/employee/review-scores', [allUserController::class, 'getReviewScores'])->name('employee.review-scores');
-Route::post('/employee/review-score/super-user',[SuperAdminController::class,'getReviewScoresSuperAdmin'])->name('employee.review-score-super-user');
-Route::get('/get-managers',[addUserController::class,'getManagers'])->name('get.managers');
+Route::post('/employee/review-score/super-user', [SuperAdminController::class, 'getReviewScoresSuperAdmin'])->name('employee.review-score-super-user');
+Route::get('/get-managers', [addUserController::class, 'getManagers'])->name('get.managers');
 
 //Mail Anniversaries for employee
 Route::get('/run-anniversary-email/{token}', function ($token) {
@@ -253,7 +270,7 @@ Route::get('/api/manager-names', function (Request $request) {
         ->when($query, function ($q) use ($query) {
             $q->where(function ($subQuery) use ($query) {
                 $subQuery->where('fname', 'LIKE', '%' . $query . '%')
-                         ->orWhere('lname', 'LIKE', '%' . $query . '%');
+                    ->orWhere('lname', 'LIKE', '%' . $query . '%');
             });
         })
         ->select('id', 'fname', 'lname')

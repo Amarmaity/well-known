@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\Mail\EvaluationOtpMail;
-use App\Mail\EvaluationSubmitted;
-use App\Models\AllClient;
 use App\Models\SuperAddUser;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
@@ -21,12 +19,23 @@ class HomeController extends Controller
 
     public function index($employee_id = null)
     {
+        $sessionEmployeeId = session('employee_id');
 
-        $employee_id = $employee_id ?? session('employee_id');
-
-        if (!$employee_id) {
-            abort(403, 'Employee ID not found in session.');
+        if (!$sessionEmployeeId) {
+            return redirect()->route('all-user-login')
+                ->with('error', 'Please log in to continue.');
         }
+
+        if ($employee_id !== null && $employee_id !== $sessionEmployeeId) {
+            Session::flush();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+
+            return redirect()->route('all-user-login')
+                ->with('error', 'Unauthorized access. Please log in again.');
+        }
+
+        $employee_id = $sessionEmployeeId;
 
         // $users = SuperAddUser::all();
         $employee = SuperAddUser::where('employee_id', $employee_id)->firstOrFail();

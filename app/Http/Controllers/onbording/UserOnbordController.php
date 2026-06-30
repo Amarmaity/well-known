@@ -144,6 +144,104 @@ class UserOnbordController extends Controller
         }
     }
 
+    // public function loginUserverifyOtp(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'email' => 'required|email',
+    //         'otp' => 'required|integer',
+    //     ]);
+
+    //     // Retrieve OTP info from session
+    //     $otpSession = Session::get('otp');
+    //     $otpEmail = Session::get('otp_email');
+    //     $otpSentTime = Session::get('otp_sent_time');
+
+    //     if ($otpSentTime && now()->diffInMinutes($otpSentTime) > 10) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'OTP has expired. Please request a new one.',
+    //         ]);
+    //     }
+
+    //     if ($validated['otp'] == $otpSession && $validated['email'] == $otpEmail) {
+
+    //         // Try fetching user from all tables
+    //         $user = SuperAddUser::where('email', $validated['email'])->first();
+    //         $superUser = SuperUserTable::where('email', $validated['email'])->first();
+    //         $client = AllClient::where('client_email', $validated['email'])->first();
+
+    //         if ($user) {
+    //             // For SuperAddUser
+    //             Session::put('user_email', $user->email);
+    //             Session::put('user_type', $user->user_type);
+    //             Session::put('user_id', $user->id);
+
+    //             // Define redirects based on user_type
+    //             $redirectRoute = match ($user->user_type) {
+    //                 'Super User' => route('super-admin-view'),
+    //                 'admin' => route('admin-dashboard'),
+    //                 'hr' => route('hr-dashboard'),
+    //                 'users' => route('users-dashboard'),
+    //                 'manager' => route('manager-dashboard'),
+    //                 default => route('all-user-login'),
+    //             };
+    //         } elseif ($superUser) {
+    //             // For SuperUserTable
+    //             Session::put('user_email', $superUser->email);
+    //             Session::put('user_type', $superUser->user_type);
+    //             Session::put('user_id', $superUser->id);
+
+    //             $redirectRoute = match ($superUser->user_type) {
+    //                 'Super User' => route('super-admin-view'),
+    //                 'admin' => route('admin-dashboard'),
+    //                 'hr' => route('hr-dashboard'),
+    //                 'users' => route('users-dashboard'),
+    //                 'manager' => route('manager-dashboard'),
+    //                 default => route('all-user-login'),
+    //             };
+    //         } elseif ($client) {
+    //             // For AllClient
+    //             Session::put('user_email', $client->client_email);
+    //             Session::put('user_type', $client->user_type);
+    //             Session::put('client_id', $client->id);  // Store client id
+
+    //             $redirectRoute = match ($client->user_type) {
+    //                 'client' => route('client-dashboard'),
+    //                 default => route('login'),
+    //             };
+    //         } else {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'User not found.',
+    //             ]);
+    //         }
+
+
+    //         // *** RUN YOUR COMMANDS HERE AFTER SUCCESSFUL LOGIN ***
+    //         $outPut1 = Artisan::call('apply:probation-appraisal');
+    //         $outPut2 = Artisan::call('employee:update-status');
+    //         $outPut3 = Artisan::call('email:send-anniversaries');
+
+    //         // Log::info('Command outputs:', [
+    //         //     'apply:probation-appraisal' => Artisan::output(),
+    //         //     'employee:update-status' => Artisan::output(),
+    //         //     'email:send-anniversaries' => Artisan::output(),
+    //         // ]);
+
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'OTP verified successfully!',
+    //             'redirect' => $redirectRoute
+    //         ]);
+    //     }
+
+    //     return response()->json([
+    //         'status' => 'error',
+    //         'message' => 'Invalid OTP. Please try again.',
+    //     ]);
+    // }
+
+
     public function loginUserverifyOtp(Request $request)
     {
         $validated = $request->validate([
@@ -151,7 +249,6 @@ class UserOnbordController extends Controller
             'otp' => 'required|integer',
         ]);
 
-        // Retrieve OTP info from session
         $otpSession = Session::get('otp');
         $otpEmail = Session::get('otp_email');
         $otpSentTime = Session::get('otp_sent_time');
@@ -163,84 +260,103 @@ class UserOnbordController extends Controller
             ]);
         }
 
-        if ($validated['otp'] == $otpSession && $validated['email'] == $otpEmail) {
-
-            // Try fetching user from all tables
-            $user = SuperAddUser::where('email', $validated['email'])->first();
-            $superUser = SuperUserTable::where('email', $validated['email'])->first();
-            $client = AllClient::where('client_email', $validated['email'])->first();
-
-            if ($user) {
-                // For SuperAddUser
-                Session::put('user_email', $user->email);
-                Session::put('user_type', $user->user_type);
-                Session::put('user_id', $user->id);
-
-                // Define redirects based on user_type
-                $redirectRoute = match ($user->user_type) {
-                    'Super User' => route('super-admin-view'),
-                    'admin' => route('admin-dashboard'),
-                    'hr' => route('hr-dashboard'),
-                    'users' => route('users-dashboard'),
-                    'manager' => route('manager-dashboard'),
-                    default => route('all-user-login'),
-                };
-            } elseif ($superUser) {
-                // For SuperUserTable
-                Session::put('user_email', $superUser->email);
-                Session::put('user_type', $superUser->user_type);
-                Session::put('user_id', $superUser->id);
-
-                $redirectRoute = match ($superUser->user_type) {
-                    'Super User' => route('super-admin-view'),
-                    'admin' => route('admin-dashboard'),
-                    'hr' => route('hr-dashboard'),
-                    'users' => route('users-dashboard'),
-                    'manager' => route('manager-dashboard'),
-                    default => route('all-user-login'),
-                };
-            } elseif ($client) {
-                // For AllClient
-                Session::put('user_email', $client->client_email);
-                Session::put('user_type', $client->user_type);
-                Session::put('client_id', $client->id);  // Store client id
-
-                $redirectRoute = match ($client->user_type) {
-                    'client' => route('client-dashboard'),
-                    default => route('login'),
-                };
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'User not found.',
-                ]);
-            }
-
-
-            // *** RUN YOUR COMMANDS HERE AFTER SUCCESSFUL LOGIN ***
-            $outPut1 = Artisan::call('apply:probation-appraisal');
-            $outPut2 = Artisan::call('employee:update-status');
-            $outPut3 = Artisan::call('email:send-anniversaries');
-
-            // Log::info('Command outputs:', [
-            //     'apply:probation-appraisal' => Artisan::output(),
-            //     'employee:update-status' => Artisan::output(),
-            //     'email:send-anniversaries' => Artisan::output(),
-            // ]);
-
+        if ($validated['otp'] != $otpSession || $validated['email'] != $otpEmail) {
             return response()->json([
-                'status' => 'success',
-                'message' => 'OTP verified successfully!',
-                'redirect' => $redirectRoute
+                'status' => 'error',
+                'message' => 'Invalid OTP. Please try again.',
             ]);
         }
 
+        // Find user
+        $user = SuperAddUser::where('email', $validated['email'])->first();
+        $superUser = SuperUserTable::where('email', $validated['email'])->first();
+        $client = AllClient::where('client_email', $validated['email'])->first();
+
+        Session::forget('auth_user');
+
+        if ($user) {
+
+            Session::put('auth_user', [
+                'id' => $user->id,
+                'employee_id' => $user->employee_id,
+                'user_type' => $user->user_type,
+                'email' => $user->email,
+            ]);
+
+            // Optional (keep for backward compatibility)
+            Session::put('user_email', $user->email);
+            Session::put('user_type', $user->user_type);
+            Session::put('user_id', $user->id);
+            Session::put('employee_id', $user->employee_id);
+
+            $redirectRoute = match ($user->user_type) {
+                'Super User' => route('super-admin-view'),
+                'admin' => route('admin-dashboard'),
+                'hr' => route('hr-dashboard'),
+                'users' => route('users-dashboard'),
+                'manager' => route('manager-dashboard'),
+                default => route('all-user-login'),
+            };
+
+        } elseif ($superUser) {
+
+            Session::put('auth_user', [
+                'id' => $superUser->id,
+                'employee_id' => $superUser->employee_id ?? null,
+                'user_type' => $superUser->user_type,
+                'email' => $superUser->email,
+            ]);
+
+            Session::put('user_email', $superUser->email);
+            Session::put('user_type', $superUser->user_type);
+            Session::put('user_id', $superUser->id);
+            Session::put('employee_id', $superUser->employee_id ?? null);
+
+            $redirectRoute = match ($superUser->user_type) {
+                'Super User' => route('super-admin-view'),
+                'admin' => route('admin-dashboard'),
+                'hr' => route('hr-dashboard'),
+                'users' => route('users-dashboard'),
+                'manager' => route('manager-dashboard'),
+                default => route('all-user-login'),
+            };
+
+        } elseif ($client) {
+
+            Session::put('auth_user', [
+                'id' => $client->id,
+                'employee_id' => null,
+                'user_type' => $client->user_type,
+                'email' => $client->client_email,
+                'client_id' => $client->id,
+            ]);
+
+            Session::put('user_email', $client->client_email);
+            Session::put('user_type', $client->user_type);
+            Session::put('client_id', $client->id);
+
+            $redirectRoute = match ($client->user_type) {
+                'client' => route('client-dashboard'),
+                default => route('login'),
+            };
+
+        } else {
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found.',
+            ]);
+        }
+
+        Artisan::call('apply:probation-appraisal');
+        Artisan::call('employee:update-status');
+        Artisan::call('email:send-anniversaries');
+
         return response()->json([
-            'status' => 'error',
-            'message' => 'Invalid OTP. Please try again.',
+            'status' => 'success',
+            'message' => 'OTP verified successfully!',
+            'redirect' => $redirectRoute
         ]);
     }
-
-
 
 }

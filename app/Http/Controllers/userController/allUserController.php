@@ -673,6 +673,19 @@ class allUserController extends Controller
 
     public function reviewUserReport($emp_id)
     {
+        if (!session('user_type') || !session('employee_id')) {
+            return redirect()->route('all-user-login')
+                ->with('error', 'Please log in to continue.');
+        }
+
+        if (session('user_type') === 'users' && session('employee_id') !== $emp_id) {
+            Session::flush();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+
+            return redirect()->route('all-user-login')
+                ->with('error', 'Unauthorized access. Please log in again.');
+        }
 
         // Fetch client reviews with client names
         $clientReviews = DB::table('client_review_tables')
@@ -1088,6 +1101,20 @@ class allUserController extends Controller
         // $empId = session('employee_id');
         $empId = $request->input('emp_id') ?? $request->input('employee_id');
         $year = $request->query('financial_year');
+
+        if (!session('user_type')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please log in to continue.',
+            ], 401);
+        }
+
+        if (session('user_type') === 'users' && session('employee_id') !== $empId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized access. Please log in again.',
+            ], 403);
+        }
 
         $user = SuperAddUser::where('employee_id', $empId)->first();
         $roles = json_decode($user?->user_roles ?? '[]', true);

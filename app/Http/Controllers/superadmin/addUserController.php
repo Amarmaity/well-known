@@ -9,19 +9,18 @@ use App\Models\SuperAddUser;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\EvaluationCredentialMail;
-
-
+use App\Models\Designation;
 
 class addUserController extends Controller
-
 {
 
 
     public function indexAddUser()
     {
-        return view("admin/superAddUserDashBoard");
+        $designations = Designation::where('status', 1)
+            ->orderBy('designation_name')
+            ->paginate(10);
+        return view("admin.superAddUserDashBoard", compact('designations'));
     }
 
 
