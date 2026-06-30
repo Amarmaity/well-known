@@ -1,15 +1,13 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Probation Period'); ?>
 
-@section('title', 'Probation Period')
+<?php $__env->startSection('breadcrumb', 'Probation Period'); ?>
 
-@section('breadcrumb', 'Probation Period')
+<?php $__env->startSection('page-title', 'Probation Period'); ?>
 
-@section('page-title', 'Probation Period')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
     </head>
@@ -91,7 +89,7 @@
             <input type="search" id="employee_search" name="search" class="form-control client__search" placeholder="Search"
                 aria-label="Search">
             <button class="client__btn" type="submit">
-                <img src="{{ asset('/images/search.png') }}" alt="Search">
+                <img src="<?php echo e(asset('/images/search.png')); ?>" alt="Search">
             </button>
         </div>
     </div>
@@ -109,25 +107,26 @@
                         <th>Email</th>
                         <th>Financial Year</th>
                         <th>Status</th> <!-- Ensure this column is present -->
-                        {{-- <th>Action</th> --}}
+                        
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($user as $users)
+                    <?php $__currentLoopData = $user; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $users): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td>{{$users->fname}} {{$users->lname}}</td>
-                            <td>{{$users->employee_id}}</td>
-                            <td>{{$users->designation}}</td>
-                            <td>{{$users->dob}}</td>
-                            <td><span class="probation-date-text" id="probationDate{{$users->employee_id}}">
-                                    {{$users->probation_date ?? 'Not Set'}}</span></td>
-                            <td>{{$users->salary}}</td>
-                            <td>{{$users->email}}</td>
-                            <td>{{$users->financial_year}}
-                            <td><span class="status-text" id="status{{$users->employee_id}}">
-                                    {{$users->employee_status ?? '--'}}</span></td>
+                            <td><?php echo e($users->fname); ?> <?php echo e($users->lname); ?></td>
+                            <td><?php echo e($users->employee_id); ?></td>
+                            <td><?php echo e($users->designation); ?></td>
+                            <td><?php echo e($users->dob); ?></td>
+                            <td><span class="probation-date-text" id="probationDate<?php echo e($users->employee_id); ?>">
+                                    <?php echo e($users->probation_date ?? 'Not Set'); ?></span></td>
+                            <td><?php echo e($users->salary); ?></td>
+                            <td><?php echo e($users->email); ?></td>
+                            <td><?php echo e($users->financial_year); ?>
+
+                            <td><span class="status-text" id="status<?php echo e($users->employee_id); ?>">
+                                    <?php echo e($users->employee_status ?? '--'); ?></span></td>
                         </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
@@ -166,7 +165,7 @@
                         method: 'POST',
                         data: {
                             financial_year: selectedYear,
-                            _token: '{{ csrf_token() }}'
+                            _token: '<?php echo e(csrf_token()); ?>'
                         },
                         success: function (response) {
                             table.clear();
@@ -232,4 +231,5 @@
 
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/admin/probation.blade.php ENDPATH**/ ?>

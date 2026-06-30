@@ -1,91 +1,89 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Update User Details'); ?>
+<?php $__env->startSection('breadcrumb' ,'Update User Details'); ?>
 
-@section('title', 'Update User Details')
-@section('breadcrumb' ,'Update User Details')
-{{-- Update {{ $user->fname }} {{ $user->lname }} {{ $user->employee_id }} --}}
-{{-- @endsection --}}
 
-@section('page-title', 'Update User')
-@section('body-class', 'special-page')
 
-@section('content')
+<?php $__env->startSection('page-title', 'Update User'); ?>
+<?php $__env->startSection('body-class', 'special-page'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="">
     <div class="">
-        {{-- <button onclick="history.back()" class="btn btn-secondary">Back</button> --}}
-        <a href="{{ route('userlist') }}" class="btn btn-secondary">Back</a>
+        
+        <a href="<?php echo e(route('userlist')); ?>" class="btn btn-secondary">Back</a>
     </div>
     <div class="content-block">
         <input type="checkbox" id="block1">
-        <label for="block1" class="main-label">Edit Employee Details: {{ $user->fname }} {{ $user->lname }}</label>
+        <label for="block1" class="main-label">Edit Employee Details: <?php echo e($user->fname); ?> <?php echo e($user->lname); ?></label>
         <div class="content">
-            <form action="{{ route('update-user', ['id' => $user->id]) }}" method="POST" class="forms-block">
-                @csrf
-                @method('PUT')
+            <form action="<?php echo e(route('update-user', ['id' => $user->id])); ?>" method="POST" class="forms-block">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
                 <div class="row form-section">
                     <div class="col-md-6">
                         <label for="fname" class="forms-label">First Name</label>
-                        <input type="text" name="fname" id="fname" class="form-control" value="{{ $user->fname }}"
+                        <input type="text" name="fname" id="fname" class="form-control" value="<?php echo e($user->fname); ?>"
                             readonly>
                     </div>
 
                     <div class="col-md-6">
                         <label for="lname" class="forms-label">Last Name</label>
-                        <input type="text" name="lname" id="lname" class="form-control" value="{{ $user->lname }}"
+                        <input type="text" name="lname" id="lname" class="form-control" value="<?php echo e($user->lname); ?>"
                             readonly>
                     </div>
 
 
                     <div class="col-md-6">
                         <label for="mobno" class="forms-label">Mobile Number</label>
-                        <input type="number" name="mobno" id="mobno" class="form-control" value="{{ $user->mobno }}"
+                        <input type="number" name="mobno" id="mobno" class="form-control" value="<?php echo e($user->mobno); ?>"
                             maxlength="10" min="0" required>
                     </div>
 
                     <div class="col-md-6">
                         <label for="email" class="forms-label">Email Address</label>
-                        <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}"
+                        <input type="email" name="email" id="email" class="form-control" value="<?php echo e($user->email); ?>"
                             required>
                     </div>
 
                     <div class="col-md-6">
                         <label for="employee_id" class="forms-label">Employee ID</label>
                         <input type="text" name="employee_id" id="employee_id" class="form-control"
-                            value="{{ $user->employee_id }}" readonly>
+                            value="<?php echo e($user->employee_id); ?>" readonly>
                     </div>
 
                     <div class="col-md-6">
                         <label for="dob" class="forms-label">Joining Date</label>
-                        <input type="date" class="form-control" id="dob" name="dob" value="{{ $user->dob }}" required>
+                        <input type="date" class="form-control" id="dob" name="dob" value="<?php echo e($user->dob); ?>" required>
                     </div>
 
                     <div class="col-md-6">
                         <label for="gender" class="forms-label">Gender</label>
                         <select class="form-control" id="gender" name="gender">
-                            <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>Male</option>
-                            <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>Female</option>
-                            <option value="other" {{ $user->gender == 'other' ? 'selected' : '' }}>Other</option>
+                            <option value="male" <?php echo e($user->gender == 'male' ? 'selected' : ''); ?>>Male</option>
+                            <option value="female" <?php echo e($user->gender == 'female' ? 'selected' : ''); ?>>Female</option>
+                            <option value="other" <?php echo e($user->gender == 'other' ? 'selected' : ''); ?>>Other</option>
                         </select>
                     </div>
 
                     <div class="col-md-6">
                         <label for="designation" class="forms-label">Designation</label>
                         <select class="form-control" id="designation_dropdown" name="designation" required>
-                            <option value="" disabled {{ $user->designation == null ? 'selected' : '' }}>Select
+                            <option value="" disabled <?php echo e($user->designation == null ? 'selected' : ''); ?>>Select
                                 Designation</option>
-                            <option value="Hr" {{ $user->designation == 'Hr' ? 'selected' : '' }}>Hr</option>
-                            <option value="SEO" {{ $user->designation == 'SEO' ? 'selected' : '' }}>SEO</option>
-                            <option value="Admin" {{ $user->designation == 'Admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="Hr" <?php echo e($user->designation == 'Hr' ? 'selected' : ''); ?>>Hr</option>
+                            <option value="SEO" <?php echo e($user->designation == 'SEO' ? 'selected' : ''); ?>>SEO</option>
+                            <option value="Admin" <?php echo e($user->designation == 'Admin' ? 'selected' : ''); ?>>Admin</option>
                             <option value="UI/UX Designer"
-                                {{ $user->designation == 'UI/UX Designer' ? 'selected' : '' }}>UI/UX Designer</option>
+                                <?php echo e($user->designation == 'UI/UX Designer' ? 'selected' : ''); ?>>UI/UX Designer</option>
                             <option value="Quality Analyst"
-                                {{ $user->designation == 'Quality Analyst' ? 'selected' : '' }}>Quality Analyst</option>
+                                <?php echo e($user->designation == 'Quality Analyst' ? 'selected' : ''); ?>>Quality Analyst</option>
                             <option value="Software Developer"
-                                {{ $user->designation == 'Software Developer' ? 'selected' : '' }}>Software Developer
+                                <?php echo e($user->designation == 'Software Developer' ? 'selected' : ''); ?>>Software Developer
                             </option>
-                            <option value="Manager" {{ $user->designation == 'Manager' ? 'selected' : '' }}>Manager
+                            <option value="Manager" <?php echo e($user->designation == 'Manager' ? 'selected' : ''); ?>>Manager
                             </option>
                             <option value="Business Development"
-                                {{ $user->designation == 'Business Development' ? 'selected' : '' }}>Business
+                                <?php echo e($user->designation == 'Business Development' ? 'selected' : ''); ?>>Business
                                 Development(Sales)</option>
                         </select>
                     </div>
@@ -94,23 +92,19 @@
                     <div class="col-md-6">
                         <label for="division" class="forms-label">Division</label>
                         <select class="form-control" id="division_dropdown" name="division" required>
-                            <option value="" disabled {{ $user->division == null ? 'selected' : '' }}>Select Division
+                            <option value="" disabled <?php echo e($user->division == null ? 'selected' : ''); ?>>Select Division
                             </option>
-                            <option value="Kasba Office" {{ $user->division == 'Kasba Office' ? 'selected' : '' }}>Kasba
+                            <option value="Kasba Office" <?php echo e($user->division == 'Kasba Office' ? 'selected' : ''); ?>>Kasba
                                 Office</option>
-                            <option value="Salt Lake 3B" {{ $user->division == 'Salt Lake 3B' ? 'selected' : '' }}>Salt
+                            <option value="Salt Lake 3B" <?php echo e($user->division == 'Salt Lake 3B' ? 'selected' : ''); ?>>Salt
                                 Lake 3B</option>
-                            <option value="Salt Lake 17B" {{ $user->division == 'Salt Lake 17B' ? 'selected' : '' }}>
+                            <option value="Salt Lake 17B" <?php echo e($user->division == 'Salt Lake 17B' ? 'selected' : ''); ?>>
                                 Salt Lake 17B</option>
                         </select>
                     </div>
 
 
-                    {{-- <div class="client-hide col-md-6" id="manager-name-field">
-                        <label for="manager_name" class="forms-label">Manager Name</label>
-                        <input type="text" class="form-control" id="manager_name" name="manager_name"
-                            placeholder="Enter Manager name" value="{{ $user->manager_name }}">
-                    </div> --}}
+                    
 
 
                     <style>
@@ -126,15 +120,15 @@
     <label for="manager_id" class="forms-label">Manager Name</label>
 
     <select class="form-control select2-manager" id="manager_id" name="manager_id" required>
-        @if($user->manager_id)
-            <option value="{{ $user->manager_id }}" selected>{{ $user->manager_name }}</option>
-        @else
+        <?php if($user->manager_id): ?>
+            <option value="<?php echo e($user->manager_id); ?>" selected><?php echo e($user->manager_name); ?></option>
+        <?php else: ?>
             <option value="">-- Select Manager --</option>
-        @endif
+        <?php endif; ?>
     </select>
 
     <!-- This will be filled automatically by JS on select -->
-    <input type="hidden" name="manager_name" id="manager_name" value="{{ $user->manager_name }}">
+    <input type="hidden" name="manager_name" id="manager_name" value="<?php echo e($user->manager_name); ?>">
 </div>
 
 
@@ -142,44 +136,43 @@
                     <div class="col-md-6">
                         <label for="user_type_dropdown" class="forms-label">User Type</label>
                         <select class="form-control" id="user_type_dropdown" name="user_type" required>
-                            <option value="" disabled {{ $user->user_type == null ? 'selected' : '' }}>Select User Type
+                            <option value="" disabled <?php echo e($user->user_type == null ? 'selected' : ''); ?>>Select User Type
                             </option>
-                            <option value="admin" {{ $user->user_type == 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="hr" {{ $user->user_type == 'hr' ? 'selected' : '' }}>HR</option>
-                            <option value="users" {{ $user->user_type == 'users' ? 'selected' : '' }}>Users</option>
-                            <option value="manager" {{ $user->user_type == 'manager' ? 'selected' : '' }}>Manager
+                            <option value="admin" <?php echo e($user->user_type == 'admin' ? 'selected' : ''); ?>>Admin</option>
+                            <option value="hr" <?php echo e($user->user_type == 'hr' ? 'selected' : ''); ?>>HR</option>
+                            <option value="users" <?php echo e($user->user_type == 'users' ? 'selected' : ''); ?>>Users</option>
+                            <option value="manager" <?php echo e($user->user_type == 'manager' ? 'selected' : ''); ?>>Manager
                             </option>
                         </select>
 
                         <!-- Hidden input to actually submit the value -->
-                        {{-- <input type="hidden" name="user_type" value="{{ $user->user_type }}"> --}}
+                        
                     </div>
 
 
                     <div class="client-hide col-md-6">
                         <label for="probation_date" class="forms-label">Probation Date</label>
                         <input type="date" name="probation_date" class="form-control" id="probation_date"
-                            value="{{ $user->probation_date }}">
+                            value="<?php echo e($user->probation_date); ?>">
                     </div>
 
                     <div class="client-hide col-md-6">
                         <label for="salary" class="forms-label">Salary</label>
                         <input type="number" class="form-control" id="salary" name="salary" placeholder="Enter Salary"
-                            min="0" value="{{ $user->salary }}" required>
+                            min="0" value="<?php echo e($user->salary); ?>" required>
                     </div>
 
 
                     <div class="col-md-6">
                         <label for="password" class="forms-label">Password</label>
-                        {{-- <input type="password" class="form-control" id="password" name="password"
-                            placeholder="Enter password" value="{{ $user->password }}" required> --}}
+                        
                             <input type="password" class="form-control" id="password" name="password"
                              placeholder="Enter new password (leave blank to keep existing)">
                     </div>
 
                     <div class="col-md-6" id="review-section">
                         <label class="forms-label d-block">Selected Person Can Review:</label>
-                        @php
+                        <?php
                         $availableRoles = ['admin', 'hr', 'users', 'manager', 'client'];
 
                         // Define roles to hide based on user_type
@@ -201,26 +194,26 @@
                         default:
                         $hiddenRoles = []; // client or other: show all
                         }
-                        @endphp
+                        ?>
 
-                        @foreach($availableRoles as $role)
-                        @if(!in_array($role, $hiddenRoles))
+                        <?php $__currentLoopData = $availableRoles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if(!in_array($role, $hiddenRoles)): ?>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input check-input" type="checkbox" name="user_roles[]"
-                                value="{{ $role }}" id="{{ $role === 'client' ? 'client-role' : $role }}"
-                                {{ in_array($role, $userRoles) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="{{ $role === 'client' ? 'client-role' : $role }}">
-                                {{ ucfirst($role) }}
+                                value="<?php echo e($role); ?>" id="<?php echo e($role === 'client' ? 'client-role' : $role); ?>"
+                                <?php echo e(in_array($role, $userRoles) ? 'checked' : ''); ?>>
+                            <label class="form-check-label" for="<?php echo e($role === 'client' ? 'client-role' : $role); ?>">
+                                <?php echo e(ucfirst($role)); ?>
+
                             </label>
                         </div>
-                        @endif
-                        @endforeach
+                        <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
 
                     <div class="col-md-6">
                         <label for="cnf-password" class="forms-label">Confirm Password</label>
-                        {{-- <input type="password" class="form-control" id="cnf-password" name="password_confirmation"
-                            placeholder="Enter password" value="{{ $user->password }}" required> --}}
+                        
                             <input type="password" class="form-control" id="cnf-password" name="password_confirmation"
                               placeholder="Confirm new password">
                     </div>
@@ -231,14 +224,14 @@
                     <label for="client_id" class="forms-label">Select Client</label>
                     <select class="form-control" id="client_id" name="client_id[]" multiple="multiple"
                         style="width: 100%">
-                        @foreach($clients as $client)
-                        <option value="{{ $client->id }}" selected>{{ $client->client_name }}</option>
-                        @endforeach
+                        <?php $__currentLoopData = $clients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $client): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($client->id); ?>" selected><?php echo e($client->client_name); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
                 <div class="d-flex gap-3 mt-3">
                     <button type="submit" class="btn btn-secondary">Update</button>
-                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
+                    <a href="<?php echo e(url()->previous()); ?>" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
@@ -279,22 +272,22 @@
 <script>
     $(document).ready(function () {
             // SweetAlert success popup
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: '{{ session('
-                success ') }}',
+                    text: '<?php echo e(session('
+                success ')); ?>',
                     timer: 2500,
                     showConfirmButton: false
                 });
-            @endif
+            <?php endif; ?>
     });
     
-    @if ($errors->any())
+    <?php if($errors->any()): ?>
    
         $(document).ready(function () {
-            let errorMessages = `{!! implode('<br>', $errors->all()) !!}`;
+            let errorMessages = `<?php echo implode('<br>', $errors->all()); ?>`;
             Swal.fire({
                 icon: 'error',
                 title: 'Validation Error',
@@ -303,14 +296,14 @@
             });
         });
    
-@endif
+<?php endif; ?>
     $('#client_id').select2({
     theme: 'bootstrap-5',
     placeholder: "Select Client",
     allowClear: true,
     maximumSelectionLength: 10,
     ajax: {
-        url: "{{ route('get.clients') }}",
+        url: "<?php echo e(route('get.clients')); ?>",
         dataType: 'json',
         delay: 250,
         processResults: function (data) {
@@ -340,18 +333,18 @@
 
         
 
-        @if(session('success'))
+        <?php if(session('success')): ?>
 
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
-                text: '{{ session('
-            success ') }}',
+                text: '<?php echo e(session('
+            success ')); ?>',
                 timer: 2500,
                 showConfirmButton: false
             });
 
-        @endif
+        <?php endif; ?>
 
 
         $(document).ready(function () {
@@ -448,4 +441,5 @@ $('.select2-manager').on('select2:select', function (e) {
 });
 
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/admin/editUser.blade.php ENDPATH**/ ?>

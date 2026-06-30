@@ -1,12 +1,10 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Client Review'); ?>
 
-@section('title', 'Client Review')
+<?php $__env->startSection('breadcrumb', 'Client'); ?>
 
-@section('breadcrumb', 'Client')
+<?php $__env->startSection('page-title', 'Client Dashboard'); ?>
 
-@section('page-title', 'Client Dashboard')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <style>
         .loading {
@@ -34,16 +32,16 @@
     </style>
 
     <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     </head>
 
     <body>
-        <form action="{{ route('client.review.submit') }}" method="post" id="ClientReviewSubmit"
+        <form action="<?php echo e(route('client.review.submit')); ?>" method="post" id="ClientReviewSubmit"
             class="form-inline client__form">
-            @csrf
+            <?php echo csrf_field(); ?>
             <div class="client">
                 <h1 class="client__heading">CLIENT REVIEW</h1>
-                @php
+                <?php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
 
@@ -60,21 +58,22 @@
                         $currentFYStart + 1, // Next FY
                         $currentFYStart + 2, // Next +1 FY
                     ];
-                @endphp
+                ?>
 
                 <select id="financialYear" class="form-select client__select" name="financial_year" required>
                     <option value="">Financial Year</option>
 
-                    @foreach ($years as $year)
-                        @php
+                    <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $end = $year + 1;
                             $fy = $year . '-' . $end;
-                        @endphp
+                        ?>
 
-                        <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                            {{ $fy }}
+                        <option value="<?php echo e($fy); ?>" <?php echo e($year == $currentFYStart ? 'selected' : ''); ?>>
+                            <?php echo e($fy); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 </select>
 
@@ -83,7 +82,7 @@
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
                         placeholder="search employee" aria-label="Search">
                     <button class="client__btn" type="submit">
-                        <img src="{{ asset('images/search.png') }}" alt="Search">
+                        <img src="<?php echo e(asset('images/search.png')); ?>" alt="Search">
                     </button>
                 </div>
             </div>
@@ -672,7 +671,7 @@
 
                 timeout = setTimeout(function() {
                     $.ajax({
-                        url: '{{ route('client-search') }}', // ← your client search route
+                        url: '<?php echo e(route('client-search')); ?>', // ← your client search route
                         type: 'GET',
                         data: {
                             keyword: keyword
@@ -732,7 +731,7 @@
             formData.append("ClientTotalReview", totalRating);
 
             $.ajax({
-                url: "{{ route('client.review.submit') }}",
+                url: "<?php echo e(route('client.review.submit')); ?>",
                 type: "POST",
                 data: formData,
                 processData: false,
@@ -849,4 +848,6 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/delostyleUsers/client-review-section.blade.php ENDPATH**/ ?>

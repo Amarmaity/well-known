@@ -1,11 +1,9 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Add Client'); ?>
+<?php $__env->startSection('breadcrumb', 'Add Client'); ?>
+<?php $__env->startSection('page-title', 'Add Client'); ?>
+<?php $__env->startSection('body-class', 'special-page'); ?>
 
-@section('title', 'Add Client')
-@section('breadcrumb', 'Add Client')
-@section('page-title', 'Add Client')
-@section('body-class', 'special-page')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <style>
         select:disabled {
@@ -22,7 +20,7 @@
             <label for="block1" class="main-label">Add New Client</label>
             <div class="content">
                 <form method="POST" enctype="multipart/form-data" class="forms-block" id="userForm">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="form-section">
                         <h5 class="heading-three">Client Information</h5>
                         <div class="row g-3">
@@ -89,7 +87,7 @@
     </div>
 
     <!-- CSRF Meta Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -136,6 +134,7 @@
                 }
 
                 // Mobile (Optional)
+                // Accepts international numbers with optional +
                 if (mobile !== '') {
                     const mobileRegex = /^\+?[1-9]\d{6,14}$/;
 
@@ -162,7 +161,7 @@
 
                 $('#saveBtn').prop('disabled', true).text('Saving...');
                 $.ajax({
-                    url: "{{ route('new-client') }}",
+                    url: "<?php echo e(route('new-client')); ?>",
                     type: "POST",
                     data: $(this).serialize(),
                     headers: {
@@ -204,4 +203,6 @@
         });
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/admin/addClient.blade.php ENDPATH**/ ?>

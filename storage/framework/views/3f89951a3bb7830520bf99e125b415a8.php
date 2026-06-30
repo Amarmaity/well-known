@@ -1,10 +1,9 @@
-@extends('layouts.app')
 <!-- Extends app.blade.php (Header, Sidebar, Footer included) -->
 
-@section('title', 'Add User')
-@section('breadcrumb', 'Add User')
-@section('body-class', 'special-page')
-@section('content')
+<?php $__env->startSection('title', 'Add User'); ?>
+<?php $__env->startSection('breadcrumb', 'Add User'); ?>
+<?php $__env->startSection('body-class', 'special-page'); ?>
+<?php $__env->startSection('content'); ?>
 
     <style>
         /* Remove the dropdown arrow inside the Select2 box (single select) */
@@ -26,9 +25,9 @@
                 <input type="checkbox" id="block1">
                 <label for="block1" class="main-label">Add New User</label>
                 <div class="content">
-                    <form action="{{ route('save-user') }}" method="POST" enctype="multipart/form-data" class="forms-block"
+                    <form action="<?php echo e(route('save-user')); ?>" method="POST" enctype="multipart/form-data" class="forms-block"
                         id="userForm">
-                        @csrf
+                        <?php echo csrf_field(); ?>
                         <div class="form-section">
                             <h5 class="heading-three">Personal Information</h5>
                             <div class="row g-3">
@@ -94,17 +93,10 @@
                                         <option value="Manager">Manager</option>
                                         <option value="Business Development">Business Development(Sales)</option>
                                     </select>
-                                    {{-- <label for="designation_dropdown" class="form-label">Designation</label>
-                                    <select class="form-control" name="designation" required>
-                                        <option value="" selected disabled>Select Designation</option>
-                                        @foreach ($designations as $designation)
-                                            <option value="{{ $designation->id }}">{{ $designation->designation_name }}
-                                            </option>
-                                        @endforeach
-                                    </select> --}}
+                                    
 
 
-                                    {{-- Division --}}
+                                    
                                     <label for="division" class="forms-label">Division</label>
                                     <select class="form-control" id="division_dropdown" name="division" required>
                                         <option value="" selected disabled>Select Division</option>
@@ -169,7 +161,7 @@
                                     </script>
 
 
-                                    {{-- Evaluation Purpose --}}
+                                    
                                     <div class="client-hide"
                                         style="display: none;>
                                         <label for="Evaluation
@@ -179,7 +171,7 @@
                                             <option value="Appraisal" selected>Appraisal</option>
                                         </select>
                                     </div>
-                                    {{-- <option value="Salt Lake 3B">Salt Lake 3B</option> --}}
+                                    
 
                                     <div class="client-hide">
                                         <label for="client_id" class="forms-label">Select Client</label>
@@ -235,8 +227,7 @@
                                         <label class="form-check-label" for="manager">Manager</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        {{-- <input class="form-check-input check-input" type="checkbox" id="client"
-                                            name="user_roles[]" value="client"> --}}
+                                        
                                         <input class="form-check-input check-input" type="checkbox" id="client-checkbox"
                                             name="user_roles[]" value="client">
                                         <label class="form-check-label" for="client">Client</label>
@@ -356,7 +347,7 @@
                     }
                 }
 
-                var actionUrl = "{{ route('save-user') }}";
+                var actionUrl = "<?php echo e(route('save-user')); ?>";
 
                 $.ajax({
                     url: actionUrl,
@@ -505,7 +496,7 @@
             $("#manager_name").autocomplete({
                 source: function(request, response) {
                     $.ajax({
-                        url: "{{ route('get.managers') }}",
+                        url: "<?php echo e(route('get.managers')); ?>",
                         data: {
                             term: request.term
                         },
@@ -526,7 +517,7 @@
             allowClear: true,
             maximumSelectionLength: 10,
             ajax: {
-                url: "{{ route('get.clients') }}",
+                url: "<?php echo e(route('get.clients')); ?>",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -632,7 +623,7 @@
                 placeholder: "Select Manager",
                 allowClear: true,
                 ajax: {
-                    url: "{{ route('get.manager') }}",
+                    url: "<?php echo e(route('get.manager')); ?>",
                     dataType: 'json',
                     delay: 250,
                     processResults: function(data) {
@@ -681,4 +672,6 @@
         });
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/admin/superAddUserDashBoard.blade.php ENDPATH**/ ?>

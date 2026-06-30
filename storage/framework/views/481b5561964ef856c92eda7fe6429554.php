@@ -4,7 +4,7 @@
     <title>Side by Side Form</title>
 
     <!-- CSRF Token for AJAX -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -97,44 +97,44 @@
     <div>
         <div class="table-responsive">
             <table class="table table-bordered">
-                @if (Session::get('user_type') === 'Super User')
+                <?php if(Session::get('user_type') === 'Super User'): ?>
                     <tr>
                         <th>Employee Name</th>
-                        <td>{{ $user->employee_name }}</td>
+                        <td><?php echo e($user->employee_name); ?></td>
                     </tr>
                     <tr>
                         <th>Employee ID</th>
-                        <td>{{ $user->emp_id }}</td>
+                        <td><?php echo e($user->emp_id); ?></td>
                     </tr>
                     <tr>
                         <th>Designation</th>
-                        <td>{{ $user->designation }}</td>
+                        <td><?php echo e($user->designation); ?></td>
                     </tr>
                     <tr>
                         <th>Salary Grade</th>
-                        <td>{{ $user->salary_grade }}</td>
+                        <td><?php echo e($user->salary_grade); ?></td>
                     </tr>
                     <tr>
                         <th>Evaluation Purpose</th>
-                        <td>{{ $user->evaluation_purpose }}</td>
+                        <td><?php echo e($user->evaluation_purpose); ?></td>
                     </tr>
                     <tr>
                         <th>Division</th>
-                        <td>{{ $user->division }}</td>
+                        <td><?php echo e($user->division); ?></td>
                     </tr>
                     <tr>
                         <th>Manager Name</th>
-                        <td>{{ $user->manager_name }}</td>
+                        <td><?php echo e($user->manager_name); ?></td>
                     </tr>
                     <tr>
                         <th>Joining Date</th>
-                        <td>{{ \Carbon\Carbon::parse($user->joining_date)->format('d M, Y') }}</td>
+                        <td><?php echo e(\Carbon\Carbon::parse($user->joining_date)->format('d M, Y')); ?></td>
                     </tr>
                     <tr>
                         <th>Review Period</th>
-                        <td>{{ $user->review_period }}</td>
+                        <td><?php echo e($user->review_period); ?></td>
                     </tr>
-                @endif
+                <?php endif; ?>
             </table>
         </div>
 
@@ -150,211 +150,155 @@
                 </thead>
                 <tr>
                     <td>1. Accuracy, neatness and timeliness of work</td>
-                    <td>({{ $user->accuracy_neatness }}/5)</td>
-                    <td>{{ $user->comments_accuracy }}</td>
+                    <td>(<?php echo e($user->accuracy_neatness); ?>/5)</td>
+                    <td><?php echo e($user->comments_accuracy); ?></td>
                 </tr>
                 <tr>
                     <td>2. Adherence to duties and procedures in Job Description and Work Instructions </td>
-                    <td>({{ $user->adherence }}/5)</td>
-                    <td>{{ $user->comments_adherence }}</td>
+                    <td>(<?php echo e($user->adherence); ?>/5)</td>
+                    <td><?php echo e($user->comments_adherence); ?></td>
                 </tr>
                 <tr>
                     <td>3. Synchronization with organizations/functional goals </td>
-                    <td>({{ $user->synchronization }}/5)</td>
-                    <td>{{ $user->comments_synchronization }}</td>
+                    <td>(<?php echo e($user->synchronization); ?>/5)</td>
+                    <td><?php echo e($user->comments_synchronization); ?></td>
                 </tr>
                 <tr>
                     <td>Quality of Work Total Rating </td>
-                    <td>{{ $user->qualityworktotalrating }}</td>
+                    <td><?php echo e($user->qualityworktotalrating); ?></td>
                 </tr>
                 <tr>
                     <td>1. Punctuality to workplace </td>
-                    <td>({{ $user->punctuality }}/5)</td>
-                    <td>{{ $user->comments_punctuality }}</td>
+                    <td>(<?php echo e($user->punctuality); ?>/5)</td>
+                    <td><?php echo e($user->comments_punctuality); ?></td>
                 </tr>
                 <tr>
                     <td>2. Attendance </td>
-                    <td>({{ $user->attendance }}/5)</td>
-                    <td>{{ $user->comments_attendance }}</td>
+                    <td>(<?php echo e($user->attendance); ?>/5)</td>
+                    <td><?php echo e($user->comments_attendance); ?></td>
                 </tr>
                 <tr>
                     <td>3. Does the employee stay busy, look for things to do, take initiatives at workplace </td>
-                    <td>({{ $user->initiatives_at_workplace }}/5)</td>
-                    <td>{{ $user->comments_initiatives }}</td>
+                    <td>(<?php echo e($user->initiatives_at_workplace); ?>/5)</td>
+                    <td><?php echo e($user->comments_initiatives); ?></td>
                 </tr>
                 <tr>
                     <td>4. Submits reports on time and meets deadlines </td>
-                    <td>({{ $user->submits_reports }}/5)</td>
-                    <td>{{ $user->comments_submits_reports }}</td>
+                    <td>(<?php echo e($user->submits_reports); ?>/5)</td>
+                    <td><?php echo e($user->comments_submits_reports); ?></td>
                 </tr>
                 <tr>
                     <td>Work Habits Total Rating </td>
-                    <td>{{ $user->work_habits_rating }}</td>
+                    <td><?php echo e($user->work_habits_rating); ?></td>
                 </tr>
                 <tr>
                     <td>1. Skill and ability to perform job satisfactorily </td>
-                    <td>({{ $user->skill_ability }}/5)</td>
-                    <td>{{ $user->comments_skill_ability }}</td>
+                    <td>(<?php echo e($user->skill_ability); ?>/5)</td>
+                    <td><?php echo e($user->comments_skill_ability); ?></td>
                 </tr>
                 <tr>
                     <td>2. Shown interest in learning and improving </td>
-                    <td>({{ $user->learning_improving }}/5)</td>
-                    <td>{{ $user->comments_learning_improving }}</td>
+                    <td>(<?php echo e($user->learning_improving); ?>/5)</td>
+                    <td><?php echo e($user->comments_learning_improving); ?></td>
                 </tr>
                 <tr>
                     <td>3. Problem solving ability</td>
-                    <td>({{ $user->problem_solving_ability }}/5)</td>
-                    <td>{{ $user->comments_problem_solving }}</td>
+                    <td>(<?php echo e($user->problem_solving_ability); ?>/5)</td>
+                    <td><?php echo e($user->comments_problem_solving); ?></td>
                 </tr>
                 <tr>
                     <td>Job Knowledge Total Rating </td>
-                    <td>{{ $user->jk_total_rating }}</td>
+                    <td><?php echo e($user->jk_total_rating); ?></td>
                 </tr>
                 <tr>
                     <td>1. Responds and contributes to team efforts </td>
-                    <td>({{ $user->respond_contributes }}/5)</td>
-                    <td>{{ $user->comments_respond_contributes }}</td>
+                    <td>(<?php echo e($user->respond_contributes); ?>/5)</td>
+                    <td><?php echo e($user->comments_respond_contributes); ?></td>
                 </tr>
                 <tr>
                     <td>2. Responds positively to suggestions, instructions, and criticism </td>
-                    <td>({{ $user->responds_positively }}/5)</td>
-                    <td>{{ $user->comments_responds_positively }}</td>
+                    <td>(<?php echo e($user->responds_positively); ?>/5)</td>
+                    <td><?php echo e($user->comments_responds_positively); ?></td>
                 </tr>
                 <tr>
                     <td>3. Keeps supervisor informed of all details </td>
-                    <td>({{ $user->supervisor }}/5)</td>
-                    <td>{{ $user->comments_supervisor }}</td>
+                    <td>(<?php echo e($user->supervisor); ?>/5)</td>
+                    <td><?php echo e($user->comments_supervisor); ?></td>
                 </tr>
                 <tr>
                     <td>4. Adapts well to changing circumstances </td>
-                    <td>({{ $user->adapts_changing }}/5)</td>
-                    <td>{{ $user->comments_adapts_changing }}</td>
+                    <td>(<?php echo e($user->adapts_changing); ?>/5)</td>
+                    <td><?php echo e($user->comments_adapts_changing); ?></td>
                 </tr>
                 <tr>
                     <td>5. Seeks feedback to improve </td>
-                    <td>({{ $user->seeks_feedback }}/5)</td>
-                    <td>{{ $user->comments_seeks_feedback }}</td>
+                    <td>(<?php echo e($user->seeks_feedback); ?>/5)</td>
+                    <td><?php echo e($user->comments_seeks_feedback); ?></td>
                 </tr>
                 <tr>
                     <td>Interpersonal Relations Total Rating </td>
-                    <td>{{ $user->ir_total_rating }}</td>
+                    <td><?php echo e($user->ir_total_rating); ?></td>
                 </tr>
                 <tr>
                     <td>1. Aspirant to climb up the ladder, accepts challenges, new responsibilities, and roles</td>
-                    <td>({{ $user->challenges }}/10)</td>
-                    <td>{{ $user->comments_challenges }}</td>
+                    <td>(<?php echo e($user->challenges); ?>/10)</td>
+                    <td><?php echo e($user->comments_challenges); ?></td>
                 </tr>
                 <tr>
                     <td>2. Innovative thinking - contribution to organizations, functions, and personal growth </td>
-                    <td>({{ $user->personal_growth }}/10)</td>
-                    <td>{{ $user->comments_personal_growth }}</td>
+                    <td>(<?php echo e($user->personal_growth); ?>/10)</td>
+                    <td><?php echo e($user->comments_personal_growth); ?></td>
                 </tr>
                 <tr>
                     <td>3. Work motivation </td>
-                    <td>({{ $user->work_motivation }}/5)</td>
-                    <td><br> {{ $user->comments_work_motivation }}</td>
+                    <td>(<?php echo e($user->work_motivation); ?>/5)</td>
+                    <td><br> <?php echo e($user->comments_work_motivation); ?></td>
                 </tr>
                 <tr>
                     <td>Leadership Skill Total Rating </td>
-                    <td>{{ $user->leadership_rating }}</td>
+                    <td><?php echo e($user->leadership_rating); ?></td>
                 </tr>
                 <tr>
                     <td>1. Employee performance and learning is unsatisfactory and is failing to improve at a
                         satisfactory
                         rate</td>
-                    <td><span>{{ $user->progress_unsatisfactory }}</span></td>
-                    <td>{{ $user->comments_unsatisfactory }}</td>
+                    <td><span><?php echo e($user->progress_unsatisfactory); ?></span></td>
+                    <td><?php echo e($user->comments_unsatisfactory); ?></td>
                 </tr>
                 <tr>
                     <td>2. Employee performance and learning is acceptable and is improving at a satisfactory rate
                     </td>
-                    <td> <span>{{ $user->progress_acceptable }}</span></td>
-                    <td> {{ $user->comments_acceptable }}</td>
+                    <td> <span><?php echo e($user->progress_acceptable); ?></span></td>
+                    <td> <?php echo e($user->comments_acceptable); ?></td>
                 </tr>
                 <tr>
                     <td>3. Employee has successfully demonstrated outstanding overall performance </td>
-                    <td><span>{{ $user->progress_outstanding }}</span></td>
-                    <td>{{ $user->comments_outstanding }}</td>
+                    <td><span><?php echo e($user->progress_outstanding); ?></span></td>
+                    <td><?php echo e($user->comments_outstanding); ?></td>
                 </tr>
                 <tr>
                     <td>Evaluator's Name</td>
-                    <td>{{ $user->evalutors_name }}</td>
+                    <td><?php echo e($user->evalutors_name); ?></td>
                 </tr>
                 <tr>
                     <td>Evaluator's Signature</td>
                     <td>
-                        <img src="{{ asset('storage/' . $user->evaluator_signatur) }}" alt="Evaluator's Signature"
+                        <img src="<?php echo e(asset('storage/' . $user->evaluator_signatur)); ?>" alt="Evaluator's Signature"
                             style="width: 100px; height: 120px; object-fit: cover;">
                     </td>
                 </tr>
                 <tr>
                     <td>Evaluation Date</td>
-                    <td>{{ $user->evaluator_signatur_date }}</td>
+                    <td><?php echo e($user->evaluator_signatur_date); ?></td>
                 </tr>
                 <tr>
                     <td>Total score in evaluation: </td>
-                    <td>{{ $user->total_scoring_system }}</td>
+                    <td><?php echo e($user->total_scoring_system); ?></td>
                 </tr>
-                {{-- @if (in_array(Session::get('user_type'), ['admin', 'hr', 'manage', 'Super User', 'users']))
-                    <tr>
-                        <td>FINAL COMMENTS</td>
-                        <td>{{ $user->final_comment }}</td>
-                    </tr>
-                    <tr>
-                        <td>Director's Name</td>
-                        <td>{{ $user->director_name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Director's Signature</td>
-                        <td>
-                            <img src="{{ asset('storage/' . $user->director_signatur) }}" alt="Director's Signature"
-                                style="width: 100px; height: 120px; object-fit: cover;">
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Director's Signature Date</td>
-                        <td>{{ $user->director_signatur_date }}</td>
-                    </tr>
-                @endif --}}
+                
             </table>
         </div>
-        {{-- @if ($user->director_feedback_flag == 0)
-                @if (Session::get('user_type') === 'Super User')
-                    <form action="{{ route('director-submit-from', $user->emp_id) }}" method="POST" id="evaluationSubmit"
-                        class="evaluation__form" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-section form-section1">
-                            <h3>Director Upload</h3>
-                            <div class="mb-4">
-                                <label for="final_comment">FINAL COMMENTS:</label>
-                                <textarea name="final_comment" id="f_comment" rows="1" class="form-control"></textarea>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label for="director_name">Director's Name:</label>
-                                    <input type="text" name="director_name" id="d_name" class="form-control"
-                                        placeholder="Enter Name">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="signatur">Signature:</label>
-                                    <input type="file" name="director_signatur" id="signatur" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="date">Date:</label>
-                                    <input type="date" name="director_signatur_date" id="date" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary secondary-btn">Submit</button>
-                            <button type="reset" class="btn btn-outlined secondary-btn">Clear</button>
-                        </div>
-                    </form>
-                @endif
-            </div>
-        @endif
-    </div> --}}
+        
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -367,7 +311,7 @@
     //     var formData = new FormData(this);
 
 
-    //     var emp_id = '{{ $user->emp_id ?? '' }}';
+    //     var emp_id = '<?php echo e($user->emp_id ?? ''); ?>';
 
 
     //     if (!emp_id) {
@@ -407,7 +351,7 @@
             e.preventDefault();
 
             var formData = new FormData(this);
-            var emp_id = '{{ $user->emp_id ?? '' }}';
+            var emp_id = '<?php echo e($user->emp_id ?? ''); ?>';
 
             if (!emp_id) {
                 alert('Employee ID is missing.');
@@ -438,3 +382,4 @@
         });
     }
 </script>
+<?php /**PATH /opt/lampp/htdocs/well-known/resources/views/reports/evaluationReport.blade.php ENDPATH**/ ?>

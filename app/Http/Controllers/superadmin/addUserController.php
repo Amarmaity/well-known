@@ -35,7 +35,7 @@ class addUserController extends Controller
                 'fname' => 'required|string|max:255',
                 'lname' => 'required|string|max:255',
                 'dob' => 'required|date',
-                'mobno' => 'required|digits:10',
+                'mobno' => 'required|regex:/^[6-9]\d{9}$/',
                 'gender' => 'required|string',
                 'email' => [
                     'required',
@@ -49,6 +49,7 @@ class addUserController extends Controller
                 $rules = array_merge($rules, [
                     'employee_id' => [
                         'required',
+                        'regex:/^DS\d{5}$/',
                         Rule::unique('super_add_users', 'employee_id'),
                     ],
                     'salary' => 'required|numeric|min:0',
@@ -68,9 +69,11 @@ class addUserController extends Controller
                     'salary.min' => 'Salary must be greater than zero.',
                     'email.unique' => 'This email is already registered.',
                     'employee_id.unique' => 'This Employee ID is already registered.',
+                    'employee_id.regex' => 'Employee ID must be in the format DS00001.',
+                    'mobno.regex' => 'Please enter a valid 10-digit Indian mobile number.',
                 ],
                 [
-                    'mobno' => 'Mobile No',
+                    'mobno' => 'Mobile Number',
                     'fname' => 'First Name',
                     'lname' => 'Last Name',
                     'dob' => 'Date of Birth',
@@ -188,7 +191,6 @@ class addUserController extends Controller
                 'evaluation_purpose' => $isClient ? null : $request->input('evaluation_purpose'),
                 'division' => $request->input('division'),
                 'manager_id' => $managerId ?: null,
-                // 'manager_name' => $request->input('manager_name'),
                 'manager_name' => $managerNameFinal,
                 'designation' => $request->input('designation'),
                 'user_type' => $request->input('user_type'),

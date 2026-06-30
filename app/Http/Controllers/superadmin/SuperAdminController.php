@@ -163,7 +163,7 @@ class SuperAdminController extends Controller
     //Super Admin Dash Board view
     public function indexSuperAdminDashBoard()
     {
-        return view('admin/SuperAdminDashbord');
+        return view('admin.SuperAdminDashbord');
     }
 
 
@@ -828,9 +828,16 @@ class SuperAdminController extends Controller
     {
         $currentDate = Carbon::now()->toDateString();
 
-        $user = SuperAddUser::where('Designation', '!=', 'Client')
+        // $user = SuperAddUser::where('Designation', '!=', 'Client')
+        //     ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
+        //     ->orderBy('probation_date', 'desc')
+        //     ->orderBy('fname', 'asc')
+        //     ->orderBy('lname', 'asc')
+        //     ->get();
+        $user = SuperAddUser::where('designation', '!=', 'Client')
+            ->whereDate('probation_date', '>=', $currentDate)
             ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
-            ->orderBy('probation_date', 'desc')
+            ->orderBy('probation_date', 'asc')
             ->orderBy('fname', 'asc')
             ->orderBy('lname', 'asc')
             ->get();
@@ -990,13 +997,27 @@ class SuperAdminController extends Controller
 
     public function createClient(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'client_name' => 'nullable|string|max:50',
-            'company_name' => 'nullable|string|max:50',
-            'client_mobno' => 'nullable|regex:/^[\d\s\-\+\(\)]+$/|max:20',
-            'client_email' => 'nullable|email|max:50',
-            'password' => 'required|string|min:6',
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'client_name' => 'required|string|max:50',
+                'company_name' => 'required|string|max:50',
+                'client_mobno' => 'nullable|regex:/^[6-9]\d{9}$/',
+                'client_email' => 'required|email|max:50|unique:all_clients,client_email',
+                'password' => 'required|string|min:6',
+                'user_type' => 'required',
+            ],
+            [
+                'client_name.required' => 'Client Name is required.',
+                'company_name.required' => 'Company Name is required.',
+                'client_email.required' => 'Email is required.',
+                'client_email.email' => 'Please enter a valid email address.',
+                'client_email.unique' => 'This email is already registered.',
+                'client_mobno.regex' => 'Please enter a valid 10-digit Indian mobile number.',
+                'password.required' => 'Password is required.',
+                'password.min' => 'Password must be at least 6 characters.',
+            ]
+        );
 
         if ($validator->fails()) {
             return response()->json([
@@ -1007,24 +1028,14 @@ class SuperAdminController extends Controller
 
         $validated = $validator->validated();
 
-        // Check if a similar client already exists
-        $exists = AllClient::where('client_email', $validated['client_email'])->first();
-
-        if ($exists) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Client already exists with this email.'
-            ]);
-        }
-
         // Store client (hash password if stored)
         AllClient::create([
             'client_name' => $validated['client_name'],
             'company_name' => $validated['company_name'],
             'client_mobno' => $validated['client_mobno'],
-            'client_email' => $validated['client_email'],
+            'client_email' => strtolower(trim($validated['client_email'])),
             'password' => bcrypt($validated['password']),
-            'user_type' => $request->input('user_type'),
+            'user_type' => $validated['user_type'],
         ]);
         return response()->json([
             'status' => 'success',
@@ -1034,7 +1045,10 @@ class SuperAdminController extends Controller
 
     public function getClients()
     {
-        $clients = AllClient::select('id', 'client_name', 'client_email')->get();
+        $clients = AllClient::where('status', 1)
+            ->select('id', 'client_name', 'company_name')
+            ->get();
+
 
         return response()->json($clients);
     }
@@ -1149,7 +1163,8 @@ class SuperAdminController extends Controller
     {
         $search = $request->get('q');
 
-        $clients = AllClient::where('client_name', 'like', '%' . $search . '%')
+        $clients = AllClient::where('status', 1)
+            ->where('client_name', 'like', '%' . $search . '%')
             ->select('id', 'client_name', 'company_name')
             ->limit(20)
             ->get();

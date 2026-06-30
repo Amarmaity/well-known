@@ -52,89 +52,89 @@
 
                 {{-- @dd(Session::all()); --}}
                 {{-- {{ dd(Session::get('user_type')) }} --}}
-                {{-- @if ($userType === 'Super User')
-                <li class="nav-item">
-                    <a href="{{route('add-user')}}"
-                        class="nav-link {{ request()->routeIs('add-user') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-person-plus"></i>
-                        <p>Add Users</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('create-client')}}"
-                        class="nav-link {{ request()->routeIs('create-client') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-person-plus"></i>
-                        <p>Add Client</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('userlist')}}"
-                        class="nav-link {{ request()->routeIs('userlist') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-people"></i>
-                        <p>User Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('client-list')}}"
-                        class="nav-link {{ request()->routeIs('client-list') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-people"></i>
-                        <p>Client Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('get-probation')}}"
-                        class="nav-link {{ request()->routeIs('get-probation') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-list"></i>
-                        <p>Probation period List</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('super.search')}}"
-                        class="nav-link {{ request()->routeIs('super.search') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-search"></i>
-                        <p>View All Review</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('appraisal-view')}}"
-                        class="nav-link {{ request()->routeIs('appraisal-view') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-graph-up-arrow"></i>
-                        <p>Appraisal</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('financial.view')}}"
-                        class="nav-link {{ request()->routeIs('financial.view') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-calendar-range"></i>
-                        <p>Financial Year</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('financial-view-tables')}}"
-                        class="nav-link {{ request()->routeIs('financial-view-tables') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-bar-chart-line"></i>
-                        <p>Appraisal Done</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('get-pending-apprasil')}}"
-                        class="nav-link {{ request()->routeIs('get-pending-apprasil') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-list"></i>
-                        <p>Pending Appraisal List</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{route('setting-view')}}"
-                        class="nav-link {{ request()->routeIs('setting-view') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-gear"></i>
-                        <p>Setting</p>
-                    </a>
-                </li>
-                @endif --}}
-                {{-- Super User --}}
-                
                 @if ($userType === 'Super User')
-                    {{-- Dashboard --}}
+                    <li class="nav-item">
+                        <a href="{{ route('add-user') }}"
+                            class="nav-link {{ request()->routeIs('add-user') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-person-plus"></i>
+                            <p>Add Users</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('create-client') }}"
+                            class="nav-link {{ request()->routeIs('create-client') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-person-plus"></i>
+                            <p>Add Client</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('userlist') }}"
+                            class="nav-link {{ request()->routeIs('userlist') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-people"></i>
+                            <p>User Management</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('client-list') }}"
+                            class="nav-link {{ request()->routeIs('client-list') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-people"></i>
+                            <p>Client Management</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('get-probation') }}"
+                            class="nav-link {{ request()->routeIs('get-probation') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-list"></i>
+                            <p>Probation period List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('super.search') }}"
+                            class="nav-link {{ request()->routeIs('super.search') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-search"></i>
+                            <p>View All Review</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('appraisal-view') }}"
+                            class="nav-link {{ request()->routeIs('appraisal-view') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-graph-up-arrow"></i>
+                            <p>Appraisal</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('financial.view') }}"
+                            class="nav-link {{ request()->routeIs('financial.view') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-calendar-range"></i>
+                            <p>Financial Year</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('financial-view-tables') }}"
+                            class="nav-link {{ request()->routeIs('financial-view-tables') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-bar-chart-line"></i>
+                            <p>Appraisal Done</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('get-pending-apprasil') }}"
+                            class="nav-link {{ request()->routeIs('get-pending-apprasil') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-list"></i>
+                            <p>Pending Appraisal List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('setting-view') }}"
+                            class="nav-link {{ request()->routeIs('setting-view') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-gear"></i>
+                            <p>Setting</p>
+                        </a>
+                    </li>
+                @endif
+                {{-- Super User --}}
+
+                {{-- @if ($userType === 'Super User')
+                    
                     <li class="nav-item">
                         <a href="{{ $dashboardLink }}"
                             class="nav-link {{ request()->routeIs('super-admin-view') ? 'active' : '' }}">
@@ -143,7 +143,7 @@
                         </a>
                     </li>
 
-                    {{-- User Management --}}
+                    
                     <li
                         class="nav-item has-treeview {{ request()->routeIs('add-user', 'userlist') ? 'menu-open' : '' }}">
                         <a href="#"
@@ -174,7 +174,7 @@
                         </ul>
                     </li>
 
-                    {{-- Client Management --}}
+                    
                     <li
                         class="nav-item has-treeview {{ request()->routeIs('create-client', 'client-list') ? 'menu-open' : '' }}">
                         <a href="#"
@@ -205,7 +205,7 @@
                         </ul>
                     </li>
 
-                    {{-- Performance --}}
+                    
                     <li
                         class="nav-item has-treeview {{ request()->routeIs(
                             'get-probation',
@@ -278,7 +278,7 @@
 
                     </li>
 
-                    {{-- Administration --}}
+                
                     <li
                         class="nav-item has-treeview {{ request()->routeIs('financial.view', 'setting-view') ? 'menu-open' : '' }}">
 
@@ -325,7 +325,7 @@
                         </ul>
 
                     </li>
-                @endif
+                @endif --}}
 
                 {{-- HR --}}
                 @if ($userType === 'hr')
@@ -363,7 +363,7 @@
                     </li>
                 @endif
 
-                {{-- Admin --}} 
+                {{-- Admin --}}
                 @if ($userType === 'admin')
                     <li class="nav-item">
                         <a href="{{ route('admin-review') }}"
@@ -381,7 +381,7 @@
                     </li>
                 @endif
 
-                {{-- Client --}}  
+                {{-- Client --}}
                 @if ($userType === 'client')
                     <li class="nav-item">
                         <a href="{{ route('client-review') }}"
@@ -399,7 +399,11 @@
                     </li>
                 @endif
 
-                @if (in_array($userType, ['users', 'admin', 'hr', 'manager']))
+                @php
+                    $employee = \App\Models\SuperAddUser::where('employee_id', session('employee_id'))->first();
+                @endphp
+
+                @if (in_array($userType, ['users', 'admin', 'hr', 'manager']) && optional($employee)->employee_status === 'Employee')
                     <li class="nav-item">
                         <a href="{{ route('input-evaluation', ['employee_id' => session('employee_id')]) }}"
                             class="nav-link {{ request()->routeIs('input-evaluation') ? 'active' : '' }}">

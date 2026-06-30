@@ -50,10 +50,16 @@ class CheckEmployeeAccess
                 break;
 
             case 'manager':
-                if ($employee->manager_id == $loginUserId) {
-                    return $next($request);
-                }
-                break;
+                 if ($loginEmployeeId == $employee->employee_id) {
+        return $next($request);
+    }
+
+    // Manager can review employees assigned to him
+    if ($employee->manager_id == $loginUserId) {
+        return $next($request);
+    }
+
+    break;
 
             case 'client':
                 $assignedClientIds = $employee->client_id;

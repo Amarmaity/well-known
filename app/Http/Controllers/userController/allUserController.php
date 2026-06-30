@@ -35,7 +35,6 @@ class allUserController extends Controller
     }
 
     //All Users view dashboard
-
     public function admin()
     {
         return view('delostyleUsers/admin-dashboard');
@@ -44,7 +43,7 @@ class allUserController extends Controller
     public function adminReviewSection()
     {
 
-        return view('delostyleUsers/admin-review-section');
+        return view('delostyleUsers.admin-review-section');
     }
 
     public function clientReviewSection()
@@ -82,6 +81,8 @@ class allUserController extends Controller
             $query->whereNotIn('user_type', ['admin', 'hr', 'manager']);
         }
 
+        $query->where('status', 1)
+            ->where('employee_status', 'Employee');
 
 
         // Search by employee ID or full name
@@ -112,11 +113,9 @@ class allUserController extends Controller
         $keyword = $request->input('keyword');
 
         $query = SuperAddUser::query();
-
-        // Filter users that are of type 'client'
-        // $query->whereJsonContains('user_roles', 'client');
-
-        $query->where('user_roles', 'like', '%"client"%');
+        $query->where('status', 1)
+            ->where('user_roles', 'like', '%"client"%')
+            ->where('employee_status', 'Employee');
 
         // Search by employee ID or full name
         if (!empty($keyword)) {
@@ -400,8 +399,6 @@ class allUserController extends Controller
     }
 
 
-
-
     public function managerReviewStore(Request $request)
     {
         $emp_id = $request->input('emp_id');
@@ -508,7 +505,6 @@ class allUserController extends Controller
 
         return response()->json(['message' => 'Review submitted successfully!']);
     }
-
 
 
     public function client()
@@ -841,8 +837,6 @@ class allUserController extends Controller
     }
 
 
-
-
     public function showDetailsHr($employee_id)
     {
 
@@ -944,6 +938,7 @@ class allUserController extends Controller
 
     public function getManagerReviewList(Request $request)
     {
+         $managerId = session('user_id');
         // Step 1: Get all emp_ids from Manager and Evaluation tables
         $validEmployeeIds = ManagerReviewTable::pluck('emp_id')
             ->merge(evaluationTable::pluck('emp_id'))
@@ -951,9 +946,13 @@ class allUserController extends Controller
             ->toArray();
 
         // Step 2: Get active users from SuperAddUser
-        $superAddUser = SuperAddUser::where('status', 1)->whereJsonContains('user_roles', 'manager')
-            ->whereIn('employee_id', $validEmployeeIds)
-            ->get();
+        // $superAddUser = SuperAddUser::where('status', 1)->whereJsonContains('user_roles', 'manager')
+        //     ->whereIn('employee_id', $validEmployeeIds)
+        //     ->get();
+        $superAddUser = SuperAddUser::where('status', 1)
+        ->where('manager_id', $managerId)
+        ->whereIn('employee_id', $validEmployeeIds)
+        ->get();
 
         // Step 3: Exclude HR and Admin users
         $nonHrAdminEmployeeIds = $superAddUser
@@ -998,37 +997,6 @@ class allUserController extends Controller
         return view('reports.userDetailsManagerView', compact('employee', 'reviews', 'employee_id', 'financial_year'));
     }
 
-    // public function getClientReviewList(Request $request)
-    // {
-    //     $targetClientId = session('client_id');
-
-    //     if (!$targetClientId) {
-    //         return back()->with('error', 'Client session expired or not logged in.');
-    //     }
-
-    //     $validEmployeeIds = evaluationTable::pluck('emp_id')
-    //         ->unique()
-    //         ->toArray();
-
-    //     $superAddUser = SuperAddUser::where('status', 1)
-    //         ->whereIn('employee_id', $validEmployeeIds)
-    //         ->where('client_id', 'like', '%"' . $targetClientId . '"%')
-    //         ->get();
-
-    //     $filteredEmployeeIds = $superAddUser->pluck('employee_id')->toArray();
-
-    //     $clientReviewTable = ClientReviewTable::whereIn('emp_id', $filteredEmployeeIds)->get();
-
-    //     $evaluation = evaluationTable::whereIn('emp_id', $filteredEmployeeIds)->get();
-
-    //     return view('reports.clientReportView', compact(
-    //         'superAddUser',
-    //         'clientReviewTable',
-    //         'evaluation'
-    //     ));
-    // }
-
-
 
     public function getClientReviewList(Request $request)
     {
@@ -1044,6 +1012,7 @@ class allUserController extends Controller
             ->toArray();
 
         $superAddUser = SuperAddUser::where('status', 1)
+            ->where('employee_status', 'Employee')
             ->whereIn('employee_id', $validEmployeeIds)
             ->where('client_id', 'like', '%"' . $targetClientId . '"%')
             ->get();
