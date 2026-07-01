@@ -129,12 +129,12 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
 Route::get('/admin/super-admin-dashboard', [SuperAdminController::class, 'showDashboard'])->name('super-admin-dashboard');
 
 //User's login route
-Route::get('/', [UserOnbordController::class, 'indexUserLogin'])->name('all-user-login');
+// Route::get('/', [UserOnbordController::class, 'indexUserLogin'])->name('all-user-login');
+Route::get('/', [allUserController::class, 'indexUserLogin'])->name('all-user-login');
 Route::post('/log-out-users', [allUserController::class, 'userLogOut'])->name('logout-users');
+Route::post('/user-login', [allUserController::class, 'loginUserAutenticacaon'])->name('log-in');
+Route::post('/verify-otp-login-users', [allUserController::class, 'loginUserVerifyOtp'])->name('verify-otp-login-users');
 
-
-Route::post('/user-login', [UserOnbordController::class, 'loginUserAutenticacaon'])->name('log-in');
-Route::post('/verify-otp-login-users', [UserOnbordController::class, 'loginUserVerifyOtp'])->name('verify-otp-login-users');
 
 
 //User Review Reports
