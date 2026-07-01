@@ -10,8 +10,7 @@
             font-size: 14px;
             text-align: center;
         }
-
-        .hidden-label {
+         .hidden-label {
             margin-top: 15px;
             margin-bottom: 10px;
             font-weight: bold;
@@ -29,7 +28,16 @@
             <?php echo csrf_field(); ?>
             <div class="client">
                 <h1 class="client__heading">ADMIN REVIEW</h1>
-                <?php
+
+                <!-- <select id="financialYear" class="form-select client__select" name="financial_year" required>-->
+                <!--    <option value="" selected>Financial Year</option>-->
+                <!--    <option value="2025-2026">2025-2026</option>-->
+                <!--    <option value="2026-2027">2026-2027</option>-->
+                <!--    <option value="2027-2028">2027-2028</option>-->
+                <!--    <option value="2028-2029">2028-2029</option>-->
+                <!--    <option value="2029-2030">2029-2030</option>-->
+                <!--</select>-->
+                 <?php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
 
@@ -65,7 +73,6 @@
 
                 </select>
 
-
                 <div class="client___item">
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
                         placeholder="search employee" aria-label="Search">
@@ -80,9 +87,9 @@
             <div class="container mt-5 employee-table" id="employeeDetails" style="display:none; border: 1px solid #ddd;">
                 <div class="table-wrapper">
                     <!-- <div id="selectLabel" class="hidden-label"
-                                style="margin-bottom: 10px; font-weight: bold; display: none;">
-                                Select the employee:
-                            </div> -->
+                        style="margin-bottom: 10px; font-weight: bold; display: none;">
+                        Select the employee:
+                    </div> -->
                     <table class="table table-bordered table-hover main-table">
                         <thead>
                             <tr>
@@ -134,8 +141,8 @@
                                 <div class="review-block">
                                     <label for="comments_demonstrated_attendance" class="third-label">Tell us more about
                                         your experience:</label>
-                                    <textarea name="comments_demonstrated_attendance" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea name="comments_demonstrated_attendance" id="comments" class="form-control"
+                                        rows="1" cols="50" maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -157,8 +164,8 @@
                                     <div class="review-block">
                                         <label for="comments_employee_manage_shift" class="third-label">Tell us more about
                                             your experience:</label>
-                                        <textarea name="comments_employee_manage_shift" id="comments" class="form-control" rows="1" cols="50"
-                                            maxlength="255"
+                                        <textarea name="comments_employee_manage_shift" id="comments" class="form-control"
+                                            rows="1" cols="50" maxlength="255"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -177,11 +184,10 @@
                                     </select>
                                 </div>
                                 <div class="review-block">
-                                    <label for="comments_documentation_neatness" class="third-label">Tell us more about
-                                        your
+                                    <label for="comments_documentation_neatness" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_documentation_neatness" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea name="comments_documentation_neatness" id="comments" class="form-control"
+                                        rows="1" cols="50" maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -204,11 +210,10 @@
                                 </select>
 
                                 <div class="review-block">
-                                    <label for="comments_followed_instructions" class="third-label">Tell us more about
-                                        your
+                                    <label for="comments_followed_instructions" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_followed_instructions" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea name="comments_followed_instructions" id="comments" class="form-control"
+                                        rows="1" cols="50" maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -230,8 +235,8 @@
                                     <div class="review-block">
                                         <label for="comments_productive" class="third-label">Tell us more about your
                                             experience:</label>
-                                        <textarea name="comments_productive" id="comments" class="form-control" rows="1" cols="50"
-                                            maxlength="255"
+                                        <textarea name="comments_productive" id="comments" class="form-control" rows="1"
+                                            cols="50" maxlength="255"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -252,8 +257,8 @@
                                 <div class="review-block">
                                     <label for="comments_changes_schedules" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_changes_schedules" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea name="comments_changes_schedules" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -278,8 +283,8 @@
                                 <div class="review-block">
                                     <label for="comments_leave_policy" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_leave_policy" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea name="comments_leave_policy" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="255"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -288,8 +293,8 @@
                                     <label for="salary_deduction" class="second-label">2. Has there been any salary
                                         deduction due to the employee's
                                         leave?:</label>
-                                    <select class="form-select" aria-label="multiple select example"
-                                        name="salary_deduction" id="adr1" required>
+                                    <select class="form-select" aria-label="multiple select example" name="salary_deduction"
+                                        id="adr1" required>
                                         <option selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -301,8 +306,8 @@
                                     <div class="review-block">
                                         <label for="comments_salary_deduction" class="third-label">Tell us more about your
                                             experience:</label>
-                                        <textarea name="comments_salary_deduction" id="comments" class="form-control" rows="1" cols="50"
-                                            maxlength="255"
+                                        <textarea name="comments_salary_deduction" id="comments" class="form-control"
+                                            rows="1" cols="50" maxlength="255"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -321,11 +326,10 @@
                                     </select>
                                 </div>
                                 <div class="review-block">
-                                    <label for="comments_interact_housekeeping" class="third-label">Tell us more about
-                                        your
+                                    <label for="comments_interact_housekeeping" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_interact_housekeeping" id="comments" class="form-control" rows="1" maxlength="255"
-                                        cols="50"
+                                    <textarea name="comments_interact_housekeeping" id="comments" class="form-control"
+                                        rows="1" maxlength="255" cols="50"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -353,40 +357,38 @@
 
     </body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function() {
-            let timeout = null;
+    <script>   
+        $(function () {
+    let timeout = null;
 
-            function searchUser() {
-                const keyword = $('#employee_search').val().trim();
+    function searchUser() {
+        const keyword = $('#employee_search').val().trim();
 
-                if (keyword.length < 2) {
-                    $('#employeeDetails').hide();
-                    $('#selectLabel').hide();
-                    return;
-                }
+        if (keyword.length < 2) {
+            $('#employeeDetails').hide();
+            $('#selectLabel').hide();
+            return;
+        }
 
-                $('#employeeDetails').show();
-                $('#employeeTableBody').html('<tr><td colspan="4">Searching...</td></tr>');
-                $('#selectLabel').hide();
+        $('#employeeDetails').show();
+        $('#employeeTableBody').html('<tr><td colspan="4">Searching...</td></tr>');
+        $('#selectLabel').hide();
 
-                clearTimeout(timeout);
+        clearTimeout(timeout);
 
-                timeout = setTimeout(function() {
-                    $.ajax({
-                        url: '<?php echo e(route('user-search')); ?>', // Replace with your route
-                        type: 'GET',
-                        data: {
-                            keyword: keyword
-                        },
-                        success: function(response) {
-                            $('#employeeTableBody').empty();
+        timeout = setTimeout(function () {
+            $.ajax({
+                url: '<?php echo e(route("user-search")); ?>', // Replace with your route
+                type: 'GET',
+                data: { keyword: keyword },
+                success: function (response) {
+                    $('#employeeTableBody').empty();
 
-                            if (response.success && response.users.length > 0) {
-                                $('#selectLabel').show(); // Show the label
+                    if (response.success && response.users.length > 0) {
+                        $('#selectLabel').show(); // Show the label
 
-                                response.users.forEach(function(user) {
-                                    $('#employeeTableBody').append(`
+                        response.users.forEach(function (user) {
+                            $('#employeeTableBody').append(`
                                 <tr class="selectable-row" data-emp-id="${user.employee_id}">
                                     <td>${user.employee_id}</td>
                                     <td>${user.fname} ${user.lname}</td>
@@ -394,42 +396,41 @@
                                     <td>${user.email}</td>
                                 </tr>
                             `);
-                                });
-                            } else {
-                                $('#selectLabel').hide(); // Hide if no results
-                                $('#employeeTableBody').html(
-                                    '<tr><td colspan="4">No users found</td></tr>');
-                            }
-                        },
-                        error: function() {
-                            alert("An error occurred. Please try again.");
-                        }
-                    });
-                }, 1000);
-            }
-
-            $('#employee_search').on('keyup', searchUser);
-
-            $(document).on('click', '.selectable-row', function() {
-                var empId = $(this).data('emp-id');
-                $('#emp_id_input').val(empId);
-
-                var selectedRow = $(this).clone().addClass('table-active');
-                $('#employeeTableBody').empty().append(selectedRow);
-
-                $('#selectLabel').hide(); // Hide after selection
+                        });
+                    } else {
+                        $('#selectLabel').hide(); // Hide if no results
+                        $('#employeeTableBody').html('<tr><td colspan="4">No users found</td></tr>');
+                    }
+                },
+                error: function () {
+                    alert("An error occurred. Please try again.");
+                }
             });
-        });
+        }, 1000);
+    }
+
+    $('#employee_search').on('keyup', searchUser);
+
+    $(document).on('click', '.selectable-row', function () {
+        var empId = $(this).data('emp-id');
+        $('#emp_id_input').val(empId);
+
+        var selectedRow = $(this).clone().addClass('table-active');
+        $('#employeeTableBody').empty().append(selectedRow);
+
+        $('#selectLabel').hide(); // Hide after selection
+    });
+});
 
 
 
 
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const adminForm = document.getElementById("AdminReviewSubmit");
 
             if (adminForm) {
-                adminForm.addEventListener("submit", function(event) {
+                adminForm.addEventListener("submit", function (event) {
                     event.preventDefault();
 
                     // Calculate total Admin rating
@@ -456,13 +457,11 @@
                         processData: false,
                         contentType: false,
                         headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute("content")
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
                         },
-                        success: function(response) {
+                        success: function (response) {
                             console.log("Success:", response);
-                            alert("✅ " + (response.message ||
-                                "Admin Review submitted successfully!"));
+                            alert("✅ " + (response.message || "Admin Review submitted successfully!"));
 
                             adminForm.reset();
 
@@ -480,10 +479,9 @@
                             });
                             location.reload();
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error("Error:", xhr.responseJSON);
-                            alert("❌ " + (xhr.responseJSON?.message ||
-                                "Error submitting Admin review."));
+                            alert("❌ " + (xhr.responseJSON?.message || "Error submitting Admin review."));
                         }
                     });
                 });
@@ -492,7 +490,7 @@
 
 
         // Admin Review total ratting
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             function adminTotalReview() {
                 let totalRating = 0;
 
@@ -518,5 +516,4 @@
         });
     </script>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/delostyleUsers/admin-review-section.blade.php ENDPATH**/ ?>

@@ -22,6 +22,8 @@ class SuperAddUser extends Model
         'division',
         'manager_name',
         'manager_id',
+        'admin_id',
+        'hr_id',
         'department',
         'designation',
         'user_type',
@@ -51,5 +53,15 @@ class SuperAddUser extends Model
     public function designation()
     {
         return $this->belongsTo(Designation::class, 'designation', 'id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(SuperAddUser::class, 'admin_id');
+    }
+
+    public function hr()
+    {
+        return $this->belongsTo(SuperAddUser::class, 'hr_id');
     }
 }

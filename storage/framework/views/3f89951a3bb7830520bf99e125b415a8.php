@@ -45,7 +45,6 @@
                                     <label for="dob" class="forms-label">Joining Date</label>
                                     <input type="date" class="form-control" id="dob" name="dob" required>
                                 </div>
-
                                 <div class="col-md-6">
                                     <label for="gender" class="forms-label">Gender</label>
                                     <select class="form-control" id="gender" name="gender" required>
@@ -79,7 +78,11 @@
 
                         <div class="form-section">
                             <h5 class="heading-three">Work Information</h5>
+
+
                             <div class="row g-3">
+
+
                                 <div class="col-md-6">
                                     <label for="designation" class="forms-label">Designation</label>
                                     <select class="form-control" id="designation_dropdown" name="designation" required>
@@ -93,7 +96,7 @@
                                         <option value="Manager">Manager</option>
                                         <option value="Business Development">Business Development(Sales)</option>
                                     </select>
-                                    
+
 
 
                                     
@@ -105,9 +108,9 @@
                                         <option value="Salt Lake 3B">Salt Lake 3B</option>
                                         <option value="Salt Lake 17B">Salt Lake 17B</option>
                                         <option value="Salt Lake 504">Salt Lake 504</option>
+
                                     </select>
-
-
+                                    
                                     <div class="client-hide" id="search_manager_div" style="display: block;">
                                         <label for="manager_name" class="forms-label">Search Manager Name</label>
                                         <select class="form-control" id="manager_name" name="manager_id"
@@ -125,6 +128,11 @@
                                             placeholder="Enter Manager name">
                                     </div>
 
+                                    <div class="client-hide mt-3" id="search_hr_div">
+                                        <label class="forms-label">Search HR</label>
+                                        <select class="form-control" id="hr_id" name="hr_id" style="width:100%">
+                                        </select>
+                                    </div>
 
                                     <script>
                                         document.getElementById('designation_dropdown').addEventListener('change', function() {
@@ -164,8 +172,8 @@
                                     
                                     <div class="client-hide"
                                         style="display: none;>
-                                        <label for="Evaluation
-                                        Purpose" class="forms-label">Evaluation Purpose</label>
+                                        <label for="
+                                        Evaluation Purpose" class="forms-label">Evaluation Purpose</label>
                                         <select class="form-control" id="evaluation_purpose" name="evaluation_purpose">
                                             <option value="" selected>Select Purpose</option>
                                             <option value="Appraisal" selected>Appraisal</option>
@@ -181,6 +189,11 @@
                                         </select>
                                     </div>
 
+                                    <div class="client-hide" id="search_admin_div">
+                                        <label class="forms-label">Search Admin</label>
+                                        <select class="form-control" id="admin_id" name="admin_id" style="width:100%">
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -250,7 +263,7 @@
                                 <div class="client-hide col-md-6">
                                     <label for="salary" class="forms-label">Salary</label>
                                     <input type="text" class="form-control" id="salary" name="salary"
-                                        placeholder="Enter Salary" min="0" max="7" required>
+                                        max="7" placeholder="Enter Salary" min="0" required>
                                 </div>
 
                                 <div class="col-md-6">
@@ -315,6 +328,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 
     <script>
@@ -582,14 +596,12 @@
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
         });
 
-
         const salaryInput = document.getElementById('salary');
 
         salaryInput.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
         });
 
-        // Salary grade
         $('#salary').on('input', function() {
 
             let monthlySalary = parseFloat($(this).val()) || 0;
@@ -643,6 +655,59 @@
             });
         });
 
+        // Admin search2
+        $(document).ready(function() {
+            $('#admin_id').select2({
+                theme: 'bootstrap-5',
+                placeholder: "Select Admin",
+                allowClear: true,
+                ajax: {
+                    url: "<?php echo e(route('get.admins')); ?>",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                templateResult: function(data) {
+                    if (!data.id) return data.text;
+                    return $('<div><strong>' + data.text + '</strong></div>');
+                },
+                templateSelection: function(data) {
+                    return data.text || data.id;
+                }
+            });
+        });
+
+        // Hr search2
+        $(document).ready(function() {
+            $('#hr_id').select2({
+                theme: 'bootstrap-5',
+                placeholder: "Select HR",
+                allowClear: true,
+                ajax: {
+                    url: "<?php echo e(route('get.hrs')); ?>",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                templateResult: function(data) {
+                    if (!data.id) return data.text;
+                    return $('<div><strong>' + data.text + '</strong></div>');
+                },
+                templateSelection: function(data) {
+                    return data.text || data.id;
+                }
+            });
+        });
 
         // Probation Date 
         $(document).ready(function() {
@@ -671,7 +736,6 @@
 
         });
     </script>
-
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/admin/superAddUserDashBoard.blade.php ENDPATH**/ ?>

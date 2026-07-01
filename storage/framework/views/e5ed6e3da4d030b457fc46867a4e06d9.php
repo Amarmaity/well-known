@@ -17,6 +17,15 @@
 
         <div class="col-12 col-sm-6 search-container">
             <label for="financialYear" class="forms-label">Financial Years:</label>
+            <!--<select id="employeeDetails" name="financial_year" required class="form-control">-->
+            <!--    <option value="" selected>Select Financial Years</option>-->
+            <!--    <option value="2025-2026">2025-2026</option>-->
+            <!--    <option value="2026-2027">2026-2027</option>-->
+            <!--    <option value="2027-2028">2027-2028</option>-->
+            <!--    <option value="2028-2029">2028-2029</option>-->
+            <!--    <option value="2029-2030">2029-2030</option>-->
+            <!--</select>-->
+            
             <?php
                 $currentMonth = date('m');
                 $currentYear = date('Y');
@@ -29,10 +38,10 @@
                 }
 
                 $years = [
-                    $currentFYStart - 1,
-                    $currentFYStart, 
-                    $currentFYStart + 1,
-                    $currentFYStart + 2,
+                    $currentFYStart - 1, // Previous FY
+                    $currentFYStart, // Current FY
+                    $currentFYStart + 1, // Next FY
+                    $currentFYStart + 2, // Next +1 FY
                 ];
             ?>
 
@@ -89,8 +98,7 @@
             <?php endif; ?>
 
             <?php if($userData['adminReview'] !== null): ?>
-                <button class="btn secondary-btn" onclick="loadReport('adminReport', '<?php echo e($emp_id); ?>')">Admin
-                    Report</button>
+                <button class="btn secondary-btn" onclick="loadReport('adminReport', '<?php echo e($emp_id); ?>')">Admin Report</button>
             <?php endif; ?>
 
             <?php if($userData['hrReview'] !== null): ?>
@@ -98,9 +106,11 @@
             <?php endif; ?>
 
             <?php if($userData['managerReview'] !== null): ?>
-                <button class="btn secondary-btn" onclick="loadReport('managerReport', '<?php echo e($emp_id); ?>')">Manager
-                    Report</button>
+                <button class="btn secondary-btn" onclick="loadReport('managerReport', '<?php echo e($emp_id); ?>')">Manager Report</button>
             <?php endif; ?>
+
+            
+
             <?php if($clientReviews->isNotEmpty()): ?>
                 <?php $__currentLoopData = $clientReviews; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $clientReview): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <button class="btn secondary-btn"
@@ -112,6 +122,7 @@
             <?php elseif(in_array('client', $user_roles)): ?>
                 <p>Your client review is pending.</p>
             <?php endif; ?>
+
         </div>
     </div>
 
@@ -132,24 +143,12 @@
 
             let url = '';
             switch (reportType) {
-                case 'evaluation':
-                    url = `/evaluation/details/${empId}`;
-                    break;
-                case 'managerReport':
-                    url = `/manager/report/${empId}`;
-                    break;
-                case 'adminReport':
-                    url = `/admin/report/${empId}`;
-                    break;
-                case 'hrReport':
-                    url = `/hr/report/${empId}`;
-                    break;
-                case 'clientReport':
-                    url = `/client/report/${empId}`;
-                    break;
-                default:
-                    console.error('Unknown report type');
-                    return;
+                case 'evaluation': url = `/evaluation/details/${empId}`; break;
+                case 'managerReport': url = `/manager/report/${empId}`; break;
+                case 'adminReport': url = `/admin/report/${empId}`; break;
+                case 'hrReport': url = `/hr/report/${empId}`; break;
+                case 'clientReport': url = `/client/report/${empId}`; break;
+                default: console.error('Unknown report type'); return;
             }
 
             $.ajax({
@@ -160,16 +159,16 @@
                     emp_id: empId,
                     employee_id: empId
                 },
-                success: function(response) {
+                success: function (response) {
                     $('#reportDetails').html(response).addClass('table-container');
                 },
-                error: function() {
+                error: function () {
                     $('#reportDetails').html('<p>Sorry, there was an error loading the report.</p>');
                 }
             });
         }
 
-        document.getElementById('employeeDetails').addEventListener('change', function() {
+        document.getElementById('employeeDetails').addEventListener('change', function () {
             const selectedYear = this.value;
             const table = document.getElementById('reviewTableContainer');
             const empId = "<?php echo e($emp_id); ?>";
@@ -258,17 +257,17 @@
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(response) {
+                success: function (response) {
                     $('#reportDetails').html(response);
                     $('#reportDetails').addClass('table-container');
                 },
-                error: function() {
+                error: function () {
                     $('#reportDetails').html('<p>Sorry, there was an error loading the client review.</p>');
                 }
             });
         }
+
     </script>
 
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/delostyleUsers/user-review-report.blade.php ENDPATH**/ ?>

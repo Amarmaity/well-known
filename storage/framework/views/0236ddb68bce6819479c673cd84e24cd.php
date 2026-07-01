@@ -85,11 +85,20 @@
     <div class="client">
         <h1 class="client__heading">Probation Employee Table</h1>
 
+        <!--<select id="financialYear" class="form-select client__select" name="financial_year" required>-->
+        <!--    <option value="" selected>Financial Year</option>-->
+        <!--    <option value="2025-2026">2025-2026</option>-->
+        <!--    <option value="2026-2027">2026-2027</option>-->
+        <!--    <option value="2027-2028">2027-2028</option>-->
+        <!--    <option value="2028-2029">2028-2029</option>-->
+        <!--    <option value="2029-2030">2029-2030</option>-->
+        <!--</select>-->
+
         <div class="client___item">
             <input type="search" id="employee_search" name="search" class="form-control client__search" placeholder="Search"
                 aria-label="Search">
             <button class="client__btn" type="submit">
-                <img src="<?php echo e(asset('/images/search.png')); ?>" alt="Search">
+                <img src="<?php echo e(asset('images/search.png')); ?>" alt="Search">
             </button>
         </div>
     </div>

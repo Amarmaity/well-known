@@ -5,14 +5,14 @@
 
 <?php $__env->startSection('content'); ?>
 
-    <style>
-        select:disabled {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: none;
-        }
-    </style>
+<style>
+    select:disabled {
+  appearance: none;           
+  -webkit-appearance: none;   
+  -moz-appearance: none;      
+  background-image: none;     
+}
+</style>
 
     <div class="super-add-user-page">
         <div class="content-block">
@@ -58,7 +58,7 @@
                         <div class="col-md-6" style="display: none;">
                             <label for="user_type_dropdown" class="forms-label">User Type</label>
                             <select class="form-control" id="user_type_dropdown" name="user_type" required>
-                                <option value="" selected>Select User Type</option>
+                                <option value="" selected >Select User Type</option>
                                 <option value="client" selected>Client</option>
                             </select>
                         </div>
@@ -94,9 +94,10 @@
 
     <!-- AJAX Script -->
     <script>
-        $(document).ready(function() {
-            $('#userForm').on('submit', function(e) {
+        $(document).ready(function () {
+            $('#userForm').on('submit', function (e) {
                 e.preventDefault();
+                
                 const clientName = $('#client-name').val().trim();
                 const companyName = $('#company-name').val().trim();
                 const mobile = $('#mobno').val().trim();
@@ -134,7 +135,6 @@
                 }
 
                 // Mobile (Optional)
-                // Accepts international numbers with optional +
                 if (mobile !== '') {
                     const mobileRegex = /^\+?[1-9]\d{6,14}$/;
 
@@ -158,8 +158,10 @@
                     $('#cnf-password').focus();
                     return;
                 }
-
+                
+                
                 $('#saveBtn').prop('disabled', true).text('Saving...');
+
                 $.ajax({
                     url: "<?php echo e(route('new-client')); ?>",
                     type: "POST",
@@ -167,11 +169,11 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status === "success") {
                             alert(response.message || "Client added successfully.");
                             $('#userForm')[0].reset();
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 $('#saveBtn').prop('disabled', false).text('Save');
                                 location.reload();
                             }, 3000);
@@ -180,14 +182,14 @@
                             $('#saveBtn').prop('disabled', false).text('Save');
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.log(xhr.responseText);
 
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
                             let errorMessages = '';
 
-                            $.each(errors, function(field, messages) {
+                            $.each(errors, function (field, messages) {
                                 errorMessages += messages.join("\n") + "\n";
                             });
 
@@ -204,5 +206,4 @@
     </script>
 
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/admin/addClient.blade.php ENDPATH**/ ?>

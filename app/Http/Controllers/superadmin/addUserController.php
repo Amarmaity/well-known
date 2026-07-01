@@ -15,13 +15,12 @@ use App\Mail\EvaluationCredentialMail;
 
 
 class addUserController extends Controller
-
 {
     //
 
     public function indexAddUser()
     {
-        return view("admin/superAddUserDashBoard");
+        return view("admin.superAddUserDashBoard");
     }
 
 
@@ -44,6 +43,9 @@ class addUserController extends Controller
                     Rule::unique('super_add_users', 'email'),
                 ],
                 'password' => 'required|string',
+                'manager_id' => 'nullable|exists:super_add_users,id',
+                'admin_id' => 'nullable|exists:super_add_users,id',
+                'hr_id' => 'nullable|exists:super_add_users,id',
             ];
 
             if (!$isClient) {
@@ -170,7 +172,8 @@ class addUserController extends Controller
             $managerId = $request->input('manager_id');
             $managerNameInput = trim($request->input('manager_name'));
             $managerNameFinal = $managerNameInput;
-
+            $adminId = $request->input('admin_id');
+            $hrId = $request->input('hr_id');
             // If manager_id is provided and valid, fetch full name from DB
             if (!empty($managerId)) {
                 $manager = SuperAddUser::find($managerId);
@@ -193,7 +196,9 @@ class addUserController extends Controller
                 'division' => $request->input('division'),
                 'manager_id' => $managerId ?: null,
                 // 'manager_name' => $request->input('manager_name'),
-                 'manager_name' => $managerNameFinal,
+                'manager_name' => $managerNameFinal,
+                'admin_id' => $adminId ?: null,
+                'hr_id' => $hrId ?: null,
                 'designation' => $request->input('designation'),
                 'user_type' => $request->input('user_type'),
                 'user_roles' => json_encode($request->input('user_roles')),

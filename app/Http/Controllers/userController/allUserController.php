@@ -27,94 +27,14 @@ use Illuminate\Support\Facades\Artisan;
 
 class allUserController extends Controller
 {
-    //
 
     public function indexUserLogin()
     {
         $superUser = null;
         //  $output1 = Artisan::output();
 
-        return view("loginusers/userlogin", compact('superUser'));
+        return view("loginusers.userlogin", compact('superUser'));
     }
-
-
-    // public function loginUserAutenticacaon(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'email' => 'required|email',
-    //         'password' => 'required|string|min:4',
-    //         'user_type' => 'required|string',
-    //     ]);
-
-    //     // Check each user type
-    //     $user = SuperAddUser::where('email', $validated['email'])->first();
-    //     if (!$user) {
-    //         $user = SuperUserTable::where('email', $validated['email'])->first();
-    //     }
-    //     if (!$user) {
-    //         $user = AllClient::where('client_email', $validated['email'])->first();
-    //     }
-
-    //     if ($user instanceof AllClient && $user->status == 0) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Your account is inactive. Please contact support.',
-    //         ]);
-    //     }
-
-    //     if (!$user) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Invalid email address!',
-    //         ]);
-    //     }
-
-    //     // Normalize email check for AllClient
-    //     $userEmail = $user instanceof AllClient ? $user->client_email : $user->email;
-
-    //     if ($user->user_type !== $validated['user_type']) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Incorrect user type!',
-    //         ]);
-    //     }
-
-    //     if (!Hash::check($validated['password'], $user->password)) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Incorrect password!',
-    //         ]);
-    //     }
-
-    //     $otp = random_int(100000, 999999);
-
-    //     Session::put('user_email', $userEmail);
-    //     Session::put('user_type', $user->user_type);
-    //     Session::put('employee_id', $user->employee_id ?? null);
-    //     Session::put('otp', $otp);
-    //     Session::put('otp_email', $userEmail);
-    //     Session::put('otp_sent_time', now());
-
-    //     // If it's a client, store client_id
-    //     if ($user instanceof AllClient) {
-    //         Session::put('client_id', $user->id);
-    //     }
-
-    //     try {
-    //         Mail::to($userEmail)->send(new OtpMail($otp));
-
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => 'OTP has been sent to your email!',
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Failed to send OTP email. Please try again later.',
-    //             'debug' => env('APP_DEBUG') ? $e->getMessage() : null,
-    //         ]);
-    //     }
-    // }
 
     public function loginUserAutenticacaon(Request $request)
     {
@@ -319,13 +239,13 @@ class allUserController extends Controller
 
     public function admin()
     {
-        return view('delostyleUsers/admin-dashboard');
+        return view('delostyleUsers.admin-dashboard');
     }
 
     public function adminReviewSection()
     {
 
-        return view('delostyleUsers/admin-review-section');
+        return view('delostyleUsers.admin-review-section');
     }
 
     public function clientReviewSection()
@@ -334,61 +254,140 @@ class allUserController extends Controller
         return view('delostyleUsers.client-review-section');
     }
 
+
     //Admin, Hr, Manager,
+    // public function searchUser(Request $request)
+    // {
+    //     $keyword = $request->input('keyword');
+
+    //     // Get current user's type from session
+    //     $currentUserType = session('user_type');
+
+    //     if (!$currentUserType) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'User type not found in session!'
+    //         ]);
+    //     }
+
+    //     $query = SuperAddUser::query();
+
+    //     // Role-based logic
+    //     if ($currentUserType === 'hr') {
+    //         // HR can search Admin and Manager
+    //         $query->whereIn('user_type', ['admin', 'manager', 'users']);
+    //     } elseif ($currentUserType === 'admin') {
+    //         // Admin can search HR and Manager
+    //         $query->whereIn('user_type', ['hr', 'manager', 'users']);
+    //     } else {
+    //         // Other roles: exclude hr, admin, manager
+    //         $query->whereNotIn('user_type', ['admin', 'hr', 'manager']);
+    //     }
+
+
+    //     $query->where('status', 1)
+    //         ->where('employee_status', 'Employee');
+
+
+
+    //     // Search by employee ID or full name
+    //     $query->where(function ($q) use ($keyword) {
+    //         $q->where('employee_id', 'like', "%{$keyword}%")
+    //             ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", ["%{$keyword}%"]);
+    //     });
+
+    //     $users = $query->get();
+
+    //     if ($users->isNotEmpty()) {
+    //         return response()->json([
+    //             'success' => true,
+    //             'users' => $users
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'No users found!'
+    //         ]);
+    //     }
+    // }
+
     public function searchUser(Request $request)
     {
-        $keyword = $request->input('keyword');
+        $keyword = trim($request->input('keyword'));
 
-        // Get current user's type from session
-        $currentUserType = session('user_type');
+        // Logged-in user's details
+        $currentUserType = strtolower(session('user_type'));
+        $currentUserId = session('user_id'); // Make sure this is stored during login
 
-        if (!$currentUserType) {
+        if (!$currentUserType || !$currentUserId) {
             return response()->json([
                 'success' => false,
-                'message' => 'User type not found in session!'
+                'message' => 'User session not found!'
             ]);
         }
 
         $query = SuperAddUser::query();
 
-        // Role-based logic
-        if ($currentUserType === 'hr') {
-            // HR can search Admin and Manager
-            $query->whereIn('user_type', ['admin', 'manager', 'users']);
-        } elseif ($currentUserType === 'admin') {
-            // Admin can search HR and Manager
-            $query->whereIn('user_type', ['hr', 'manager', 'users']);
-        } else {
-            // Other roles: exclude hr, admin, manager
-            $query->whereNotIn('user_type', ['admin', 'hr', 'manager']);
-        }
-        
-        
+        // Active Employees only
         $query->where('status', 1)
             ->where('employee_status', 'Employee');
 
+        /*
+        |--------------------------------------------------------------------------
+        | Hierarchy-wise Search
+        |--------------------------------------------------------------------------
+        */
 
+        switch ($currentUserType) {
 
-        // Search by employee ID or full name
-        $query->where(function ($q) use ($keyword) {
-            $q->where('employee_id', 'like', "%{$keyword}%")
-                ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", ["%{$keyword}%"]);
-        });
+            case 'admin':
+                // Admin can search only employees assigned to this Admin
+                $query->where('admin_id', $currentUserId);
+                break;
+
+            case 'hr':
+                // HR can search only employees assigned to this HR
+                $query->where('hr_id', $currentUserId);
+                break;
+
+            case 'manager':
+                // Manager can search only employees assigned to this Manager
+                $query->where('manager_id', $currentUserId);
+                break;
+
+            case 'superadmin':
+            case 'super_admin':
+                // Super Admin can search everyone
+                break;
+
+            default:
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized user.'
+                ]);
+        }
+
+        
+        // Search by Employee ID or Employee Name
+        if (!empty($keyword)) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('employee_id', 'LIKE', "%{$keyword}%")
+                    ->orWhere('fname', 'LIKE', "%{$keyword}%")
+                    ->orWhere('lname', 'LIKE', "%{$keyword}%")
+                    ->orWhere('email', 'LIKE', "%{$keyword}%")
+                    ->orWhereRaw("CONCAT(fname,' ',lname) LIKE ?", ["%{$keyword}%"]);
+            });
+        }
 
         $users = $query->get();
 
-        if ($users->isNotEmpty()) {
-            return response()->json([
-                'success' => true,
-                'users' => $users
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'No users found!'
-            ]);
-        }
+        return response()->json([
+            'success' => $users->isNotEmpty(),
+            'users' => $users,
+            'message' => $users->isEmpty() ? 'No users found!' : null
+        ]);
     }
+
 
 
     //Client Search
@@ -397,7 +396,7 @@ class allUserController extends Controller
         $keyword = $request->input('keyword');
 
         $query = SuperAddUser::query();
-         $query->where('status', 1)
+        $query->where('status', 1)
             ->where('user_roles', 'like', '%"client"%')
             ->where('employee_status', 'Employee');
 
@@ -423,7 +422,6 @@ class allUserController extends Controller
             ]);
         }
     }
-
 
 
     public function adminReviewStore(Request $request)
@@ -546,16 +544,13 @@ class allUserController extends Controller
 
     public function hr()
     {
-        return view('delostyleUsers/hr-dashboard');
+        return view('delostyleUsers.hr-dashboard');
     }
 
     public function hrReviewSection()
     {
-        return view('delostyleUsers/hr-review-section');
+        return view('delostyleUsers.hr-review-section');
     }
-
-
-
 
     public function hrReviewStore(Request $request)
     {
@@ -670,18 +665,18 @@ class allUserController extends Controller
     public function user()
     {
         $employee = SuperAddUser::all();
-        return view('delostyleUsers/users-dashboard', ['employee' => $employee]);
+        return view('delostyleUsers.users-dashboard', ['employee' => $employee]);
     }
 
     public function manager()
     {
-        return view('delostyleUsers/manager-dashboard');
+        return view('delostyleUsers.manager-dashboard');
     }
 
     public function managerReviewSection()
     {
 
-        return view('delostyleUsers/manager-review-section');
+        return view('delostyleUsers.manager-review-section');
     }
 
 
@@ -798,7 +793,7 @@ class allUserController extends Controller
 
     public function client()
     {
-        return view('delostyleUsers/client-dashboard');
+        return view('delostyleUsers.client-dashboard');
     }
 
 
@@ -811,139 +806,6 @@ class allUserController extends Controller
 
 
 
-    // public function clientReviewStore(Request $request)
-    // {
-    //     $emp_id = $request->input('emp_id');
-    //     $financial_year = $request->input('financial_year');
-
-    //     // 1. Check if employee exists
-    //     $employee = SuperAddUser::where('employee_id', $emp_id)->first();
-    //     if (!$employee) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Employee record not found!'
-    //         ], 404);
-    //     }
-
-    //     // 2. Check probation period
-    //     if ($employee->probation_date && now()->lt(Carbon::parse($employee->probation_date))) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Your review cannot be submitted. Employee is still under probation period.'
-    //         ], 403);
-    //     }
-
-    //     // 3. Financial year must match employee's record
-    //     if ($employee->financial_year !== $financial_year) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'This is not the current financial year. Try with the correct financial year.'
-    //         ], 400);
-    //     }
-
-    //     // 4. Check if evaluation exists
-    //     $evaluation = evaluationTable::where('emp_id', $emp_id)
-    //         ->where('financial_year', $financial_year)
-    //         ->first();
-
-    //     if (!$evaluation) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => "Cannot submit review. Evaluation must be submitted first for: $emp_id for financial year: $financial_year"
-    //         ], 400);
-    //     }
-
-    //     $client_id = Session::get('client_id');
-
-    //     // 5. Check for existing review
-    //     $reviewExists = ClientReviewTable::where('emp_id', $emp_id)
-    //         ->where('financial_year', $financial_year)
-    //         ->where('client_id', $client_id)
-    //         ->exists();
-
-    //     if ($reviewExists) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'You already submitted a review for this employee for the selected financial year.'
-    //         ], 409);
-    //     }
-
-    //     try {
-    //         // 6. Validate the request
-    //         $validatedData = $request->validate([
-    //             'emp_id' => 'required|string',
-    //             'financial_year' => [
-    //                 'required',
-    //                 Rule::unique('client_review_tables', 'financial_year')->where(function ($query) use ($request, $client_id) {
-    //                     return $query->where('emp_id', $request->input('emp_id'))
-    //                         ->where('client_id', $client_id);
-    //                 }),
-    //             ],
-
-    //             // Rating fields
-    //             'understand_requirements' => 'numeric|max:20',
-    //             'business_needs' => 'numeric|max:20',
-    //             'detailed_project_scope' => 'numeric|max:20',
-    //             'responsive_reach_project' => 'numeric|max:20',
-    //             'comfortable_discussing' => 'numeric|max:20',
-    //             'regular_updates' => 'numeric|max:20',
-    //             'concerns_addressed' => 'numeric|max:20',
-    //             'technical_expertise' => 'numeric|max:20',
-    //             'best_practices' => 'numeric|max:20',
-    //             'suggest_innovative' => 'numeric|max:20',
-    //             'quality_code' => 'numeric|max:20',
-    //             'encounter_issues' => 'numeric|max:20',
-    //             'code_scalable' => 'numeric|max:20',
-    //             'solution_perform' => 'numeric|max:20',
-    //             'project_delivered' => 'numeric|max:20',
-    //             'communicated_handled' => 'numeric|max:20',
-    //             'development_process' => 'numeric|max:20',
-    //             'unexpected_challenges' => 'numeric|max:20',
-    //             'effective_workarounds' => 'numeric|max:20',
-    //             'bugs_issues' => 'numeric|max:20',
-    //             'ClientTotalReview' => 'numeric|max:200',
-
-    //             // Comment fields (nullable + max 255)
-    //             'comment_understand_requirements' => 'nullable|string|max:255',
-    //             'comments_business_needs' => 'nullable|string|max:255',
-    //             'comments_detailed_project_scope' => 'nullable|string|max:255',
-    //             'comments_responsive_reach_project' => 'nullable|string|max:255',
-    //             'comments_comfortable_discussing' => 'nullable|string|max:255',
-    //             'comments_regular_updates' => 'nullable|string|max:255',
-    //             'comments_concerns_addressed' => 'nullable|string|max:255',
-    //             'comments_technical_expertise' => 'nullable|string|max:255',
-    //             'comments_best_practices' => 'nullable|string|max:255',
-    //             'comments_suggest_innovative' => 'nullable|string|max:255',
-    //             'comments_quality_code' => 'nullable|string|max:255',
-    //             'comments_encounter_issues' => 'nullable|string|max:255',
-    //             'comments_code_scalable' => 'nullable|string|max:255',
-    //             'comments_solution_perform' => 'nullable|string|max:255',
-    //             'comments_project_delivered' => 'nullable|string|max:255',
-    //             'comments_communicated_handled' => 'nullable|string|max:255',
-    //             'comments_development_process' => 'nullable|string|max:255',
-    //             'comments_unexpected_challenges' => 'nullable|string|max:255',
-    //             'comments_effective_workarounds' => 'nullable|string|max:255',
-    //             'comments_bugs_issues' => 'nullable|string|max:255',
-    //         ], [
-    //             'financial_year.unique' => 'You already submitted a review for this financial year.'
-    //         ]);
-
-    //         // 7. Role check
-    //         $roles = json_decode($employee->user_roles, true);
-    //         if (is_array($roles) && in_array('client', $roles)) {
-    //             // Add client_id from session to the validated data
-    //             $validatedData['client_id'] = Session::get('client_id');
-    //             ClientReviewTable::create($validatedData);
-    //             return response()->json(['message' => 'Review submitted successfully!'], 200);
-    //         }
-
-    //         return response()->json(['error' => 'You are not authorized to submit this review.'], 403);
-    //     } catch (\Exception $e) {
-    //         Log::error('❌ Client review submission failed: ' . $e->getMessage());
-    //         return response()->json(['error' => 'Something went wrong! Check logs.'], 500);
-    //     }
-    // }
-    
     public function clientReviewStore(Request $request)
     {
         $emp_id = $request->input('emp_id');
@@ -1125,8 +987,8 @@ class allUserController extends Controller
 
     //     return view('delostyleUsers.user-review-report', compact('userData', 'emp_id', 'clientReviews', 'user_roles'));
     // }
-    
-     public function reviewUserReport($emp_id)
+
+    public function reviewUserReport($emp_id)
     {
         if (!session('user_type') || !session('employee_id')) {
             return redirect()->route('all-user-login')
@@ -1222,6 +1084,7 @@ class allUserController extends Controller
         return view('reports.hrReport', compact('user'));
     }
 
+
     public function clientReport(Request $request, $emp_id)
     {
 
@@ -1273,20 +1136,23 @@ class allUserController extends Controller
 
     public function getHrReviewsList(Request $request)
     {
+        $hrId = session('user_id');
+
         // Step 1: Get all unique emp_ids from both tables
-        $validEmployeeIds = HrReviewTable::pluck('emp_id',)
+        $validEmployeeIds = HrReviewTable::pluck('emp_id', )
             ->merge(evaluationTable::pluck('emp_id'))
             ->unique()
             ->toArray();
 
         // Step 2: Get active SuperAddUser records for these IDs
         $superAddUser = SuperAddUser::where('status', 1)
+            ->where('hr_id', $hrId)
             ->whereIn('employee_id', $validEmployeeIds)
             ->get();
 
         // Step 3: Exclude employee_ids where user_type is 'admin'
         $nonAdminEmployeeIds = $superAddUser
-            ->whereNotIn('user_type',  ['manager'])  // Filter out admins
+            ->whereNotIn('user_type', ['manager'])  // Filter out admins
             ->pluck('employee_id')
             ->toArray();
 
@@ -1350,6 +1216,7 @@ class allUserController extends Controller
 
     public function getAdminReviewList(Request $request)
     {
+        $adminId = session('user_id');
         // Step 1: Get all unique emp_ids from both tables
         $validEmployeeIds = evaluationTable::pluck('emp_id')
             ->merge(AdminReviewTable::pluck('emp_id'))
@@ -1358,6 +1225,7 @@ class allUserController extends Controller
 
         // Step 2: Get active SuperAddUser records for these IDs
         $superAddUser = SuperAddUser::where('status', 1)
+            ->where('admin_id', $adminId)
             ->whereIn('employee_id', $validEmployeeIds)
             ->get();
 
@@ -1378,10 +1246,6 @@ class allUserController extends Controller
         // Return view
         return view('reports.adminReportView', compact('superAddUser', 'adminReviewTable', 'evaluation'));
     }
-
-
-
-
 
 
     public function showDetailsAdmin($employee_id)
@@ -1409,42 +1273,38 @@ class allUserController extends Controller
 
 
     public function getManagerReviewList(Request $request)
-{
-    $managerId = session('user_id');
+    {
+        $managerId = session('user_id');
 
-    // Step 1: Get all emp_ids from Manager and Evaluation tables
-    $validEmployeeIds = ManagerReviewTable::pluck('emp_id')
-        ->merge(evaluationTable::pluck('emp_id'))
-        ->unique()
-        ->toArray();
+        // Step 1: Get all emp_ids from Manager and Evaluation tables
+        $validEmployeeIds = ManagerReviewTable::pluck('emp_id')
+            ->merge(evaluationTable::pluck('emp_id'))
+            ->unique()
+            ->toArray();
 
-    // Step 2: Get only employees assigned to logged-in manager
-    $superAddUser = SuperAddUser::where('status', 1)
-        ->where('manager_id', $managerId)
-        ->whereIn('employee_id', $validEmployeeIds)
-        ->get();
+        // Step 2: Get only employees assigned to logged-in manager
+        $superAddUser = SuperAddUser::where('status', 1)
+            ->where('manager_id', $managerId)
+            ->whereIn('employee_id', $validEmployeeIds)
+            ->get();
 
-    // Step 3: Exclude HR and Admin users
-    $nonHrAdminEmployeeIds = $superAddUser
-        ->whereNotIn('user_type', ['hr', 'admin'])
-        ->pluck('employee_id')
-        ->toArray();
+        // Step 3: Exclude HR and Admin users
+        $nonHrAdminEmployeeIds = $superAddUser
+            ->whereNotIn('user_type', ['hr', 'admin'])
+            ->pluck('employee_id')
+            ->toArray();
 
-    // Step 4: Get reviews and evaluations
-    $managerReviewTable = ManagerReviewTable::whereIn('emp_id', $nonHrAdminEmployeeIds)->get();
+        // Step 4: Get reviews and evaluations
+        $managerReviewTable = ManagerReviewTable::whereIn('emp_id', $nonHrAdminEmployeeIds)->get();
 
-    $evaluation = evaluationTable::whereIn('emp_id', $nonHrAdminEmployeeIds)->get();
+        $evaluation = evaluationTable::whereIn('emp_id', $nonHrAdminEmployeeIds)->get();
 
-    return view('reports.managerReportView', compact(
-        'superAddUser',
-        'managerReviewTable',
-        'evaluation'
-    ));
-}
-
-
-
-
+        return view('reports.managerReportView', compact(
+            'superAddUser',
+            'managerReviewTable',
+            'evaluation'
+        ));
+    }
 
 
     public function showDetailsManager($employee_id)
@@ -1471,44 +1331,7 @@ class allUserController extends Controller
     }
 
 
-
-
-    //  public function getClientReviewList(Request $request)
-    // {
-    //     // 1. Get the client_id from session
-    //     $targetClientId = session('client_id');
-
-    //     // 2. If session doesn't have client_id, return error
-    //     if (!$targetClientId) {
-    //         return back()->with('error', 'Client session expired or not logged in.');
-    //     }
-
-    //     // 3. Get all employee IDs that have reviews
-    //     $validEmployeeIds = ClientReviewTable::pluck('emp_id')
-    //         ->unique()
-    //         ->toArray();
-
-    //     // 4. Filter employees:
-    //     $superAddUser = SuperAddUser::where('status', 1)
-    //         ->whereIn('employee_id', $validEmployeeIds)
-    //         ->where('client_id', 'like', '%"' . $targetClientId . '"%')
-    //         ->get();
-
-    //     // 5. Filter reviews for these employees
-    //     $filteredEmployeeIds = $superAddUser->pluck('employee_id')->toArray();
-
-    //     $clientReviewTable = ClientReviewTable::whereIn('emp_id', $filteredEmployeeIds)->get();
-        
-    //     $usersWithReviewIds = $clientReviewTable->pluck('emp_id')->unique()->toArray();
-    //     $superAddUser = $superAddUser->whereIn('employee_id', $usersWithReviewIds);
-
-    //     $evaluation = evaluationTable::whereIn('emp_id', $filteredEmployeeIds)->get();
-
-    //     // 6. Return to view
-    //     return view('reports.clientReportView', compact('superAddUser', 'clientReviewTable', 'evaluation'));
-    // }
-    
-     public function getClientReviewList(Request $request)
+    public function getClientReviewList(Request $request)
     {
         $targetClientId = session('client_id');
 
@@ -1544,8 +1367,7 @@ class allUserController extends Controller
             )
         );
     }
-    
-    
+
 
 
     public function showDetailsClient($employee_id)
@@ -1579,58 +1401,8 @@ class allUserController extends Controller
     }
 
 
-    //Handle User Review table in side User Review Report for Employee blade file
-    // public function getReviewScores(Request $request)
-    // {
-    //     // $empId = session('employee_id');
-    //     $empId = $request->input('emp_id') ?? $request->input('employee_id');
-    //     $year = $request->query('financial_year');
-
-    //     $user = SuperAddUser::where('employee_id', $empId)->first();
-    //     $roles = json_decode($user?->user_roles ?? '[]', true);
-    //     $showClient = in_array('client', $roles);
-
-    //     $evaluation = evaluationTable::where('emp_id', $empId)
-    //         ->where('financial_year', $year)
-    //         ->first();
-
-    //     $adminReview = AdminReviewTable::where('emp_id', $empId)
-    //         ->where('financial_year', $year)
-    //         ->first();
-
-    //     $hrReview = HrReviewTable::where('emp_id', $empId)
-    //         ->where('financial_year', $year)
-    //         ->first();
-
-    //     $managerReview = ManagerReviewTable::where('emp_id', $empId)
-    //         ->where('financial_year', $year)
-    //         ->first();
-
-    //     $clientReview = null;
-    //     if ($showClient) {
-    //         $clientReview = ClientReviewTable::where('emp_id', $empId)
-    //             ->where('financial_year', $year)
-    //             ->first();
-    //     }
-
-    //     $response = [
-    //         'admin' => $adminReview?->AdminTotalReview,
-    //         'hr' => $hrReview?->HrTotalReview,
-    //         'managerTotal' => $managerReview?->ManagerTotalReview,
-    //         'total' => $evaluation?->total_scoring_system,
-    //         'showClient' => $showClient,
-    //     ];
-
-
-    //     if ($showClient) {
-    //         $response['clientTotal'] = $clientReview?->ClientTotalReview;
-    //     }
-
-
-    //     return response()->json($response);
-    // }
-    
-      public function getReviewScores(Request $request)
+    //Handle User Review table in side User Review Report for Employee blade file    
+    public function getReviewScores(Request $request)
     {
         // $empId = session('employee_id');
         $empId = $request->input('emp_id') ?? $request->input('employee_id');

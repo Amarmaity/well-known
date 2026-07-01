@@ -32,7 +32,7 @@ class SuperAdminController extends Controller
 {
     public function index()
     {
-        return view("admin/loginForm");
+        return view("admin.loginForm");
     }
 
     public function testPageShow()
@@ -162,15 +162,11 @@ class SuperAdminController extends Controller
         }
     }
 
-
-
-    
     //Super Admin Dash Board view
     public function indexSuperAdminDashBoard()
     {
-        return view('admin/SuperAdminDashbord');
+        return view('admin.SuperAdminDashbord');
     }
-
 
     // Retrieve the logged-in user's email from the session
     public function showDashboard()
@@ -198,7 +194,6 @@ class SuperAdminController extends Controller
             ->get();
         return view('admin.superView', compact('employees'));
     }
-
 
 
     //View details of view all reviews
@@ -462,8 +457,8 @@ class SuperAdminController extends Controller
     //         'showClient' => $hasClient && !empty($clientReviewData),
     //     ]);
     // }
-    
-      public function getAppraisalData(Request $request)
+
+    public function getAppraisalData(Request $request)
     {
         $employeeQuery = trim($request->query('employee_query', ''));
         $financialYear = trim($request->query('financial_year', ''));
@@ -613,8 +608,6 @@ class SuperAdminController extends Controller
             'showEvaluation' => !empty($evaluationScore),
             'showAdmin' => !empty($adminReviewData),
             'showHR' => !empty($hrReviewData),
-            // 'showManager' => !empty($managerReviewData),
-            // 'showClient' => $hasClient && !empty($clientReviewData),
             'showManager' => true,
             'showClient' => $hasClient,
         ]);
@@ -832,23 +825,23 @@ class SuperAdminController extends Controller
                 ->exists();
 
             return response()->json([
-                'employee_name'       => "{$employee->fname} {$employee->lname}",
-                'employee_id'         => $employee->employee_id,
-                'evaluationScore'     => $avgReviewPercentage,
-                'hrReviewData'        => $hrReviewData,
-                'adminReviewData'     => $adminReviewData,
-                'managerReviewData'   => $avgManagerReview,
-                'clientReviewData'    => $clientReviewData,
-                'salary'              => (int) $baseSalary,
-                'company_percentage'  => $companyPercentage,
-                'updatedSalary'       => (int) $updatedSalary,
-                'appraisalAmount'     => (int) $appraisalAmount,
-                'finalSalary'         => (int) $finalSalary,
-                'appraisalDate'       => now()->toDateString(),
-                'isAlreadySaved'      => $isAlreadySaved,
-                'alreadyAppraised'    => $alreadyAppraised,
-                'appraisalScore'      => round($finalReviewScore, 2),
-                'user_type' =>  $userType
+                'employee_name' => "{$employee->fname} {$employee->lname}",
+                'employee_id' => $employee->employee_id,
+                'evaluationScore' => $avgReviewPercentage,
+                'hrReviewData' => $hrReviewData,
+                'adminReviewData' => $adminReviewData,
+                'managerReviewData' => $avgManagerReview,
+                'clientReviewData' => $clientReviewData,
+                'salary' => (int) $baseSalary,
+                'company_percentage' => $companyPercentage,
+                'updatedSalary' => (int) $updatedSalary,
+                'appraisalAmount' => (int) $appraisalAmount,
+                'finalSalary' => (int) $finalSalary,
+                'appraisalDate' => now()->toDateString(),
+                'isAlreadySaved' => $isAlreadySaved,
+                'alreadyAppraised' => $alreadyAppraised,
+                'appraisalScore' => round($finalReviewScore, 2),
+                'user_type' => $userType
             ]);
         } catch (\Exception $e) {
             Log::error("Error fetching financial data:", ['error' => $e->getMessage()]);
@@ -941,7 +934,7 @@ class SuperAdminController extends Controller
         $user = ManagerReviewTable::where('emp_id', $emp_id)
             ->where('financial_year', $financialYear)
             ->firstOrFail();
-        return view('reports/managerReport', compact('user'));
+        return view('reports.managerReport', compact('user'));
     }
 
     public function getSuperAdminAdminReview(Request $request, $emp_id)
@@ -951,7 +944,7 @@ class SuperAdminController extends Controller
         $user = AdminReviewTable::where('emp_id', $emp_id)
             ->where('financial_year', $financialYear)
             ->firstOrFail();
-        return view('reports/adminReport', compact('user'));
+        return view('reports.adminReport', compact('user'));
     }
 
     public function getSuperAdminClientReview(Request $request, $emp_id)
@@ -968,37 +961,22 @@ class SuperAdminController extends Controller
 
         // dd($user->client);
 
-        return view('reports/clientReport', compact('user'));
+        return view('reports.clientReport', compact('user'));
     }
-
-
 
     public function getProbationPeriod()
     {
         $currentDate = Carbon::now()->toDateString();
-
-        // $user = SuperAddUser::where('Designation', '!=', 'Client')
-        //     ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
-        //     ->orderBy('probation_date', 'desc')
-        //     ->orderBy('fname', 'asc')
-        //     ->orderBy('lname', 'asc')
-        //     ->get();
         $user = SuperAddUser::where('designation', '!=', 'Client')
-        ->whereDate('probation_date', '>=', $currentDate)
-        ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
-        ->orderBy('probation_date', 'asc')
-        ->orderBy('fname', 'asc')
-        ->orderBy('lname', 'asc')
-        ->get();
+            ->whereDate('probation_date', '>=', $currentDate)
+            ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
+            ->orderBy('probation_date', 'asc')
+            ->orderBy('fname', 'asc')
+            ->orderBy('lname', 'asc')
+            ->get();
 
         return view('admin.probation', compact('user'));
     }
-
-
-
-
-
-
 
     public function getPendingAppraisalView(Request $request)
     {
@@ -1014,10 +992,7 @@ class SuperAdminController extends Controller
 
     public function filterByFinancialYear(Request $request)
     {
-
         $yearRange = trim($request->input('financial_year'));
-
-
         if (!$yearRange) {
             return response()->json(['data' => []]);
         }
@@ -1047,8 +1022,6 @@ class SuperAdminController extends Controller
 
         return response()->json(['data' => $data]);
     }
-
-
 
     public function filterByFinancialYearEmployeeReview(Request $request)
     {
@@ -1082,7 +1055,6 @@ class SuperAdminController extends Controller
 
         return response()->json(['data' => $data]);
     }
-
 
     public function getReviewScoresSuperAdmin(Request $request)
     {
@@ -1139,57 +1111,12 @@ class SuperAdminController extends Controller
         return response()->json($response);
     }
 
-
     public function viewAddClient(Request $request)
     {
 
-        return view('admin/addClient');
+        return view('admin.addClient');
     }
 
-
-    // public function createClient(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'client_name'   => 'nullable|string|max:50',
-    //         'company_name'  => 'nullable|string|max:50',
-    //         'client_mobno'  => 'nullable|regex:/^[\d\s\-\+\(\)]+$/|max:20',
-    //         'client_email'  => 'nullable|email|max:50',
-    //         'password'      => 'required|string|min:6',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-
-    //     $validated = $validator->validated();
-
-    //     // Check if a similar client already exists
-    //     $exists = AllClient::where('client_email', $validated['client_email'])->first();
-
-    //     if ($exists) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Client already exists with this email.'
-    //         ]);
-    //     }
-
-    //     // Store client (hash password if stored)
-    //     AllClient::create([
-    //         'client_name' => $validated['client_name'],
-    //         'company_name' => $validated['company_name'],
-    //         'client_mobno' => $validated['client_mobno'],
-    //         'client_email' => $validated['client_email'],
-    //         'password' => bcrypt($validated['password']),
-    //         'user_type' => $request->input('user_type'),
-    //     ]);
-    //     return response()->json([
-    //         'status' => 'success',
-    //         'message' => 'Client added successfully.'
-    //     ]);
-    // }
     public function createClient(Request $request)
     {
         $validator = Validator::make(
@@ -1263,7 +1190,41 @@ class SuperAdminController extends Controller
         return response()->json($formatted);
     }
 
+    public function getAdmin()
+    {
+        $admins = SuperAddUser::where('user_type', 'admin')
+            ->select('id', 'fname', 'lname')
+            ->get();
 
+        $formatted = $admins->map(function ($admin) {
+            $fullName = trim($admin->fname . ' ' . $admin->lname);
+
+            return [
+                'id' => $admin->id,
+                'text' => $fullName,
+            ];
+        });
+
+        return response()->json($formatted);
+    }
+
+    public function getHR()
+    {
+        $hr = SuperAddUser::where('user_type', 'hr')
+            ->select('id', 'fname', 'lname')
+            ->get();
+
+        $formatted = $hr->map(function ($hr) {
+            $fullName = trim($hr->fname . ' ' . $hr->lname);
+
+            return [
+                'id' => $hr->id,
+                'text' => $fullName,
+            ];
+        });
+
+        return response()->json($formatted);
+    }
 
     //Edit User
     public function editUserView(Request $request, $id)
@@ -1288,7 +1249,7 @@ class SuperAdminController extends Controller
         $userType = $user->user_type;
 
         // dd($user,$clients,$clientIds,  $userRoles, $userType);
-        return view('admin.editUser', compact('user', 'clients', 'clientIds',  'userRoles', 'userType'));
+        return view('admin.editUser', compact('user', 'clients', 'clientIds', 'userRoles', 'userType'));
     }
 
     public function updateUser(Request $request, $id)
@@ -1350,13 +1311,6 @@ class SuperAdminController extends Controller
     }
 
 
-
-
-
-
-
-
-
     public function search(Request $request)
     {
         $search = $request->get('q');
@@ -1365,7 +1319,7 @@ class SuperAdminController extends Controller
         //     ->select('id', 'client_name', 'company_name')
         //     ->limit(20)
         //     ->get();
-         $clients = AllClient::where('status', 1)
+        $clients = AllClient::where('status', 1)
             ->where('client_name', 'like', '%' . $search . '%')
             ->select('id', 'client_name', 'company_name')
             ->limit(20)
@@ -1380,9 +1334,9 @@ class SuperAdminController extends Controller
     public function viewClints(Request $request)
     {
 
-        $allClients = AllClient::get();
+        $allClients = AllClient::paginate(10);
 
-        return view('admin/clientManagement', compact('allClients'));
+        return view('admin.clientManagement', compact('allClients'));
     }
 
 

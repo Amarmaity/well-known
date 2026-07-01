@@ -101,12 +101,12 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
 
 
         // Designation
-        Route::get('/designation', [DesignationController::class, 'index'])->name('designation-index');
-        Route::post('/designation/store', [DesignationController::class, 'store'])->name('designation-store');
-        Route::get('/designation/edit/{id}', [DesignationController::class, 'edit'])->name('designation-edit');
-        Route::post('/designation/update/{id}', [DesignationController::class, 'update'])->name('designation-update');
-        Route::post('/designation/{id}/status', [DesignationController::class, 'changeStatus'])->name('designation-status');
-        Route::delete('/designation/delete/{id}', [DesignationController::class, 'destroy'])->name('designation-destroy');
+        // Route::get('/designation', [DesignationController::class, 'index'])->name('designation-index');
+        // Route::post('/designation/store', [DesignationController::class, 'store'])->name('designation-store');
+        // Route::get('/designation/edit/{id}', [DesignationController::class, 'edit'])->name('designation-edit');
+        // Route::post('/designation/update/{id}', [DesignationController::class, 'update'])->name('designation-update');
+        // Route::post('/designation/{id}/status', [DesignationController::class, 'changeStatus'])->name('designation-status');
+        // Route::delete('/designation/delete/{id}', [DesignationController::class, 'destroy'])->name('designation-destroy');
 
 
 
@@ -139,6 +139,8 @@ Route::post('/verify-otp-login-users', [UserOnbordController::class, 'loginUserV
 
 //User Review Reports
 Route::get('/search-managers', [SuperAdminController::class, 'getManager'])->name('get.manager');
+Route::get('/get-admins', [SuperAdminController::class, 'getAdmin'])->name('get.admins');
+Route::get('/get-hrs', [SuperAdminController::class, 'getHR'])->name('get.hrs');
 
 
 
@@ -276,7 +278,7 @@ Route::get('/api/manager-names', function (Request $request) {
         ->select('id', 'fname', 'lname')
         ->get()
         ->unique(function ($item) {
-            return strtolower($item->fname . ' ' . $item->lname); // ensure uniqueness by name
+            return strtolower($item->fname . ' ' . $item->lname);
         })
         ->values()
         ->map(function ($manager) {
@@ -289,4 +291,63 @@ Route::get('/api/manager-names', function (Request $request) {
         });
 
     return response()->json($managers);
+});
+
+Route::get('/api/admin-names', function (Request $request) {
+    $query = $request->get('q');
+
+    $admins = SuperAddUser::where('user_type', 'LIKE', '%admin%')
+        ->when($query, function ($q) use ($query) {
+            $q->where(function ($subQuery) use ($query) {
+                $subQuery->where('fname', 'LIKE', '%' . $query . '%')
+                    ->orWhere('lname', 'LIKE', '%' . $query . '%');
+            });
+        })
+        ->select('id', 'fname', 'lname')
+        ->get()
+        ->unique(function ($item) {
+            return strtolower(trim($item->fname . ' ' . $item->lname));
+        })
+        ->values()
+        ->map(function ($admin) {
+            $fullName = trim($admin->fname . ' ' . $admin->lname);
+
+            return [
+                'id' => $admin->id,
+                'text' => $fullName,
+                'name' => $fullName,
+            ];
+        });
+
+    return response()->json($admins);
+});
+
+
+Route::get('/api/hr-names', function (Request $request) {
+    $query = $request->get('q');
+
+    $hrs = SuperAddUser::where('user_type', 'LIKE', '%hr%')
+        ->when($query, function ($q) use ($query) {
+            $q->where(function ($subQuery) use ($query) {
+                $subQuery->where('fname', 'LIKE', '%' . $query . '%')
+                    ->orWhere('lname', 'LIKE', '%' . $query . '%');
+            });
+        })
+        ->select('id', 'fname', 'lname')
+        ->get()
+        ->unique(function ($item) {
+            return strtolower(trim($item->fname . ' ' . $item->lname));
+        })
+        ->values()
+        ->map(function ($hr) {
+            $fullName = trim($hr->fname . ' ' . $hr->lname);
+
+            return [
+                'id' => $hr->id,
+                'text' => $fullName,
+                'name' => $fullName,
+            ];
+        });
+
+    return response()->json($hrs);
 });

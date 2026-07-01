@@ -13,7 +13,187 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?php echo e(asset('css/modestcustom.css')); ?>?v=14" rel="stylesheet">
-    <link href="<?php echo e(asset('css/onbord.css')); ?>?v=14" rel="stylesheet">
+
+    <style>
+        /* ----------------------------- Login Page -------------------------------- */
+
+        .login__page--container {
+            max-width: 570px;
+            margin: 70px auto;
+        }
+
+        .login__page--container h1 {
+            font-size: 28px;
+            line-height: 1.2;
+            font-weight: 500;
+            color: #333333;
+            margin: 0 0 30px;
+            text-align: center;
+        }
+
+        .login__page--form label {
+            font-size: 16px;
+            color: #666666;
+            line-height: 1;
+            margin: 0 0 10px;
+        }
+
+        .login__page--form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .login__page--form .form-control {
+            height: 48px;
+            line-height: 48px;
+        }
+
+        .forget__pass {
+            float: right;
+            font-size: var(--text-base);
+            line-height: 1;
+            color: #111111;
+            text-decoration: underline;
+            padding-top: 10px;
+        }
+
+        .forget__pass:hover {
+            text-decoration-color: transparent;
+        }
+
+
+        .label__checkbox {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .login__page--form label.label__checkbox {
+            margin: 50px 0 40px;
+            color: #333333;
+        }
+
+        /* Hide the browser's default checkbox */
+        .label__checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: -2px;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: transparent;
+            border: 2px solid #111111;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+
+        .label__checkbox:hover input~.checkmark {
+            background-color: rgba(17, 17, 17, .5);
+            border-color: transparent;
+        }
+
+        .label__checkbox input:checked~.checkmark {
+            background-color: #111111;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .label__checkbox input:checked~.checkmark:after {
+            display: block;
+        }
+
+        .label__checkbox .checkmark:after {
+            left: 5px;
+            top: -1px;
+            width: 8px;
+            height: 14px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        .btn__theme {
+            display: block;
+            border-radius: 8px;
+            color: #ffffff;
+            width: 100%;
+            margin-top: 30px !important;
+            padding: 12px;
+            border: none;
+            font-size: var(--text-lg);
+            font-weight: 500;
+            -webkit-transition: 0.3s linear;
+            -moz-transition: 0.3s linear;
+            -ms-transition: 0.3s linear;
+            -o-transition: 0.3s linear;
+            transition: 0.3s linear;
+            text-align: center;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .btn__theme:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #00274d;
+            transition: all .3s;
+            border-radius: 8px;
+            z-index: -2;
+        }
+
+        .btn__theme:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: #FF6600;
+            transition: all .3s;
+            border-radius: 8px;
+            z-index: -1;
+        }
+
+        .btn__theme:hover::after,
+        .btn__theme:focus::after {
+            width: 100%;
+        }
+
+        .login__page--form select.form-control {
+            line-height: inherit;
+            appearance: auto;
+        }
+
+        .resend__otp {
+            margin-top: 6px !important;
+        }
+    </style>
 </head>
 
 <body class="login-page">
@@ -25,20 +205,19 @@
                 </div>
                 <h1>Sign in to your Evalon Panel</h1>
                 <?php if(session('success')): ?>
-                    <div id="alert-message" class="alert alert-success text-center">
-                        <?php echo e(session('success')); ?>
+                <div id="alert-message" class="alert alert-success text-center">
+                    <?php echo e(session('success')); ?>
 
-                    </div>
+                </div>
                 <?php endif; ?>
 
                 <?php if(session('error')): ?>
-                    <div id="alert-message" class="alert alert-danger text-center">
-                        <?php echo e(session('error')); ?>
+                <div id="alert-message" class="alert alert-danger text-center">
+                    <?php echo e(session('error')); ?>
 
-                    </div>
+                </div>
                 <?php endif; ?>
-                <form action="<?php echo e(route('log-in')); ?>" method="post" autocomplete="off" id="login-form"
-                    class="login__page--form">
+                <form method="post" autocomplete="off" id="login-form" class="login__page--form">
                     <?php echo csrf_field(); ?>
 
                     <!-- Email Input -->
@@ -68,6 +247,7 @@
                             <?php endif; ?>
                         </select>
                     </div>
+                    
 
                     <!-- Password Input (Initially Shown) -->
                     <div id="password-field" class="form-group">
@@ -83,15 +263,14 @@
                     <div id="otp-field" class="form-group" style="display: none">
                         <label for="otp">Enter OTP:</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="otp" id="otp"
-                                placeholder="Enter OTP">
+                            <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter OTP">
                             <div class="input-group-text"><span class="bi bi-key"></span></div>
                         </div>
                     </div>
 
                     <!-- Buttons -->
                     <div class="d-grid gap-2">
-                        <button type="button" class="btn__theme" id="send-otp-btn">Send OTP</button>
+                        <button type="submit" class="btn__theme" id="send-otp-btn">Send OTP</button>
                         <button type="submit" class="btn__theme" id="login-btn" style="display: none;">Verify
                             OTP</button>
                         <button type="button" class="btn__theme resend__otp" id="resend-otp-btn"
@@ -106,19 +285,63 @@
             </div>
         </div>
     </section>
-</body>
+    <script>
+        function showBtnLoader(btn) {
+            const $btn = $(btn);
+            $btn.addClass('btn-loading');
 
-</html>
+            if ($btn.is("#send-otp-btn")) {
+                $btn.text("Sending OTP...");
+            } else if ($btn.is("#login-btn")) {
+                $btn.text("Verifying...");
+            }
+        }
 
-<script>
-    $(document).ready(function() {
-        $("#send-otp-btn").click(function() {
-            var email = $("#email").val();
-            var userType = $("#user_type_dropdown").val();
-            var password = $("#password").val();
-            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        function hideBtnLoader(btn) {
+            const $btn = $(btn);
+            $btn.removeClass('btn-loading');
 
-            if (email && userType && password) {
+            if ($btn.is("#send-otp-btn")) {
+                $btn.text("Send OTP");
+            } else if ($btn.is("#login-btn")) {
+                $btn.text("Verify OTP");
+            }
+        }
+
+        $(document).ready(function () {
+            const otpCooldownSeconds = 30;
+            let resendTimeout;
+            let isOtpSending = false;
+
+            function startCooldown() {
+                let secondsLeft = otpCooldownSeconds;
+                const $resendBtn = $("#resend-otp-btn");
+
+                $resendBtn.text(`Resend OTP in ${secondsLeft}s`).show().prop("disabled", true);
+
+                resendTimeout = setInterval(() => {
+                    secondsLeft--;
+                    if (secondsLeft > 0) {
+                        $resendBtn.text(`Resend OTP in ${secondsLeft}s`);
+                    } else {
+                        clearInterval(resendTimeout);
+                        $resendBtn.text("Resend OTP").prop("disabled", false);
+                        isOtpSending = false;
+                    }
+                }, 1000);
+            }
+
+            function sendOtp(isResend = false) {
+                if (isOtpSending) return;
+
+                const email = $("#email").val();
+                const userType = $("#user_type_dropdown").val();
+                const password = $("#password").val();
+                const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                isOtpSending = true;
+                $("#send-otp-btn, #resend-otp-btn").prop("disabled", true);
+
                 $.ajax({
                     url: "<?php echo e(route('log-in')); ?>",
                     type: "POST",
@@ -126,66 +349,107 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     data: {
-                        email: email,
+                        email,
                         user_type: userType,
-                        password: password
+                        password
                     },
-                    success: function(response) {
+                    success: function (response) {
+                        hideBtnLoader("#send-otp-btn");
                         alert(response.message);
 
-                        if (response.status === 'success' || response.status ===
-                            'new_user') {
+                        if (response.status === 'success') {
                             $("#password-field").hide();
                             $("#otp-field").show();
                             $("#send-otp-btn").hide();
-                            $("#login-btn").text("Verify OTP").removeClass("btn-primary")
-                                .addClass("btn-success").show();
+                            $("#login-btn").show().text("Verify OTP").removeClass("btn-primary").addClass("btn-success");
+                            $("#resend-otp-btn").hide();
+                            startCooldown();
+                        } else {
+                            isOtpSending = false;
+                            $("#send-otp-btn, #resend-otp-btn").prop("disabled", false);
                         }
                     },
-                    error: function(xhr) {
-                        alert("Failed to send OTP: " + (xhr.responseJSON?.message || xhr
-                            .responseText || "Server Error"));
+                    error: function (xhr) {
+                        hideBtnLoader("#send-otp-btn");
+                        alert("Failed to send OTP: " + (xhr.responseJSON?.message || "Server Error"));
+                        isOtpSending = false;
+                        $("#send-otp-btn, #resend-otp-btn").prop("disabled", false);
                     }
                 });
-            } else {
-                alert("Please enter Email, User Type, and Password before requesting OTP.");
-            }
-        });
-
-        $("#login-form").submit(function(e) {
-            e.preventDefault();
-
-            var email = $("#email").val();
-            var otp = $("#otp").val();
-            var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-            if (!otp) {
-                alert("Please enter the OTP.");
-                return;
             }
 
-            $.ajax({
-                url: "<?php echo e(route('verify-otp-login-users')); ?>",
-                type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                data: {
-                    email: email,
-                    otp: otp
-                },
-                success: function(response) {
-                    alert(response.message);
-                    if (response.status === 'success') {
-                        window.location.href = response.redirect;
-                    }
-                },
-                error: function(xhr) {
-                    alert("OTP verification failed: " + (xhr.responseJSON?.message || xhr
-                        .responseText || "Server Error"));
+            $("#send-otp-btn").click(function () {
+                const email = $("#email").val();
+                const userType = $("#user_type_dropdown").val();
+                const password = $("#password").val();
+
+                if (!email || !userType || (!password && $("#password-field").is(":visible"))) {
+                    alert("Please enter email, user type, and password before requesting OTP.");
+                    return;
+                }
+
+                showBtnLoader(this);
+                sendOtp(false);
+            });
+
+            $("#resend-otp-btn").click(function () {
+                showBtnLoader(this);
+                sendOtp(true);
+            });
+
+            $("#login-form").submit(function (e) {
+                e.preventDefault();
+                const email = $("#email").val();
+                const otp = $("#otp").val();
+                const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                if (otp) {
+                    showBtnLoader("#login-btn");
+
+                    $.ajax({
+                        url: "<?php echo e(route('verify-otp-login-users')); ?>",
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        data: {
+                            email,
+                            otp
+                        },
+                        success: function (response) {
+                            hideBtnLoader("#login-btn");
+                            alert(response.message);
+                            if (response.status === 'success') {
+                                clearTimeout(resendTimeout);
+                                window.location.href = response.redirect;
+                            }
+                        },
+                        error: function (xhr) {
+                            hideBtnLoader("#login-btn");
+                            alert("OTP verification failed: " + (xhr.responseJSON?.message || "Server Error"));
+                        }
+                    });
+                } else {
+                    alert("Please enter the OTP.");
                 }
             });
         });
+
+
+
+        // Auto-refresh page after 5 seconds if alert is present
+    window.addEventListener('DOMContentLoaded', function () {
+        const alertBox = document.getElementById('alert-message');
+        if (alertBox) {
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
     });
-</script>
-<?php /**PATH /opt/lampp/htdocs/well-known/resources/views/loginusers/userlogin.blade.php ENDPATH**/ ?>
+    </script>
+
+
+
+</body>
+
+</html><?php /**PATH /opt/lampp/htdocs/well-known/resources/views/loginusers/userlogin.blade.php ENDPATH**/ ?>
