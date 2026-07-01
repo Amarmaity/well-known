@@ -39,6 +39,31 @@
                 }
                 @endphp
 
+                @php
+
+                use App\Models\AccessPermission;
+
+                $userId = session('user_id');
+
+                $permissions = [];
+
+                if(session('user_type') != 'Super User'){
+                $permissions = AccessPermission::where('user_id',$userId)
+                ->pluck('module_id')
+                ->toArray();
+                }
+
+                function canAccess($moduleId,$permissions){
+
+                if(session('user_type') == 'Super User'){
+                return true;
+                }
+
+                return in_array($moduleId,$permissions);
+                }
+
+                @endphp
+
                 @if(in_array($userType, ['Super User', 'admin', 'manager', 'hr', 'users', 'client']))
                 <li class="nav-item menu-open">
                     <a href="{{ $dashboardLink }}"
@@ -49,10 +74,8 @@
                 </li>
                 @endif
 
-
-                {{-- @dd(Session::all()); --}}
-                {{-- {{ dd(Session::get('user_type')) }} --}}
                 @if($userType === 'Super User')
+                @if(canAccess(2,$permissions))
                 <li class="nav-item">
                     <a href="{{route('add-user')}}"
                         class="nav-link {{ request()->routeIs('add-user') ? 'active' : '' }}">
@@ -60,6 +83,8 @@
                         <p>Add Users</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(3,$permissions))
                 <li class="nav-item">
                     <a href="{{route('create-client')}}"
                         class="nav-link {{ request()->routeIs('create-client') ? 'active' : '' }}">
@@ -67,6 +92,8 @@
                         <p>Add Client</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(4,$permissions))
                 <li class="nav-item">
                     <a href="{{route('userlist')}}"
                         class="nav-link {{ request()->routeIs('userlist') ? 'active' : '' }}">
@@ -74,6 +101,8 @@
                         <p>User Management</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(5,$permissions))
                 <li class="nav-item">
                     <a href="{{route('client-list')}}"
                         class="nav-link {{ request()->routeIs('client-list') ? 'active' : '' }}">
@@ -81,6 +110,8 @@
                         <p>Client Management</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(6,$permissions))
                 <li class="nav-item">
                     <a href="{{route('get-probation')}}"
                         class="nav-link {{ request()->routeIs('get-probation') ? 'active' : '' }}">
@@ -88,6 +119,8 @@
                         <p>Probation period List</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(7,$permissions))
                 <li class="nav-item">
                     <a href="{{route('super.search')}}"
                         class="nav-link {{ request()->routeIs('super.search') ? 'active' : '' }}">
@@ -95,6 +128,8 @@
                         <p>View All Review</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(8,$permissions))
                 <li class="nav-item">
                     <a href="{{route('appraisal-view')}}"
                         class="nav-link {{ request()->routeIs('appraisal-view') ? 'active' : '' }}">
@@ -102,6 +137,8 @@
                         <p>Appraisal</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(9,$permissions))
                 <li class="nav-item">
                     <a href="{{route('financial.view')}}"
                         class="nav-link {{ request()->routeIs('financial.view') ? 'active' : '' }}">
@@ -109,6 +146,8 @@
                         <p>Financial Year</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(10,$permissions))
                 <li class="nav-item">
                     <a href="{{route('financial-view-tables')}}"
                         class="nav-link {{ request()->routeIs('financial-view-tables') ? 'active' : '' }}">
@@ -116,6 +155,8 @@
                         <p>Appraisal Done</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(11,$permissions))
                 <li class="nav-item">
                     <a href="{{route('get-pending-apprasil')}}"
                         class="nav-link {{ request()->routeIs('get-pending-apprasil') ? 'active' : '' }}">
@@ -123,6 +164,8 @@
                         <p>Pending Appraisal List</p>
                     </a>
                 </li>
+                @endif
+                @if(canAccess(12,$permissions))
                 <li class="nav-item">
                     <a href="{{route('setting-view')}}"
                         class="nav-link {{ request()->routeIs('setting-view') ? 'active' : '' }}">
@@ -130,6 +173,7 @@
                         <p>Setting</p>
                     </a>
                 </li>
+                @endif
                 @endif
 
                 @if($userType === 'hr')
@@ -140,6 +184,7 @@
                         <p>HR Review</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{route('hr-review-list')}}"
                         class="nav-link {{ request()->routeIs('hr-review-list') ? 'active' : '' }}">
@@ -157,6 +202,7 @@
                         <p>Manager Review Section</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{route('manager-review-list')}}"
                         class="nav-link {{ request()->routeIs('manager-review-list') ? 'active' : '' }}">
@@ -174,6 +220,7 @@
                         <p>Admin Review Section</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{route('admin-review-list')}}"
                         class="nav-link {{ request()->routeIs('admin-review-list') ? 'active' : '' }}">
@@ -191,6 +238,7 @@
                         <p>Client Review Section</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{route('client-review-list')}}"
                         class="nav-link {{ request()->routeIs('client-review-list') ? 'active' : '' }}">
@@ -224,6 +272,7 @@
                     </a>
                 </li>
                 @endif
+                
                 @if(in_array($userType, ['Super User', 'users', 'admin', 'manager', 'hr', 'client']))
                 <li class="nav-item">
                     <a href="{{ route('logout-users') }}" class="nav-link"

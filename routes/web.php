@@ -96,16 +96,10 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
         Route::get('/view-super-admin-dashboard', [SuperAdminController::class, 'indexSuperAdminDashBoard'])->name('super-admin-view');
 
         // Access Management
-        Route::get('/access-management', [AccessManagementController::class, 'index'])->name('access-management');
-
-
-        // Designation
-        Route::get('/role', [AccessRoleController::class, 'index'])->name('role-index');
-        Route::post('/role/store', [AccessRoleController::class, 'store'])->name('role-store');
-        Route::get('/role/edit/{id}', [AccessRoleController::class, 'edit'])->name('role-edit');
-        Route::post('/role/update/{id}', [AccessRoleController::class, 'update'])->name('role-update');
-        Route::post('/role/{id}/status', [AccessRoleController::class, 'changeStatus'])->name('role-status');
-        // Route::delete('/role/delete/{id}', [AccessRoleController::class, 'destroy'])->name('role-destroy');
+       Route::get('/access-management', [AccessManagementController::class, 'index'])->name('access-management');
+        Route::get('/access-management/get-users/{role}', [AccessManagementController::class, 'getUsersByRole'])->name('access.get.users');
+    Route::post('/access-management/save-permission', [AccessManagementController::class, 'savePermission'])->name('access.permission.save');
+  
 
 
 
