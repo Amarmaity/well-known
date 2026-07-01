@@ -48,6 +48,10 @@
         <i class="bi bi-shield-lock"></i>
         Access Management
     </a>
+    <a href="{{ route('role-index') }}" class="btn btn-primary">
+        <i class="bi bi-shield-lock"></i>
+        Role Management
+    </a>
 </div>
 
 

@@ -11,16 +11,27 @@ use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EvaluationCredentialMail;
-
-
+use App\Models\Designation;
+use App\Models\AccessRole;
 
 class addUserController extends Controller
 {
-    //
+    // public function indexAddUser()
+    // {
+    //     return view("admin.superAddUserDashBoard");
+    // }
 
     public function indexAddUser()
     {
-        return view("admin.superAddUserDashBoard");
+        $designations = Designation::where('status', 1)
+            ->orderBy('designation_name')
+            ->get();
+
+        $userRoles = AccessRole::where('status', 1)
+            ->orderBy('role_name')
+            ->get();
+
+        return view("admin.superAddUserDashBoard", compact('designations', 'userRoles'));
     }
 
 

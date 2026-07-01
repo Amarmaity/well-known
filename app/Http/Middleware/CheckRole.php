@@ -48,7 +48,7 @@ class CheckRole
             'appraisal-view', 'financial.view', 'logout-users', 'user-search', 'super-admin-search', 'super-user-search-bar', 'active-user', 'financial-view', 'super-admin-view',
             'financial-view-tables', 'employee.details', 'evaluation.details', 'hr.review.details','manager.review.details','admin.review.details','setting-view',
             'create-client', 'client-list','get-probation','financial-view-tables', 'get-pending-apprasil','setting-view', 'edit-user',
-            'designation-index', 'access-management', 'designation-index', 'designation-store', 'designation-edit', 'designation-update', 'designation-status', 'designation-destroy' ]
+            'access-management', 'role-management', 'role-index', 'role-store', 'role-edit', 'role-update', 'role-status']
         ];
 
         // Get the current route name

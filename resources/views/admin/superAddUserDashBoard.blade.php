@@ -219,12 +219,10 @@
                                         <option value="manager">Manager</option>
                                     </select>
 
-
-
                                     <!-- This hidden input is the one that will actually be submitted -->
                                     <input type="hidden" name="user_type" id="user_type_hidden" required>
                                 </div>
-                                <div class="col-md-6" id="review-section">
+                                {{-- <div class="col-md-6" id="review-section">
                                     <label class="forms-label d-block">Selected Person Can Review:</label>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input check-input" type="checkbox" id="admin"
@@ -247,16 +245,46 @@
                                         <label class="form-check-label" for="manager">Manager</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        {{-- <input class="form-check-input check-input" type="checkbox" id="client"
-                                            name="user_roles[]" value="client"> --}}
                                         <input class="form-check-input check-input" type="checkbox" id="client-checkbox"
                                             name="user_roles[]" value="client">
                                         <label class="form-check-label" for="client">Client</label>
                                     </div>
+                                </div> --}}
+                                <div class="col-md-6" id="review-section">
+                                    <label class="forms-label d-block">
+                                        Selected Person Can Review:
+                                    </label>
+                                    {{-- @foreach ($userRoles as $role)
+                                        <div class="form-check form-check-inline">
+
+                                            <input class="form-check-input check-input" type="checkbox"
+                                                id="role_{{ $role->id }}" name="user_roles[]"
+                                                value="{{ strtolower($role->role_name) }}">
+
+                                            <label class="form-check-label" for="role_{{ $role->id }}">
+
+                                                {{ ucfirst($role->role_name) }}
+
+                                            </label>
+
+                                        </div>
+                                    @endforeach --}}
+                                    @foreach ($userRoles as $role)
+                                        <div class="form-check form-check-inline"
+                                            id="role-box-{{ strtolower($role->role_name) }}">
+
+                                            <input class="form-check-input check-input" type="checkbox"
+                                                id="{{ strtolower($role->role_name) }}" name="user_roles[]"
+                                                value="{{ strtolower($role->role_name) }}">
+
+                                            <label class="form-check-label" for="{{ strtolower($role->role_name) }}">
+                                                {{ ucfirst($role->role_name) }}
+                                            </label>
+
+                                        </div>
+                                    @endforeach
                                 </div>
-
                             </div>
-
                             <!-- Checkboxes for Multiple Roles -->
 
                         </div>
@@ -319,12 +347,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-
-
-
-
-
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet"

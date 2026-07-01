@@ -1,16 +1,15 @@
 <?php
 
 use App\Http\Controllers\accessmanagement\AccessManagementController;
-use App\Http\Controllers\accessmanagement\DesignationController;
+use App\Http\Controllers\accessmanagement\AccessRoleController;
+use App\Http\Controllers\userController\allUserController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\onbording\UserOnbordController;
 use App\Http\Controllers\superadmin\addUserController;
 use App\Http\Controllers\superadmin\SuperAdminController;
-use App\Http\Controllers\userController\allUserController;
 use App\Http\Middleware\DissableBackBtn;
 use App\Http\Middleware\CheckEmployeeAccess;
 use App\Models\SuperAddUser;
@@ -101,12 +100,12 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
 
 
         // Designation
-        // Route::get('/designation', [DesignationController::class, 'index'])->name('designation-index');
-        // Route::post('/designation/store', [DesignationController::class, 'store'])->name('designation-store');
-        // Route::get('/designation/edit/{id}', [DesignationController::class, 'edit'])->name('designation-edit');
-        // Route::post('/designation/update/{id}', [DesignationController::class, 'update'])->name('designation-update');
-        // Route::post('/designation/{id}/status', [DesignationController::class, 'changeStatus'])->name('designation-status');
-        // Route::delete('/designation/delete/{id}', [DesignationController::class, 'destroy'])->name('designation-destroy');
+        Route::get('/role', [AccessRoleController::class, 'index'])->name('role-index');
+        Route::post('/role/store', [AccessRoleController::class, 'store'])->name('role-store');
+        Route::get('/role/edit/{id}', [AccessRoleController::class, 'edit'])->name('role-edit');
+        Route::post('/role/update/{id}', [AccessRoleController::class, 'update'])->name('role-update');
+        Route::post('/role/{id}/status', [AccessRoleController::class, 'changeStatus'])->name('role-status');
+        // Route::delete('/role/delete/{id}', [AccessRoleController::class, 'destroy'])->name('role-destroy');
 
 
 

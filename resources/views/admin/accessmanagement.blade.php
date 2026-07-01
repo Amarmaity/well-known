@@ -117,65 +117,27 @@
 
 <script>
     $(function() {
-
-            /*
-            =====================================
-            SELECT ALL
-            =====================================
-            */
-
             $('#selectAll').change(function() {
-
                 $('input[type=checkbox]').prop(
-
                     'checked',
-
                     $(this).is(':checked')
-
                 );
-
             });
-
-
-            /*
-            =====================================
-            PARENT
-            =====================================
-            */
 
             $('.parent-checkbox').change(function() {
-
                 let parent = $(this).data('parent');
-
                 $('.child-checkbox[data-parent="' + parent + '"]')
-
                     .prop('checked', $(this).is(':checked'));
-
             });
 
-
-
-            /*
-            =====================================
-            CHILD
-            =====================================
-            */
-
             $('.child-checkbox').change(function() {
-
                 let parent = $(this).data('parent');
-
                 let total = $('.child-checkbox[data-parent="' + parent + '"]').length;
-
                 let checked = $('.child-checkbox[data-parent="' + parent + '"]:checked').length;
-
                 $('.parent-checkbox[data-parent="' + parent + '"]')
-
                     .prop('checked', total == checked);
-
             });
 
         });
 </script>
-
 @endsection

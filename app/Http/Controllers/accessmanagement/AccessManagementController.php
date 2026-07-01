@@ -4,16 +4,22 @@ namespace App\Http\Controllers\accessmanagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessModule;
-use App\Models\Designation;
-use Illuminate\Http\Request;
+use App\Models\SuperAddUser;
+
+
 
 class AccessManagementController extends Controller
 {
     public function index()
     {
-        $designations = Designation::where('status', 1)
-            ->orderBy('designation_name')
+        $designations = SuperAddUser::where('status', 1)
+            ->whereNotNull('user_type')
+            ->select('user_type')
+            ->distinct()
+            ->orderBy('user_type')
             ->get();
+
+        // dd($designations);
 
         $modules = AccessModule::with('children')
             ->whereNull('parent_id')
