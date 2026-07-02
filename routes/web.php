@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\accessmanagement\AccessManagementController;
-use App\Http\Controllers\accessmanagement\AccessRoleController;
+
 use App\Http\Controllers\userController\allUserController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -65,7 +65,9 @@ Route::post("/verify-otp", [SuperAdminController::class, 'verifyOtp'])->name("ve
 
 //Super Admin
 
-Route::post('/Save-user', [addUserController::class, 'addUser'])->name('save-user');
+Route::post('/Save-user', [addUserController::class, 'addUser'])
+    ->middleware([DissableBackBtn::class, CheckRole::class])
+    ->name('save-user');
 
 Route::group(['middleware' => DissableBackBtn::class], function () {
     Route::group(['middleware' => CheckRole::class], function () {
@@ -83,6 +85,7 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
         Route::get('/add-user', [addUserController::class, 'indexAddUser'])->name('add-user');
         Route::get('/create-client', [SuperAdminController::class, 'viewAddClient'])->name('create-client');
         Route::get('/client-list', [SuperAdminController::class, 'viewClints'])->name('client-list');
+        Route::get('/edit-client/{id}', [SuperAdminController::class, 'editClientView'])->name('edit-client');
         Route::get('/super-admin-search', [SuperAdminController::class, 'searchUser'])->name('super.search');
         Route::get('/super-admin-search-bar', [SuperAdminController::class, 'superAdminSearchUser'])->name('super-user-search-bar');
         Route::get('/user-list', [SuperAdminController::class, 'userListView'])->name('userlist');
@@ -96,10 +99,11 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
         Route::get('/view-super-admin-dashboard', [SuperAdminController::class, 'indexSuperAdminDashBoard'])->name('super-admin-view');
 
         // Access Management
-       Route::get('/access-management', [AccessManagementController::class, 'index'])->name('access-management');
+        Route::get('/access-management', [AccessManagementController::class, 'index'])->name('access-management');
         Route::get('/access-management/get-users/{role}', [AccessManagementController::class, 'getUsersByRole'])->name('access.get.users');
-    Route::post('/access-management/save-permission', [AccessManagementController::class, 'savePermission'])->name('access.permission.save');
-  
+        Route::post('/access-management/save-permission', [AccessManagementController::class, 'savePermission'])->name('access.permission.save');
+        Route::get('/access-management/user-permission/{id}', [AccessManagementController::class, 'getUserPermission'])->name('access.get.user.permission');
+
 
 
 
@@ -119,6 +123,9 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
 });
 
 
+
+
+
 Route::get('/admin/super-admin-dashboard', [SuperAdminController::class, 'showDashboard'])->name('super-admin-dashboard');
 
 //User's login route
@@ -131,9 +138,9 @@ Route::post('/verify-otp-login-users', [allUserController::class, 'loginUserVeri
 
 
 //User Review Reports
-Route::get('/search-managers', [SuperAdminController::class, 'getManager'])->name('get.manager');
-Route::get('/get-admins', [SuperAdminController::class, 'getAdmin'])->name('get.admins');
-Route::get('/get-hrs', [SuperAdminController::class, 'getHR'])->name('get.hrs');
+Route::get('/search-managers', [SuperAdminController::class, 'getManager'])->middleware([DissableBackBtn::class, CheckRole::class])->name('get.manager');
+Route::get('/get-admins', [SuperAdminController::class, 'getAdmin'])->middleware([DissableBackBtn::class, CheckRole::class])->name('get.admins');
+Route::get('/get-hrs', [SuperAdminController::class, 'getHR'])->middleware([DissableBackBtn::class, CheckRole::class])->name('get.hrs');
 
 
 
@@ -150,18 +157,18 @@ Route::get('/client-search-user', [allUserController::class, 'clientSearch'])->n
 
 
 //Apprisal 
-Route::get('/apprisal-data', [SuperAdminController::class, 'getAppraisalData'])->name('apprisal.data');
-Route::post('/toggle-status/{user_type}/{identifier}', [SuperAdminController::class, 'toggleStatus']);
+Route::get('/apprisal-data', [SuperAdminController::class, 'getAppraisalData'])->middleware([DissableBackBtn::class, CheckRole::class])->name('apprisal.data');
+Route::post('/toggle-status/{user_type}/{identifier}', [SuperAdminController::class, 'toggleStatus'])->middleware([DissableBackBtn::class, CheckRole::class])->name('toggle-user-status');
 
-Route::post('/toggle-status-client/{id}', [SuperAdminController::class, 'clientToggleStatus'])->name('client.toggle.status');
+Route::post('/toggle-status-client/{id}', [SuperAdminController::class, 'clientToggleStatus'])->middleware([DissableBackBtn::class, CheckRole::class])->name('client.toggle.status');
 
 Route::get('/search-employee', [SuperAdminController::class, 'searchEmployee']);
 
 
 //Finalcial
-Route::get('/financial-data', [SuperAdminController::class, 'getFinancialData'])->name('financial.data');
-Route::post('/financial-data-store', [FinancialYearController::class, 'storeFinancialData'])->name('financial-data-store');
-Route::get('/super/user/search', [FinancialYearController::class, 'searchEmployee'])->name('super.user.search.bar');
+Route::get('/financial-data', [SuperAdminController::class, 'getFinancialData'])->middleware([DissableBackBtn::class, CheckRole::class])->name('financial.data');
+Route::post('/financial-data-store', [FinancialYearController::class, 'storeFinancialData'])->middleware([DissableBackBtn::class, CheckRole::class])->name('financial-data-store');
+Route::get('/super/user/search', [FinancialYearController::class, 'searchEmployee'])->middleware([DissableBackBtn::class, CheckRole::class])->name('super.user.search.bar');
 
 
 
@@ -192,27 +199,27 @@ Route::get('/client-review-list', [allUserController::class, 'getClientReviewLis
 Route::post('/evaluation-report-submit/{emp_id}', [HomeController::class, 'submitEvaluationDirector'])->name('director-submit-from');
 
 
-Route::post('save-apprisal', [FinancialYearController::class, 'setApprisalPercentage'])->name('submit-apprisal-all');
-Route::put('/update-financial-year/{id}', [FinancialYearController::class, 'update'])->name('update-financial-year');
+Route::post('save-apprisal', [FinancialYearController::class, 'setApprisalPercentage'])->middleware([DissableBackBtn::class, CheckRole::class])->name('submit-apprisal-all');
+Route::put('/update-financial-year/{id}', [FinancialYearController::class, 'update'])->middleware([DissableBackBtn::class, CheckRole::class])->name('update-financial-year');
 
 
-Route::post('/employee/{employeeId}/status', [SuperAdminController::class, 'updateStatus']);
-Route::post('/employee/{employeeId}/probation-date', [SuperAdminController::class, 'updateProbationDate']);
+Route::post('/employee/{employeeId}/status', [SuperAdminController::class, 'updateStatus'])->middleware([DissableBackBtn::class, CheckRole::class])->name('employee.update-status');
+Route::post('/employee/{employeeId}/probation-date', [SuperAdminController::class, 'updateProbationDate'])->middleware([DissableBackBtn::class, CheckRole::class])->name('employee.update-probation-date');
 Route::post('/check-duplicate-evaluation', [HomeController::class, 'checkDuplicateSubmission'])->name('check-duplicate-evaluation');
 
 
 //Financila year dropdown 
-Route::post('/employees/filter-financial-year', [FinancialYearController::class, 'filterByFinancialYear']);
-Route::post('/financial/filter-financial-year', [FinancialYearController::class, 'filterFinancialTableByYear']);
-Route::post('/filter-by-financial-year', [SuperAdminController::class, 'filterByFinancialYear'])->name('appraisal.filter.by.year');
-Route::post('/employees/filter-financial-year-employee-review', [SuperAdminController::class, 'filterByFinancialYearEmployeeReview'])->name('employees-filter-financial-year-employee-review');
+Route::post('/employees/filter-financial-year', [FinancialYearController::class, 'filterByFinancialYear'])->middleware([DissableBackBtn::class, CheckRole::class])->name('employees.filter-financial-year');
+Route::post('/financial/filter-financial-year', [FinancialYearController::class, 'filterFinancialTableByYear'])->middleware([DissableBackBtn::class, CheckRole::class])->name('financial.filter-financial-year');
+Route::post('/filter-by-financial-year', [SuperAdminController::class, 'filterByFinancialYear'])->middleware([DissableBackBtn::class, CheckRole::class])->name('appraisal.filter.by.year');
+Route::post('/employees/filter-financial-year-employee-review', [SuperAdminController::class, 'filterByFinancialYearEmployeeReview'])->middleware([DissableBackBtn::class, CheckRole::class])->name('employees-filter-financial-year-employee-review');
 
 //test mail
 // Route::get('/test-email', [\App\Http\Controllers\superadmin\SuperAdminController::class, 'testEmail']);
 
 Route::get('/employee/review-scores', [allUserController::class, 'getReviewScores'])->name('employee.review-scores');
-Route::post('/employee/review-score/super-user', [SuperAdminController::class, 'getReviewScoresSuperAdmin'])->name('employee.review-score-super-user');
-Route::get('/get-managers', [addUserController::class, 'getManagers'])->name('get.managers');
+Route::post('/employee/review-score/super-user', [SuperAdminController::class, 'getReviewScoresSuperAdmin'])->middleware([DissableBackBtn::class, CheckRole::class])->name('employee.review-score-super-user');
+Route::get('/get-managers', [addUserController::class, 'getManagers'])->middleware([DissableBackBtn::class, CheckRole::class])->name('get.managers');
 
 //Mail Anniversaries for employee
 Route::get('/run-anniversary-email/{token}', function ($token) {
@@ -225,15 +232,16 @@ Route::get('/run-anniversary-email/{token}', function ($token) {
 });
 
 //new client save
-Route::post('/save-new-client', [SuperAdminController::class, 'createClient'])->name('new-client');
+Route::post('/save-new-client', [SuperAdminController::class, 'createClient'])->middleware([DissableBackBtn::class, CheckRole::class])->name('new-client');
 // client detailes autopopulate in adduser Client assigine dropdown 
-Route::get('/get-clients', [SuperAdminController::class, 'getClients'])->name('get.clients');
+Route::get('/get-clients', [SuperAdminController::class, 'getClients'])->middleware([DissableBackBtn::class, CheckRole::class])->name('get.clients');
 
 
-Route::put('/update-user/{id}', [SuperAdminController::class, 'updateUser'])->name('update-user');
+Route::put('/update-user/{id}', [SuperAdminController::class, 'updateUser'])->middleware([DissableBackBtn::class, CheckRole::class])->name('update-user');
+Route::put('/update-client/{id}', [SuperAdminController::class, 'updateClient'])->middleware([DissableBackBtn::class, CheckRole::class])->name('update-client');
 
 //Search edit
-Route::get('/search/clients', [SuperAdminController::class, 'search'])->name('get.clients');
+Route::get('/search/clients', [SuperAdminController::class, 'search'])->middleware([DissableBackBtn::class, CheckRole::class])->name('get.clients');
 
 
 //This should 

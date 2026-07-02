@@ -36,11 +36,6 @@ class AccessManagementController extends Controller
 
     public function getUsersByRole($role)
     {
-        // $users = SuperAddUser::where('status', 1)
-        //     ->where('user_type', $role)
-        //     ->select('id', 'fname', 'lname', 'email', 'employee_id')
-        //     ->orderBy('fname')
-        //     ->get()
         $users = SuperAddUser::where('status', 1)
             ->whereRaw('LOWER(user_type) = ?', [strtolower($role)])
             ->get()
@@ -58,12 +53,86 @@ class AccessManagementController extends Controller
 
         return response()->json($users);
     }
+    public function getUserPermission($userId)
+    {
+        $user = SuperAddUser::findOrFail($userId);
 
+        $permissions = AccessPermission::join(
+            'access_modules',
+            'access_permissions.module_id',
+            '=',
+            'access_modules.id'
+        )
+            ->where('access_permissions.user_id', $userId)
+            ->select(
+                'access_modules.id',
+                'access_modules.module_name as name'
+            )
+            ->orderBy('access_modules.module_name')
+            ->get();
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->fname . ' ' . $user->lname,
+                'role' => ucfirst($user->user_type),
+            ],
+            'permissions' => $permissions,
+        ]);
+    }
+
+    // public function savePermission(Request $request)
+    // {
+    //     $request->validate([
+    //         'users' => 'required|array',
+    //         'modules' => 'required|array'
+    //     ]);
+
+    //     DB::beginTransaction();
+
+    //     try {
+
+    //         foreach ($request->users as $userId) {
+
+    //             AccessPermission::where('user_id', $userId)->delete();
+
+    //             $insertData = [];
+
+    //             foreach ($request->modules as $moduleId) {
+
+    //                 $insertData[] = [
+    //                     'user_id' => $userId,
+    //                     'module_id' => $moduleId,
+    //                     'created_at' => now(),
+    //                     'updated_at' => now(),
+    //                 ];
+    //             }
+
+    //             AccessPermission::insert($insertData);
+    //         }
+
+    //         DB::commit();
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Permission Saved Successfully.'
+    //         ]);
+
+    //     } catch (\Exception $e) {
+
+    //         DB::rollBack();
+
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
     public function savePermission(Request $request)
     {
         $request->validate([
-            'users'   => 'required|array',
-            'modules' => 'required|array',
+            'users' => 'required|array|min:1',
+            'modules' => 'nullable|array'
         ]);
 
         DB::beginTransaction();
@@ -72,16 +141,25 @@ class AccessManagementController extends Controller
 
             foreach ($request->users as $userId) {
 
-                // পুরনো permission delete
+                // Remove all existing permissions
                 AccessPermission::where('user_id', $userId)->delete();
 
-                // নতুন permission insert
-                foreach ($request->modules as $moduleId) {
+                // If no modules selected, permission is revoked
+                if (!empty($request->modules)) {
 
-                    AccessPermission::create([
-                        'user_id'   => $userId,
-                        'module_id' => $moduleId,
-                    ]);
+                    $insertData = [];
+
+                    foreach ($request->modules as $moduleId) {
+
+                        $insertData[] = [
+                            'user_id' => $userId,
+                            'module_id' => $moduleId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+
+                    AccessPermission::insert($insertData);
                 }
             }
 
@@ -89,8 +167,11 @@ class AccessManagementController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'Permission Saved Successfully.'
+                'message' => empty($request->modules)
+                    ? 'Permission revoked successfully.'
+                    : 'Permission updated successfully.'
             ]);
+
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -98,7 +179,7 @@ class AccessManagementController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
-            ]);
+            ], 500);
         }
     }
 }

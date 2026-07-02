@@ -10,4 +10,9 @@ class AccessPermission extends Model
         'user_id',
         'module_id',
     ];
+
+    public function module()
+    {
+        return $this->belongsTo(AccessModule::class, 'module_id');
+    }
 }

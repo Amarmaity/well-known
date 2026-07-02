@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
 use App\Models\AdminReviewTable;
 use App\Models\AllClient;
-use App\Models\ApprisalTable;
 use App\Models\ClientReviewTable;
-use App\Models\ClientReviewTables;
 use App\Models\evaluationTable;
 use App\Models\FinancialData;
 use App\Models\HrReviewTable;
@@ -18,11 +16,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 use App\Models\SuperUserTable;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 
 
@@ -1254,9 +1252,6 @@ class SuperAdminController extends Controller
 
     public function updateUser(Request $request, $id)
     {
-        // dd($request);
-
-
         $request->validate([
             'fname' => 'required|string|max:255',
             'lname' => 'required|string|max:255',
@@ -1339,6 +1334,65 @@ class SuperAdminController extends Controller
         return view('admin.clientManagement', compact('allClients'));
     }
 
+
+    public function editClientView($id)
+    {
+        $client = AllClient::findOrFail($id);
+
+        return view('admin.editClient', compact('client'));
+    }
+
+    public function updateClient(Request $request, $id)
+    {
+        $client = AllClient::findOrFail($id);
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'client_name' => 'required|string|max:50',
+                'company_name' => 'required|string|max:50',
+                'client_mobno' => 'nullable|regex:/^[6-9]\d{9}$/',
+                'client_email' => 'required|email|max:50|unique:all_clients,client_email,' . $client->id,
+                'password' => 'nullable|string|min:6',
+                'user_type' => 'required|in:client',
+            ],
+            [
+                'client_name.required' => 'Client Name is required.',
+                'company_name.required' => 'Company Name is required.',
+                'client_email.required' => 'Email is required.',
+                'client_email.email' => 'Please enter a valid email address.',
+                'client_email.unique' => 'This email is already registered.',
+                'client_mobno.regex' => 'Please enter a valid 10-digit Indian mobile number.',
+                'password.min' => 'Password must be at least 6 characters.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $client->client_name = $validated['client_name'];
+        $client->company_name = $validated['company_name'];
+        $client->client_mobno = $validated['client_mobno'];
+        $client->client_email = strtolower(trim($validated['client_email']));
+        $client->user_type = $validated['user_type'];
+
+        if (!empty($validated['password'])) {
+            $client->password = bcrypt($validated['password']);
+        }
+
+        $client->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Client updated successfully.'
+        ]);
+    }
 
     public function clientToggleStatus($id)
     {

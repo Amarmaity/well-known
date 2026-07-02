@@ -75,9 +75,14 @@
                                     {{ $client->status ? 'Active' : 'Inactive' }}
                                 </td>
                                 <td>
-                                    <input type="checkbox" class="toggle-btn" data-toggle="toggle" data-size="mini"
-                                        data-on="Deactivate" data-off="Activate" data-onstyle="danger" data-offstyle="success"
-                                        data-user-type="client" data-identifier="{{ $client->id }}" {{ $client->status ? 'checked' : '' }}>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="{{ route('edit-client', $client->id) }}" class="btn btn-sm btn-outline-primary" title="Edit client">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <input type="checkbox" class="toggle-btn" data-toggle="toggle" data-size="mini"
+                                            data-on="Deactivate" data-off="Activate" data-onstyle="danger" data-offstyle="success"
+                                            data-user-type="client" data-identifier="{{ $client->id }}" {{ $client->status ? 'checked' : '' }}>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

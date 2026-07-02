@@ -39,7 +39,9 @@ class UpdateEmployeeStatus extends Command
     $today = Carbon::today()->toDateString();
     Log::info("🔍 Checking for users with probation_date = {$today}");
 
-    $users = SuperAddUser::whereDate('probation_date', '<=', $today)->get();
+    $users = SuperAddUser::whereDate('probation_date', '<', $today)
+        ->where('employee_status', 'Probation Period')
+        ->get();
 
     Log::info("🧑‍💻 Found {$users->count()} users");
 

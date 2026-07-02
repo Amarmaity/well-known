@@ -61,28 +61,29 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    @yield('script')
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    var isGuest = {{ session()->has('user_email') ? 'false' : 'true' }};
+        var isGuest = {{ session()->has('user_email') ? 'false' : 'true' }};
 
-    if (isGuest) {
-        // Prevent back navigation
-        history.pushState(null, null, location.href);
-        window.onpopstate = function() {
+        if (isGuest) {
+            // Prevent back navigation
             history.pushState(null, null, location.href);
-        };
+            window.onpopstate = function() {
+                history.pushState(null, null, location.href);
+            };
 
-        // Redirect user to home page
-        window.onpageshow = function(event) {
-            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-                window.location.href = '/';
-            } else {
-                window.location.replace('/');
-            }
-        };
-    }
-});
+            // Redirect user to home page
+            window.onpageshow = function(event) {
+                if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                    window.location.href = '/';
+                } else {
+                    window.location.replace('/');
+                }
+            };
+        }
+    });
 </script>
 
 </html>

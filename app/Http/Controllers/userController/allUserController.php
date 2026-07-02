@@ -4,11 +4,11 @@ namespace App\Http\Controllers\userController;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
+use App\Models\AccessPermission;
 use App\Models\AdminReviewTable;
 use App\Models\AllClient;
 use App\Models\ClientReviewTable;
 use App\Models\evaluationTable;
-use App\Models\FinancialData;
 use App\Models\HrReviewTable;
 use App\Models\ManagerReviewTable;
 use App\Models\SuperAddUser;
@@ -156,6 +156,24 @@ class allUserController extends Controller
                 Session::put('user_type', $user->user_type);
                 Session::put('user_id', $user->id);
 
+                $permissions = AccessPermission::join(
+                    'access_modules',
+                    'access_permissions.module_id',
+                    '=',
+                    'access_modules.id'
+                )
+                    ->where('access_permissions.user_id', $user->id)
+                    ->pluck('access_modules.module_key')
+                    ->toArray();
+
+                Session::put('permissions', $permissions);
+
+                Log::info('User Permissions', [
+                    'user_id' => $user->id,
+                    'user_type' => $user->user_type,
+                    'permissions' => $permissions
+                ]);
+
                 // Define redirects based on user_type
                 $redirectRoute = match ($user->user_type) {
                     'Super User' => route('super-admin-view'),
@@ -166,10 +184,28 @@ class allUserController extends Controller
                     default => route('all-user-login'),
                 };
             } elseif ($superUser) {
-                // For SuperUserTable
                 Session::put('user_email', $superUser->email);
                 Session::put('user_type', $superUser->user_type);
                 Session::put('user_id', $superUser->id);
+
+                $permissions = AccessPermission::join(
+                    'access_modules',
+                    'access_permissions.module_id',
+                    '=',
+                    'access_modules.id'
+                )
+                    ->where('access_permissions.user_id', $superUser->id)
+                    ->pluck('access_modules.module_key')
+                    ->toArray();
+
+                Session::put('permissions', $permissions);
+
+                Log::info('Super User Permissions', [
+                    'user_id' => $superUser->id,
+                    'user_type' => $superUser->user_type,
+                    'permissions' => $permissions
+                ]);
+
 
                 $redirectRoute = match ($superUser->user_type) {
                     'Super User' => route('super-admin-view'),
@@ -183,8 +219,7 @@ class allUserController extends Controller
                 // For AllClient
                 Session::put('user_email', $client->client_email);
                 Session::put('user_type', $client->user_type);
-                Session::put('client_id', $client->id);  // Store client id
-
+                Session::put('client_id', $client->id);
                 $redirectRoute = match ($client->user_type) {
                     'client' => route('client-dashboard'),
                     default => route('login'),
@@ -367,7 +402,7 @@ class allUserController extends Controller
                 ]);
         }
 
-        
+
         // Search by Employee ID or Employee Name
         if (!empty($keyword)) {
             $query->where(function ($q) use ($keyword) {

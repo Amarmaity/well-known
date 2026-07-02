@@ -119,13 +119,27 @@ class addUserController extends Controller
             }
 
             // 4. Probation & appraisal logic
-            $probationDate = $isClient ? null : Carbon::parse($request->input('probation_date'));
-            $employeeStatus = $isClient ? 'Client' : ($probationDate->lte(Carbon::today()) ? 'Employee' : 'Probation Period');
+            $joiningDate = $isClient ? null : Carbon::parse($request->input('dob'))->startOfDay();
+            $probationDate = $isClient ? null : Carbon::parse($request->input('probation_date'))->startOfDay();
+
+            if (!$isClient && $probationDate->lt($joiningDate)) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => [
+                        'probation_date' => ['Probation date cannot be earlier than the joining date.'],
+                    ],
+                ], 422);
+            }
+
+            $today = Carbon::today()->startOfDay();
+            $employeeStatus = $isClient
+                ? 'Client'
+                : ($probationDate->gte($today) ? 'Probation Period' : 'Employee');
 
             $companyPercentage = null;
             $financialYear = null;
 
-            if (!$isClient) {
+            if (!$isClient && $employeeStatus === 'Employee') {
                 $appraisal = ApprisalTable::latest()->first();
 
                 if (
@@ -142,10 +156,7 @@ class addUserController extends Controller
                         $startDate = Carbon::createFromDate($startYear, 4, 1)->startOfDay();
                         $endDate = Carbon::createFromDate($endYear, 3, 31)->endOfDay();
 
-                        if (
-                            ($probationDate->between($startDate, $endDate) || $probationDate->lte(Carbon::today())) &&
-                            $employeeStatus === 'Employee'
-                        ) {
+                        if ($probationDate->between($startDate, $endDate) || $probationDate->lt($today)) {
                             $companyPercentage = $appraisal->company_percentage;
                             $financialYear = $appraisal->financial_year;
                         }
@@ -158,25 +169,6 @@ class addUserController extends Controller
                     }
                 }
             }
-
-            // Redundant parsing safety check
-            $probationDate = null;
-
-            if (!$isClient) {
-                $probationInput = $request->input('probation_date');
-
-                if (!$probationInput || !strtotime($probationInput)) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Invalid probation date format.',
-                        'debug' => 'Probation date could not be parsed.',
-                    ], 422);
-                }
-
-                $probationDate = Carbon::parse($probationInput);
-            }
-
-            $employeeStatus = $isClient ? 'Client' : ($probationDate->lte(Carbon::today()) ? 'Employee' : 'Probation Period');
 
 
             $managerId = $request->input('manager_id');
