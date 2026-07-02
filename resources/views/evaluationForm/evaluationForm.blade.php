@@ -26,6 +26,17 @@
             min-width: 30px !important;
             height: 30px !important;
         }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+        }
+
+        select.is-invalid,
+        .form-select.is-invalid {
+            background-position: right calc(0.375em + 0.1875rem) center !important;
+            padding-right: 2.25rem !important;
+        }
     </style>
 
 
@@ -34,7 +45,7 @@
         <!-- Centered Headings -->
 
 
-        <form action="{{ route('insert-data-evaluation') }}" method="post" id="evaluationSubmit"
+        <form action="{{ route('insert-data-evaluation') }}" method="post" id="evaluationForm"
             class="evaluation__form form-block form-block--updated" enctype="multipart/form-data">
             @csrf
             <div class="client">
@@ -61,19 +72,18 @@
                     <option value="">Financial Year</option>
 
                     @foreach ($years as $year)
-                        @php
-                            $end = $year + 1;
-                            $fy = $year . '-' . $end;
-                        @endphp
+                                @php
+                                    $end = $year + 1;
+                                    $fy = $year . '-' . $end;
+                                @endphp
 
-                        <option value="{{ $fy }}"
-                            {{ isset($financial_year) && $financial_year == $fy
-                                ? 'selected'
-                                : (!isset($financial_year) && $year == $currentFYStart
-                                    ? 'selected'
-                                    : '') }}>
-                            {{ $fy }}
-                        </option>
+                                <option value="{{ $fy }}" {{ isset($financial_year) && $financial_year == $fy
+                        ? 'selected'
+                        : (!isset($financial_year) && $year == $currentFYStart
+                            ? 'selected'
+                            : '') }}>
+                                    {{ $fy }}
+                                </option>
                     @endforeach
                 </select>
             </div>
@@ -128,9 +138,8 @@
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="review_period" class="forms-label">Review Period:</label>
-                                <input type="text" name="review_period" id="review_period"
-                                    placeholder="Enter Review Period" value="{{ $financial_year ?? '' }}"
-                                    class="form-control" readonly>
+                                <input type="text" name="review_period" id="review_period" placeholder="Enter Review Period"
+                                    value="{{ $financial_year ?? '' }}" class="form-control" readonly>
                             </div>
                         </div>
                     </div>
@@ -154,7 +163,8 @@
                             </select>
                             <div class="review-block">
                                 <label for="comment" class="third-label">Justify Your Review.</label>
-                                <textarea name="comments_accuracy" id="comments" class="form-control" rows="1" cols="50"></textarea>
+                                <textarea name="comments_accuracy" id="comments" class="form-control" rows="1"
+                                    cols="50"></textarea>
                             </div>
 
                             <label for="adherence" class="second-label">2. Adherence to duties and procedures in Job
@@ -163,8 +173,8 @@
                                 Instructions:
 
                             </label>
-                            <select class="form-select" aria-label="multiple select example" name="adherence"
-                                id="qw2" oninput="qualityWorkTotalRating()" required>
+                            <select class="form-select" aria-label="multiple select example" name="adherence" id="qw2"
+                                oninput="qualityWorkTotalRating()" required>
                                 <option selected disabled>Rate</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -174,7 +184,8 @@
                             </select>
                             <div class="review-block">
                                 <label for="comment" class="third-label">Justify Your Review.</label>
-                                <textarea name="comments_adherence" id="comments" class="form-control" rows="1" cols="50"></textarea>
+                                <textarea name="comments_adherence" id="comments" class="form-control" rows="1"
+                                    cols="50"></textarea>
                             </div>
 
                             <label for="synchronization" class="second-label">3. Synchronization with
@@ -182,8 +193,8 @@
                                 goals:
 
                             </label>
-                            <select class="form-select" aria-label="multiple select example" name="synchronization"
-                                id="qw3" oninput="qualityWorkTotalRating()" required>
+                            <select class="form-select" aria-label="multiple select example" name="synchronization" id="qw3"
+                                oninput="qualityWorkTotalRating()" required>
                                 <option selected disabled>Rate</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -193,15 +204,16 @@
                             </select>
                             <div class="review-block">
                                 <label for="functional_goals" class="third-label">Justify Your Review</label>
-                                <textarea name="comments_synchronization" id="comments" class="form-control" rows="1" cols="50"></textarea>
+                                <textarea name="comments_synchronization" id="comments" class="form-control" rows="1"
+                                    cols="50"></textarea>
                             </div>
 
                             <label for="qualityworktotalrating" class="second-label">Quality of Work Total Rating:
                             </label>
                             <ol class="breadcrumb breadcrumb-div">
                                 <li class="breadcrumb-item">
-                                    <input type="text" name="qualityworktotalrating" id="qualityworktotalrating"
-                                        readonly class="form-control form-total">
+                                    <input type="text" name="qualityworktotalrating" id="qualityworktotalrating" readonly
+                                        class="form-control form-total">
                                 </li>
                                 <li class="breadcrumb-item">15</li>
                             </ol>
@@ -218,8 +230,8 @@
                                 <label for="punctuality" class="second-label">1. Punctuality in workplace:
 
                                 </label>
-                                <select class="form-select" aria-label="multiple select example" name="punctuality"
-                                    id="wh1" oninput="workHabitsTotalRating()" required>
+                                <select class="form-select" aria-label="multiple select example" name="punctuality" id="wh1"
+                                    oninput="workHabitsTotalRating()" required>
                                     <option selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -229,7 +241,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_punctuality" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_punctuality" id="comments_punctuality" class="form-control" rows="1" cols="50"></textarea>
+                                    <textarea name="comments_punctuality" id="comments_punctuality" class="form-control"
+                                        rows="1" cols="50"></textarea>
                                 </div>
                             </div>
 
@@ -248,7 +261,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_attendance" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_attendance" id="comments_attendance" class="form-control" rows="1" cols="50"></textarea>
+                                    <textarea name="comments_attendance" id="comments_attendance" class="form-control"
+                                        rows="1" cols="50"></textarea>
                                 </div>
                             </div>
 
@@ -261,8 +275,7 @@
 
                                 </label>
                                 <select class="form-select" aria-label="multiple select example"
-                                    name="initiatives_at_workplace" oninput="workHabitsTotalRating()" id="wh3"
-                                    required>
+                                    name="initiatives_at_workplace" oninput="workHabitsTotalRating()" id="wh3" required>
                                     <option selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -272,7 +285,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_initiatives" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_initiatives" id="comments_initiatives" class="form-control" rows="1" cols="50"></textarea>
+                                    <textarea name="comments_initiatives" id="comments_initiatives" class="form-control"
+                                        rows="1" cols="50"></textarea>
                                 </div>
                             </div>
 
@@ -292,8 +306,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_submits_reports" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_submits_reports" id="comments_submits_reports" class="form-control" rows="1"
-                                        cols="50"></textarea>
+                                    <textarea name="comments_submits_reports" id="comments_submits_reports"
+                                        class="form-control" rows="1" cols="50"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -334,8 +348,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_skill_ability" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_skill_ability" id="comments_skill_ability" class="form-control" rows="1"
-                                        cols="50"></textarea>
+                                    <textarea name="comments_skill_ability" id="comments_skill_ability" class="form-control"
+                                        rows="1" cols="50"></textarea>
                                 </div>
                             </div>
 
@@ -343,9 +357,8 @@
                                 <label for="learning_improving" class="second-label">2. Shown interest in learning and
                                     improving:
                                 </label>
-                                <select class="form-select" aria-label="multiple select example"
-                                    name="learning_improving" oninput="jobKnowledgeTotalRating()" id="jk2"
-                                    required>
+                                <select class="form-select" aria-label="multiple select example" name="learning_improving"
+                                    oninput="jobKnowledgeTotalRating()" id="jk2" required>
                                     <option selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -356,8 +369,8 @@
                                 <div class="review-block">
                                     <label for="comments_learning_improving" class="third-label">Justify Your
                                         Review:</label>
-                                    <textarea name="comments_learning_improving" id="comments_learning_improving" class="form-control" rows="1"
-                                        cols="50"></textarea>
+                                    <textarea name="comments_learning_improving" id="comments_learning_improving"
+                                        class="form-control" rows="1" cols="50"></textarea>
                                 </div>
                             </div>
 
@@ -365,8 +378,7 @@
                                 <label for="problem_solving_ability" class="second-label">3. Problem solving ability:
                                 </label>
                                 <select class="form-select" aria-label="multiple select example"
-                                    name="problem_solving_ability" oninput="jobKnowledgeTotalRating()" id="jk3"
-                                    required>
+                                    name="problem_solving_ability" oninput="jobKnowledgeTotalRating()" id="jk3" required>
                                     <option selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -376,8 +388,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_problem_solving" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_problem_solving" id="comments_problem_solving" class="form-control" rows="1"
-                                        cols="50"></textarea>
+                                    <textarea name="comments_problem_solving" id="comments_problem_solving"
+                                        class="form-control" rows="1" cols="50"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -410,9 +422,8 @@
                                 <label for="respond_contributes" class="second-label">1. Responds and contributes to team
                                     efforts:
                                 </label>
-                                <select class="form-select" aria-label="multiple select example"
-                                    name="respond_contributes" oninput="interpersonalTotalRating()" id="ir1"
-                                    required>
+                                <select class="form-select" aria-label="multiple select example" name="respond_contributes"
+                                    oninput="interpersonalTotalRating()" id="ir1" required>
                                     <option selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -423,8 +434,8 @@
                                 <div class="review-block">
                                     <label for="comments_respond_contributes" class="third-label">Justify Your
                                         Review:</label>
-                                    <textarea name="comments_respond_contributes" id="comments_respond_contributes" rows="1" cols="50"
-                                        class="form-control"></textarea>
+                                    <textarea name="comments_respond_contributes" id="comments_respond_contributes" rows="1"
+                                        cols="50" class="form-control"></textarea>
                                 </div>
                             </div>
 
@@ -435,9 +446,8 @@
                                     and
                                     criticism:
                                 </label>
-                                <select class="form-select" aria-label="multiple select example"
-                                    name="responds_positively" oninput="interpersonalTotalRating()" id="ir2"
-                                    required>
+                                <select class="form-select" aria-label="multiple select example" name="responds_positively"
+                                    oninput="interpersonalTotalRating()" id="ir2" required>
                                     <option selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -448,8 +458,8 @@
                                 <div class="review-block">
                                     <label for="comments_responds_positively" class="third-label">Justify Your
                                         Review:</label>
-                                    <textarea name="comments_responds_positively" id="comments_responds_positively" rows="1" cols="50"
-                                        class="form-control"></textarea>
+                                    <textarea name="comments_responds_positively" id="comments_responds_positively" rows="1"
+                                        cols="50" class="form-control"></textarea>
                                 </div>
                             </div>
 
@@ -469,7 +479,8 @@
                                 <div class="review-block">
                                     <label for="comments_supervisor" class="third-label">Justify Your Review:
                                     </label>
-                                    <textarea name="comments_supervisor" id="comments_supervisor" rows="1" cols="50" class="form-control"></textarea>
+                                    <textarea name="comments_supervisor" id="comments_supervisor" rows="1" cols="50"
+                                        class="form-control"></textarea>
                                 </div>
                             </div>
 
@@ -489,8 +500,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_adapts_changing" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_adapts_changing" id="comments_adapts_changing" rows="1" cols="50"
-                                        class="form-control"></textarea>
+                                    <textarea name="comments_adapts_changing" id="comments_adapts_changing" rows="1"
+                                        cols="50" class="form-control"></textarea>
                                 </div>
                             </div>
 
@@ -564,7 +575,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_challenges" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_challenges" id="comments_challenges" class="form-control" rows="1" cols="50"></textarea>
+                                    <textarea name="comments_challenges" id="comments_challenges" class="form-control"
+                                        rows="1" cols="50"></textarea>
                                 </div>
                             </div>
 
@@ -591,8 +603,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_personal_growth" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_personal_growth" id="comments_personal_growth" class="form-control" rows="1"
-                                        cols="50"></textarea>
+                                    <textarea name="comments_personal_growth" id="comments_personal_growth"
+                                        class="form-control" rows="1" cols="50"></textarea>
                                 </div>
                             </div>
 
@@ -611,8 +623,8 @@
                                 </select>
                                 <div class="review-block">
                                     <label for="comments_work_motivation" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_work_motivation" id="comments_work_motivation" class="form-control" rows="1"
-                                        cols="50"></textarea>
+                                    <textarea name="comments_work_motivation" id="comments_work_motivation"
+                                        class="form-control" rows="1" cols="50"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -650,13 +662,13 @@
 
                                 <div class="radio-button radio-block d-flex align-items-center">
                                     <div class="radio-block__item">
-                                        <input type="radio" id="progress_unsatisfactory_yes"
-                                            name="progress_unsatisfactory" value="Yes">
+                                        <input type="radio" id="progress_unsatisfactory_yes" name="progress_unsatisfactory"
+                                            value="Yes">
                                         <label for="progress_unsatisfactory_yes">Yes</label>
                                     </div>
                                     <div class="radio-block__item">
-                                        <input type="radio" id="progress_unsatisfactory_no"
-                                            name="progress_unsatisfactory" value="No" checked>
+                                        <input type="radio" id="progress_unsatisfactory_no" name="progress_unsatisfactory"
+                                            value="No" checked>
                                         <label for="progress_unsatisfactory_no">No</label>
                                     </div>
                                 </div>
@@ -664,8 +676,8 @@
 
                             <label for="comments_unsatisfactory" class="third-label third-label--new">Justify Your
                                 Review:</label>
-                            <textarea name="comments_unsatisfactory" id="comments_unsatisfactory" class="form-control" rows="1"
-                                cols="50"></textarea>
+                            <textarea name="comments_unsatisfactory" id="comments_unsatisfactory" class="form-control"
+                                rows="1" cols="50"></textarea>
                         </div>
 
                         <!-- Acceptable Section -->
@@ -692,7 +704,8 @@
 
                             <label for="comments_acceptable" class="third-label third-label--new">Justify Your
                                 Review:</label>
-                            <textarea name="comments_acceptable" id="comments_acceptable" class="form-control" rows="1" cols="50"></textarea>
+                            <textarea name="comments_acceptable" id="comments_acceptable" class="form-control" rows="1"
+                                cols="50"></textarea>
                         </div>
 
                         <!-- Outstanding Section -->
@@ -718,7 +731,8 @@
 
                             <label for="comments_outstanding" class="third-label third-label--new">Justify Your
                                 Review:</label>
-                            <textarea name="comments_outstanding" id="comments_outstanding" class="form-control" rows="1" cols="50"></textarea>
+                            <textarea name="comments_outstanding" id="comments_outstanding" class="form-control" rows="1"
+                                cols="50"></textarea>
                         </div>
                     </div>
                 </div>
@@ -739,8 +753,8 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label for="signatur" class="second-label">Signature:</label>
-                                        <input type="file" id="signatur" name="evaluator_signatur"
-                                            placeholder="Signatur.." class="form-control">
+                                        <input type="file" id="signatur" name="evaluator_signatur" placeholder="Signatur.."
+                                            class="form-control">
                                     </div>
 
                                     <div class="col-12 col-md-4">
@@ -763,7 +777,7 @@
                     <input type="hidden" name="total_scoring_system" id="total_scoring_system">
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary" id="evaluationSubmit">Submit</button>
+                    <button type="submit" class="btn btn-primary" id="evaluationSubmitBtn">Submit</button>
                     <button type="reset" class="btn btn-outlined d-none" id="evaluationCancle">Clear</button>
                 </div>
         </form>
@@ -809,9 +823,26 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    window.evaluationConfig = {
+        sessionEmail: @json(session('user_email')),
+        userType: @json(session('user_type')),
+        employeeStatus: @json(session('employee_status')),
+        sendOtpUrl: @json(route('evaluation-send-otp')),
+        verifyOtpUrl: @json(route('evaluation-verify-otp')),
+        duplicateCheckUrl: @json(route('check-duplicate-evaluation')),
+        submitUrl: @json(route('insert-data-evaluation'))
+    };
+</script>
+<script src="{{ asset('js/evaluationForm.js') }}"></script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+        if (window.__evaluationFormHandled) {
+            return;
+        }
+        window.__evaluationFormHandled = true;
+
         $.ajaxSetup({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -820,7 +851,7 @@
 
         const sessionEmail = "{{ session('user_email') }}"; // or use 'otp_email' if more accurate
 
-        $("#evaluationSubmit").submit(function(event) {
+        $("#evaluationSubmit").submit(function (event) {
             event.preventDefault();
 
             const $submitBtn = $(this).find("button[type='submit']");
@@ -833,7 +864,7 @@
                     clearInterval(otpTimer);
                     $submitBtn.prop("disabled", false).text("Resend OTP");
                 } else {
-                    $submitBtn.text(`Please wait... (${countdown}s)`);
+                    $submitBtn.text(`Please wait... (${ countdown }s)`);
                 }
             }, 1000);
 
@@ -844,7 +875,7 @@
                 data: {
                     email: sessionEmail
                 },
-                success: function(response) {
+                success: function (response) {
                     console.log("OTP Sent Response:", response);
                     if (response.success) {
                         $("#otpModal").modal("show");
@@ -853,7 +884,7 @@
                         $submitBtn.prop("disabled", false).text("Save");
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error("OTP Request Error:", xhr.responseText);
                     alert("Something went wrong! Please try again.");
                     $submitBtn.prop("disabled", false).text("Save");
@@ -862,7 +893,7 @@
         });
 
         // OTP Form Submit
-        $("#otpForm").submit(function(event) {
+        $("#otpForm").submit(function (event) {
             event.preventDefault();
 
             $.ajax({
@@ -873,7 +904,7 @@
                     otp: $("input[name='otp']").val(),
                     _token: "{{ csrf_token() }}"
                 },
-                success: function(response) {
+                success: function (response) {
                     console.log("OTP Verified Response:", response);
                     if (response.success) {
                         alert("OTP Verified!");
@@ -887,18 +918,18 @@
                         alert(response.message || "Invalid OTP!");
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error("OTP Verification Error:", xhr.responseText);
                     alert("Enter Valid OTP! Please try again.");
                 }
             });
         });
 
-        $(".close").on("click", function() {
+        $(".close").on("click", function () {
             $("#otpModal").modal("hide");
         });
 
-        $("#otpModal").on("hidden.bs.modal", function() {
+        $("#otpModal").on("hidden.bs.modal", function () {
             $("input[name='otp']").val("");
         });
 
@@ -919,7 +950,7 @@
                     financial_year: financialYear,
                     _token: "{{ csrf_token() }}"
                 },
-                success: function(res) {
+                success: function (res) {
                     if (res.exists) {
                         $("#loaderOverlay").hide();
                         Swal.fire({
@@ -937,7 +968,7 @@
                         data: formData,
                         processData: false,
                         contentType: false,
-                        success: function(response) {
+                        success: function (response) {
 
                             $("#loaderOverlay").hide();
 
@@ -960,7 +991,7 @@
                                 });
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             $("#loaderOverlay").hide();
                             let errorMessage =
                                 "Something went wrong! Please try again.";
@@ -986,7 +1017,7 @@
                         }
                     });
                 },
-                error: function() {
+                error: function () {
                     $("#loaderOverlay").hide();
                     Swal.fire({
                         icon: 'error',
@@ -997,10 +1028,6 @@
             });
         }
     });
-
-
-
-
 
     // Utility: safely parse integer from input by id, fallback 0
     function getIntValue(id) {
@@ -1095,6 +1122,6 @@
     // Initialize on page load
     window.addEventListener('load', () => {
         setupEventListeners();
-        updateAllTotals(); // initial calculation in case inputs have default values
+        updateAllTotals();
     });
 </script>

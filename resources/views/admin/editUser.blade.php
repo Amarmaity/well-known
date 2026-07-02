@@ -19,16 +19,33 @@
                 <form action="{{ route('update-user', ['id' => $user->id]) }}" method="POST" class="forms-block">
                     @csrf
                     @method('PUT')
+                    <style>
+                        .readonly-field {
+                            background-color: #f8f9fa !important;
+                            color: #6c757d !important;
+                            cursor: not-allowed;
+                        }
+
+                        .readonly-select {
+                            background-color: #f8f9fa !important;
+                            color: #6c757d !important;
+                        }
+
+                        .search-wrap {
+                            display: flex;
+                            flex-direction: column;
+                        }
+                    </style>
                     <div class="row form-section">
                         <div class="col-md-6">
                             <label for="fname" class="forms-label">First Name</label>
-                            <input type="text" name="fname" id="fname" class="form-control"
+                            <input type="text" name="fname" id="fname" class="form-control readonly-field"
                                 value="{{ $user->fname }}" readonly>
                         </div>
 
                         <div class="col-md-6">
                             <label for="lname" class="forms-label">Last Name</label>
-                            <input type="text" name="lname" id="lname" class="form-control"
+                            <input type="text" name="lname" id="lname" class="form-control readonly-field"
                                 value="{{ $user->lname }}" readonly>
                         </div>
 
@@ -47,7 +64,7 @@
 
                         <div class="col-md-6">
                             <label for="employee_id" class="forms-label">Employee ID</label>
-                            <input type="text" name="employee_id" id="employee_id" class="form-control"
+                            <input type="text" name="employee_id" id="employee_id" class="form-control readonly-field"
                                 value="{{ $user->employee_id }}" readonly>
                         </div>
 
@@ -59,7 +76,7 @@
 
                         <div class="col-md-6">
                             <label for="gender" class="forms-label">Gender</label>
-                            <select class="form-control" id="gender" name="gender">
+                            <select class="form-control readonly-select" id="gender" name="gender">
                                 <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>Male</option>
                                 <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>Female</option>
                                 <option value="other" {{ $user->gender == 'other' ? 'selected' : '' }}>Other</option>
@@ -115,13 +132,6 @@
                     </div> --}}
 
 
-                        <style>
-                            .search-wrap {
-                                display: flex;
-                                flex-direction: column;
-                            }
-                        </style>
-
                         <div class="client-hide col-md-6 search-wrap" id="manager-name-field">
                             <label for="manager_id" class="forms-label">Manager Name</label>
 
@@ -172,7 +182,7 @@
 
                         <div class="col-md-6">
                             <label for="user_type_dropdown" class="forms-label">User Type</label>
-                            <select class="form-control" id="user_type_dropdown" name="user_type" required>
+                            <select class="form-control readonly-select" id="user_type_dropdown" name="user_type" required>
                                 <option value="" disabled {{ $user->user_type == null ? 'selected' : '' }}>Select
                                     User Type
                                 </option>
@@ -196,7 +206,7 @@
 
                         <div class="client-hide col-md-6">
                             <label for="salary" class="forms-label">Salary</label>
-                            <input type="number" class="form-control" id="salary" name="salary"
+                            <input type="number" class="form-control readonly-field" id="salary" name="salary"
                                 placeholder="Enter Salary" min="0" value="{{ $user->salary }}" required>
                         </div>
 
@@ -521,6 +531,24 @@
             const data = e.params.data;
             console.log('Selected Manager:', data);
             $('#manager_name').val(data.text); // Updates hidden input
+        });
+
+        $('.select2-manager').on('select2:clear', function() {
+            $('#manager_name').val('');
+        });
+
+        $('.select2-admin').on('select2:select', function(e) {
+            const data = e.params.data;
+            console.log('Selected Admin:', data);
+        });
+
+        $('.select2-hr').on('select2:select', function(e) {
+            const data = e.params.data;
+            console.log('Selected HR:', data);
+        });
+
+        $('.select2-admin, .select2-hr, .select2-manager').on('change', function() {
+            $(this).removeClass('is-invalid');
         });
     </script>
 @endsection

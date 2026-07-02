@@ -1165,7 +1165,9 @@ class SuperAdminController extends Controller
 
     public function getClients()
     {
-        $clients = AllClient::select('id', 'client_name', 'client_email')->get();
+        $clients = AllClient::where('status', 1)
+            ->select('id', 'client_name', 'client_email')
+            ->get();
 
         return response()->json($clients);
     }
@@ -1264,6 +1266,8 @@ class SuperAdminController extends Controller
             'division' => 'nullable|string|max:255',
             'manager_name' => 'nullable|string|max:255',
             'manager_id' => 'nullable|integer|exists:super_add_users,id',
+            'admin_id' => 'nullable|integer|exists:super_add_users,id',
+            'hr_id' => 'nullable|integer|exists:super_add_users,id',
             'user_type' => 'required|string|in:admin,hr,users,manager',
             'probation_date' => 'nullable|date',
             'salary' => 'nullable|numeric|min:0',
@@ -1288,6 +1292,8 @@ class SuperAdminController extends Controller
         $user->division = $request->division;
         $user->manager_name = $request->manager_name;
         $user->manager_id = $request->manager_id;
+        $user->admin_id = $request->admin_id;
+        $user->hr_id = $request->hr_id;
         $user->user_type = $request->user_type;
         $user->probation_date = $request->probation_date;
         $user->salary = $request->salary;

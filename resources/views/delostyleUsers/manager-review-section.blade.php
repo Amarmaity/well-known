@@ -28,6 +28,14 @@
             font-weight: bold;
             margin-left: 28px;
         }
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+        }
+        select.is-invalid, .form-select.is-invalid {
+            background-position: right calc(0.375em + 0.1875rem) center !important;
+            padding-right: 2.25rem !important;
+        }
     </style>
 
     <head>
@@ -35,7 +43,7 @@
     </head>
 
     <body>
-        <form action="{{route('manager.review.submit')}}" method="post" id="ManagerReviewSubmit">
+        <form action="{{route('manager.review.submit')}}" method="post" id="ManagerReviewSubmit" novalidate>
             @csrf
             <div class="client">
                 <h1 class="client__heading">MANAGER REVIEW</h1>
@@ -85,8 +93,9 @@
 
                 <div class="client___item">
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
+                        required
                         placeholder="search employee" aria-label="Search">
-                    <button class="client__btn" type="submit">
+                    <button class="client__btn" type="button" id="employeeSearchBtn">
                         <img src="{{ asset('images/search.png') }}" alt="Search">
                     </button>
                 </div>
@@ -128,7 +137,7 @@
                                 accuracy, neatness, and timeliness?:</label>
                             <select class="form-select" aria-label="multiple select example" name="rate_employee_quality"
                                 id="mrs" required>
-                                <option selected disabled>Rate</option>
+                                <option value="" selected disabled>Rate</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -139,7 +148,7 @@
                             <div class="review-block">
                                 <label for="comments_employee_work_quality" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_rate_employee_quality" id="comments" class="form-control" rows="1"
+                            <textarea name="comments_rate_employee_quality" id="comments" class="form-control" rows="1" required minlength="1"
                                     cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
@@ -150,7 +159,7 @@
                                 goals and objectives?:</label>
                             <select class="form-select" aria-label="multiple select example" name="organizational_goals"
                                 id="mrs" required>
-                                <option selected disabled>Rate</option>
+                                <option value="" selected disabled>Rate</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -161,7 +170,7 @@
                             <div class="review-block">
                                 <label for="comments_organizational_goals" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_organizational_goals" id="comments" class="form-control" rows="1"
+                            <textarea name="comments_organizational_goals" id="comments" class="form-control" rows="1" required minlength="1"
                                     cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
@@ -173,7 +182,7 @@
                                     efforts and collaborate with colleagues?:</label>
                                 <select class="form-select" aria-label="multiple select example"
                                     name="collaborate_colleagues" id="mrs" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -184,7 +193,7 @@
                             <div class="review-block">
                                 <label for="comments_collaborate_colleagues" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_collaborate_colleagues" id="comments" class="form-control" rows="1"
+                                <textarea name="comments_collaborate_colleagues" id="comments" class="form-control" rows="1" required minlength="1"
                                     cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
@@ -196,7 +205,7 @@
                                     problem-solving skills?:</label>
                                 <select class="form-select" aria-label="multiple select example" name="demonstrated"
                                     id="mrs" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -207,7 +216,7 @@
                             <div class="review-block">
                                 <label for="comments_demonstrated" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_demonstrated" id="comments" class="form-control" rows="1" cols="50"
+                                <textarea name="comments_demonstrated" id="comments" class="form-control" rows="1" cols="50" required minlength="1"
                                     maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
@@ -219,7 +228,7 @@
                                     accepted additional responsibilities?:</label>
                                 <select class="form-select" aria-label="multiple select example"
                                     name="leadership_responsibilities" id="mrs" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -231,7 +240,7 @@
                                 <label for="comments_leadership_responsibilities" class="third-label">Tell us more about
                                     your
                                     experience:</label>
-                                <textarea name="comments_leadership_responsibilities" id="comments" class="form-control"
+                                <textarea name="comments_leadership_responsibilities" id="comments" class="form-control" required minlength="1"
                                     rows="1" cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
@@ -243,7 +252,7 @@
                                     and contribution to team success?:</label>
                                 <select class="form-select" aria-label="multiple select example"
                                     name="thinking_contribution" id="mrs" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -254,7 +263,7 @@
                             <div class="review-block">
                                 <label for="comments_thinking_contribution" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_thinking_contribution" id="comments" class="form-control" rows="1"
+                                <textarea name="comments_thinking_contribution" id="comments" class="form-control" rows="1" required minlength="1"
                                     cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
@@ -267,7 +276,7 @@
                                     work progress and issues?:</label>
                                 <select class="form-select" aria-label="multiple select example" name="informed_progress"
                                     id="mrs1" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -278,7 +287,7 @@
                             <div class="review-block">
                                 <label for="comments_informed_progress" class="third-label">Tell us more about your
                                     experience:</label>
-                                <textarea name="comments_comments_informed_progress" id="comments" class="form-control"
+                                <textarea name="comments_comments_informed_progress" id="comments" class="form-control" required minlength="1"
                                     rows="1" cols="50" maxlength="255"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
@@ -302,6 +311,8 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/reviewValidation.js') }}"></script>
 
     <script>
         $(function () {
@@ -353,7 +364,7 @@
                             }
                         },
                         error: function () {
-                            alert("An error occurred. Please try again.");
+                            Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred. Please try again.' });
                         }
                     });
                 }, 1000); // Debounce time
@@ -361,6 +372,9 @@
 
             // Handle input typing
             $('#employee_search').on('keyup', searchUser);
+            $('#employeeSearchBtn').on('click', function () {
+                searchUser();
+            });
 
             // Handle row click
             $(document).on('click', '.selectable-row', function () {
@@ -379,6 +393,116 @@
 
             let form = this;
             let formData = new FormData(form);
+            const employeeSearch = document.getElementById('employee_search');
+            const requiredFields = Array.from(form.querySelectorAll('select[required], input[required], textarea[required]'))
+                .filter(field => field.id !== 'employee_search');
+
+            const fieldLabelMap = {
+                financialYear: 'Financial Year',
+                employee_search: 'Employee Search',
+                emp_id_input: 'Selected Employee',
+                rate_employee_quality: 'Question 1 rating',
+                comments_rate_employee_quality: 'Question 1 comment',
+                organizational_goals: 'Question 2 rating',
+                comments_organizational_goals: 'Question 2 comment',
+                collaborate_colleagues: 'Question 3 rating',
+                comments_collaborate_colleagues: 'Question 3 comment',
+                demonstrated: 'Question 4 rating',
+                comments_demonstrated: 'Question 4 comment',
+                leadership_responsibilities: 'Question 5 rating',
+                comments_leadership_responsibilities: 'Question 5 comment',
+                thinking_contribution: 'Question 6 rating',
+                comments_thinking_contribution: 'Question 6 comment',
+                informed_progress: 'Question 7 rating',
+                comments_comments_informed_progress: 'Question 7 comment',
+            };
+
+            const getFieldLabel = (field) => {
+                if (!field) return 'this field';
+
+                const byName = fieldLabelMap[field.name];
+                if (byName) return byName;
+
+                const byId = fieldLabelMap[field.id];
+                if (byId) return byId;
+
+                const label = form.querySelector(`label[for="${field.id}"]`);
+                if (label?.innerText?.trim()) return label.innerText.trim();
+
+                const nearbyLabel = field.closest('.review-block, div, .client___item')?.querySelector('label');
+                if (nearbyLabel?.innerText?.trim()) return nearbyLabel.innerText.trim();
+
+                return field.getAttribute('name') || field.id || 'this field';
+            };
+
+            const showError = (message, focusEl = null) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: message
+                }).then(() => {
+                    if (focusEl) {
+                        focusEl.focus();
+                    }
+                });
+            };
+
+            const extractErrorMessage = (xhr) => {
+                const response = xhr?.responseJSON;
+                if (!response) return 'An error occurred while submitting the review.';
+                if (response.errors) {
+                    const firstKey = Object.keys(response.errors)[0];
+                    if (firstKey && response.errors[firstKey] && response.errors[firstKey][0]) {
+                        const targetField = form.querySelector(`[name="${firstKey}"]`);
+                        const fieldLabel = getFieldLabel(targetField);
+                        return `${fieldLabel}: ${response.errors[firstKey][0]}`;
+                    }
+                }
+                return response.message || 'An error occurred while submitting the review.';
+            };
+
+            const empId = document.getElementById('emp_id_input');
+            const financialYear = document.getElementById('financialYear');
+            const validateField = (field) => {
+                if (!field) return true;
+                if (field.type === 'checkbox' || field.type === 'radio') {
+                    return field.checked;
+                }
+                return String(field.value ?? '').trim().length > 0;
+            };
+
+            if (!financialYear.value) {
+                financialYear.classList.add('is-invalid');
+                showError('Please select a financial year.', financialYear);
+                return;
+            }
+
+            if (!employeeSearch.value.trim()) {
+                employeeSearch.classList.add('is-invalid');
+                showError('Please search for an employee.', employeeSearch);
+                return;
+            }
+
+            if (!empId.value) {
+                empId.classList.add('is-invalid');
+                showError('Please select an employee first.', empId);
+                return;
+            }
+
+            for (const field of requiredFields) {
+                if (!validateField(field)) {
+                    field.classList.add('is-invalid');
+                    showError(`Please complete ${getFieldLabel(field)}.`, field);
+                    return;
+                }
+            }
+
+            const firstInvalid = form.querySelector('select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
+            if (firstInvalid) {
+                firstInvalid.classList.add('is-invalid');
+                showError('Please complete all required fields.', firstInvalid);
+                return;
+            }
 
             // Get manager's total rating
             let totalRating = document.getElementById("managerTotalReview").textContent.trim();
@@ -395,7 +519,11 @@
                 },
                 success: function (response) {
                     console.log("Success:", response);
-                    alert("✅ " + (response.message || "Review submitted successfully!"));
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message || "Review submitted successfully!"
+                    });
 
                     form.reset();
 
@@ -416,9 +544,13 @@
                     });
                     location.reload();
                 },
-                error: function (xhr, status, error) {
+                error: function (xhr) {
                     console.error("Error:", xhr.responseText);
-                    alert("❌ An error occurred while submitting the review.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: extractErrorMessage(xhr)
+                    });
                 }
             });
         });
@@ -443,8 +575,14 @@
 
             // Attach event listeners to each select
             document.querySelectorAll("select[id^='mrs']").forEach(select => {
+                select.addEventListener("change", () => select.classList.remove('is-invalid'));
                 select.addEventListener("input", managerTotalReview);
             });
+            document.querySelectorAll("input, textarea").forEach(el => el.addEventListener("input", () => el.classList.remove('is-invalid')));
         });
     </script>
 @endsection
+
+
+
+

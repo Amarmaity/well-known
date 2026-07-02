@@ -11,11 +11,19 @@
             font-size: 14px;
             text-align: center;
         }
-         .hidden-label {
+        .hidden-label {
             margin-top: 15px;
             margin-bottom: 10px;
             font-weight: bold;
             margin-left: 28px;
+        }
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+        }
+        select.is-invalid, .form-select.is-invalid {
+            background-position: right calc(0.375em + 0.1875rem) center !important;
+            padding-right: 2.25rem !important;
         }
     </style>
 
@@ -359,7 +367,138 @@
 
     </body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/reviewValidation.js') }}"></script>
     <script>   
+        window.__adminReviewHandled = true;
+
+        document.addEventListener("submit", function (event) {
+            const form = event.target;
+            if (!form || form.id !== "AdminReviewSubmit") {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            const requiredFields = [
+                { name: 'financial_year', label: 'Financial Year' },
+                { name: 'emp_id', label: 'Employee' },
+                { name: 'demonstrated_attendance', label: 'Has the employee demonstrated regular attendance and punctuality?' },
+                { name: 'employee_manage_shift', label: 'How well does the employee manage time within the shift?' },
+                { name: 'documentation_neatness', label: 'How would you rate the employee’s accuracy and neatness in reports and documentation?' },
+                { name: 'followed_instructions', label: 'Has the employee followed administrative procedures and job instructions properly?' },
+                { name: 'productive', label: 'Does the employee effectively manage time and stay productive during working hours?' },
+                { name: 'changes_schedules', label: 'How well does the employee handle changes in schedules or assignments?' },
+                { name: 'leave_policy', label: 'Does the employee consistently adhere to the company’s leave policy?' },
+                { name: 'salary_deduction', label: 'Has there been any salary deduction due to the employee’s leave?' },
+                { name: 'interact_housekeeping', label: 'How well does the employee interact with the housekeeping staff?' },
+                { name: 'comments_demonstrated_attendance', label: 'Tell us more about your experience for attendance' },
+                { name: 'comments_employee_manage_shift', label: 'Tell us more about your experience for manage time' },
+                { name: 'comments_documentation_neatness', label: 'Tell us more about your experience for documentation' },
+                { name: 'comments_followed_instructions', label: 'Tell us more about your experience for instructions' },
+                { name: 'comments_productive', label: 'Tell us more about your experience for productivity' },
+                { name: 'comments_changes_schedules', label: 'Tell us more about your experience for schedule changes' },
+                { name: 'comments_leave_policy', label: 'Tell us more about your experience for leave policy' },
+                { name: 'comments_salary_deduction', label: 'Tell us more about your experience for salary deduction' },
+                { name: 'comments_interact_housekeeping', label: 'Tell us more about your experience for housekeeping' }
+            ];
+
+            let firstInvalidName = null;
+            let validationMessage = 'Please complete all required fields.';
+
+            for (const field of requiredFields) {
+                const el = form.querySelector(`[name="${field.name}"]`);
+                if (!el) continue;
+                const value = el.value ? (typeof el.value === 'string' ? el.value.trim() : el.value) : '';
+                if (!value) {
+                    firstInvalidName = field.name;
+                    validationMessage = `${field.label} is required.`;
+                    break;
+                }
+            }
+
+            const focusAndHighlight = (name) => {
+                const el = form.querySelector(`[name="${name}"]`);
+                if (!el) return;
+                el.classList.add('is-invalid');
+                const section = el.closest('.content-block');
+                const checkbox = section ? section.querySelector('input[type="checkbox"]') : null;
+                const opener = checkbox ? section.querySelector(`label[for="${checkbox.id}"]`) : null;
+
+                if (checkbox && !checkbox.checked) {
+                    if (opener) {
+                        opener.click();
+                    } else {
+                        checkbox.click();
+                    }
+                }
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.focus({ preventScroll: true });
+                        setTimeout(() => el.classList.remove('is-invalid'), 2500);
+                    });
+                });
+            };
+
+            if (firstInvalidName) {
+                focusAndHighlight(firstInvalidName);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: validationMessage
+                });
+                return;
+            }
+
+            const ratingSelects = [
+                form.elements['demonstrated_attendance'],
+                form.elements['employee_manage_shift'],
+                form.elements['documentation_neatness'],
+                form.elements['followed_instructions'],
+                form.elements['productive'],
+                form.elements['changes_schedules'],
+                form.elements['leave_policy'],
+                form.elements['salary_deduction'],
+                form.elements['interact_housekeeping']
+            ].filter(Boolean);
+
+            const totalRating = Array.from(ratingSelects).reduce((sum, select) => {
+                const value = parseInt(select.value, 10);
+                return sum + (isNaN(value) ? 0 : value);
+            }, 0);
+
+            const formData = new FormData(form);
+            formData.append("AdminTotalReview", totalRating);
+
+            $.ajax({
+                url: "{{ route('admin.review.submit') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message || 'Admin Review submitted successfully!'
+                    }).then(() => location.reload());
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'Error submitting Admin review.'
+                    });
+                }
+            });
+        }, true);
+
         $(function () {
     let timeout = null;
 
@@ -434,6 +573,28 @@
             if (adminForm) {
                 adminForm.addEventListener("submit", function (event) {
                     event.preventDefault();
+
+                    const firstInvalid = adminForm.querySelector('select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
+                    const empId = document.getElementById('emp_id_input');
+                    const financialYear = document.getElementById('financialYear');
+
+                    if (!financialYear.value) {
+                        financialYear.classList.add('is-invalid');
+                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Please select a financial year.' }).then(() => financialYear.focus());
+                        return;
+                    }
+
+                    if (!empId.value) {
+                        empId.classList.add('is-invalid');
+                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Please select an employee first.' }).then(() => empId.focus());
+                        return;
+                    }
+
+                    if (firstInvalid) {
+                        firstInvalid.classList.add('is-invalid');
+                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Please complete all required fields.' }).then(() => firstInvalid.focus());
+                        return;
+                    }
 
                     // Calculate total Admin rating
                     let totalRating = 0;
@@ -513,8 +674,10 @@
 
             // Attach event listeners to each select
             document.querySelectorAll("select[id^='adr']").forEach(select => {
+                select.addEventListener("change", () => select.classList.remove('is-invalid'));
                 select.addEventListener("input", adminTotalReview);
             });
+            document.querySelectorAll("input, textarea").forEach(el => el.addEventListener("input", () => el.classList.remove('is-invalid')));
         });
     </script>
 @endsection

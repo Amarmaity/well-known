@@ -13,7 +13,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $helper = app_path('Helpers/PermissionHelper.php');
+
+        if (is_file($helper)) {
+            require_once $helper;
+        }
     }
 
     /**

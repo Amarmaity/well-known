@@ -139,7 +139,7 @@
 
                                 <div class="review-block">
                                     <label for="comments_adherence" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_adherence_hr" id="comments" class="form-control" rows="1"
+                                    <textarea name="comments_adherence_hr" id="comments" class="form-control" rows="1" required
                                         cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
                                 </div>
 
@@ -161,10 +161,10 @@
                                     <div class="review-block">
                                         <label for="comments_professionalism_positive" class="third-label">Justify Your
                                             Review:</label>
-                                        <textarea name="comments_professionalism" id="comments" class="form-control"
-                                            rows="1" cols="50" maxlength="255"
-                                            placeholder="Write your justification here..."></textarea>
-                                    </div>
+                                    <textarea name="comments_professionalism" id="comments" class="form-control" required
+                                        rows="1" cols="50" maxlength="255"
+                                        placeholder="Write your justification here..."></textarea>
+                                </div>
                                 </div>
                                 <div>
                                     <label for="respond_feedback" class="second-label">3. How well does the employee
@@ -182,7 +182,7 @@
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_respond_feedback" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_respond_feedback" id="comments" class="form-control" rows="1"
+                                <textarea name="comments_respond_feedback" id="comments" class="form-control" rows="1" required
                                         cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
                                 </div>
                             </div>
@@ -209,7 +209,7 @@
 
                                 <div class="review-block">
                                     <label for="comments_initiative" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_initiative" id="comments" class="form-control" rows="1"
+                                    <textarea name="comments_initiative" id="comments" class="form-control" rows="1" required
                                         cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
                                 </div>
 
@@ -230,7 +230,7 @@
                                 </div>
                                 <div class="review-block">
                                     <label for="comments_interest_learning" class="third-label">Justify Your Review:</label>
-                                    <textarea name="comments_interest_learning" id="comments" class="form-control" rows="1"
+                                    <textarea name="comments_interest_learning" id="comments" class="form-control" rows="1" required
                                         cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
                                 </div>
 
@@ -253,7 +253,7 @@
                                 <div class="review-block">
                                     <label for="comments_company_leave_policy" class="third-label">Justify Your
                                         Review:</label>
-                                    <textarea name="comments_company_leave_policy" id="comments" class="form-control"
+                                    <textarea name="comments_company_leave_policy" id="comments" class="form-control" required
                                         rows="1" cols="50" maxlength="255"
                                         placeholder="Write your justification here..."></textarea>
                                 </div>
@@ -281,6 +281,7 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(function () {
         let timeout = null;
@@ -355,9 +356,67 @@
         document.addEventListener("DOMContentLoaded", function () {
             const hrForm = document.getElementById("HrReviewSubmit");
 
+            const showValidationError = (message, focusSelector = null) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: message
+                }).then(() => {
+                    if (focusSelector) {
+                        const field = hrForm.querySelector(focusSelector);
+                        if (field) field.focus();
+                    }
+                });
+            };
+
+            const extractErrorMessage = (xhr) => {
+                const response = xhr?.responseJSON;
+                if (!response) return 'Error submitting HR review.';
+
+                if (response.message && response.errors) {
+                    const firstKey = Object.keys(response.errors)[0];
+                    const firstError = firstKey ? response.errors[firstKey][0] : null;
+                    return firstError || response.message;
+                }
+
+                if (response.message) return response.message;
+
+                return 'Error submitting HR review.';
+            };
+
             if (hrForm) {
                 hrForm.addEventListener("submit", function (event) {
                     event.preventDefault();
+
+                    const employeeSearch = document.getElementById('employee_search');
+                    const empId = document.getElementById('emp_id_input');
+                    const financialYear = document.getElementById('financialYear');
+                    const firstInvalid = hrForm.querySelector('select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
+
+                    if (!financialYear.value) {
+                        financialYear.classList.add('is-invalid');
+                        showValidationError('Please select a financial year.', '#financialYear');
+                        return;
+                    }
+
+                    if (!employeeSearch.value.trim()) {
+                        employeeSearch.classList.add('is-invalid');
+                        showValidationError('Please search and select an employee.', '#employee_search');
+                        return;
+                    }
+
+                    if (!empId.value) {
+                        empId.classList.add('is-invalid');
+                        showValidationError('Please select an employee first.', '#emp_id_input');
+                        return;
+                    }
+
+                    if (firstInvalid) {
+                        firstInvalid.classList.add('is-invalid');
+                        showValidationError('Please complete all required fields.');
+                        firstInvalid.focus();
+                        return;
+                    }
 
                     // Calculate total HR rating
                     let totalRating = 0;
@@ -383,27 +442,52 @@
                         },
                         success: function (response) {
                             console.log("Success:", response);
-                            alert("✅ " + (response.message || "HR Review submitted successfully!"));
-
-                            hrForm.reset();
-
-                            const totalDisplay = document.getElementById("HrTotalReview");
-                            if (totalDisplay) {
-                                totalDisplay.textContent = "";
+                            if (response && response.success === false) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Error submitting HR review.'
+                                });
+                                return;
                             }
 
-                            document.querySelectorAll("select[id^='hr']").forEach(select => {
-                                select.selectedIndex = 0;
-                            });
+                            const successMessage = (response && response.message)
+                                ? response.message
+                                : 'HR Review submitted successfully!';
 
-                            document.querySelectorAll("textarea").forEach(textarea => {
-                                textarea.value = "";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: successMessage
+                            }).then(() => {
+                                hrForm.reset();
+
+                                const totalDisplay = document.getElementById("HrTotalReview");
+                                if (totalDisplay) {
+                                    totalDisplay.textContent = "";
+                                }
+
+                                document.querySelectorAll("select[id^='hr']").forEach(select => {
+                                    select.selectedIndex = 0;
+                                });
+
+                                document.querySelectorAll("textarea").forEach(textarea => {
+                                    textarea.value = "";
+                                    textarea.classList.remove('is-invalid');
+                                });
+
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 250);
                             });
-                            location.reload();
                         },
                         error: function (xhr) {
                             console.error("Error:", xhr.responseJSON);
-                            alert("❌ " + (xhr.responseJSON?.message || "Error submitting HR review."));
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: extractErrorMessage(xhr)
+                            });
                         }
                     });
                 });
@@ -436,6 +520,8 @@
             document.querySelectorAll("select[id^='hr']").forEach(select => {
                 select.addEventListener("input", HrTotalReview);
             });
+
+            window.HrTotalReview = HrTotalReview;
         });
 
     </script>

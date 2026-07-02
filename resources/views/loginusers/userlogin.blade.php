@@ -11,6 +11,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{{ asset('css/modestcustom.css') }}?v=14" rel="stylesheet">
 
@@ -369,6 +370,17 @@
                     },
                     success: function (response) {
                         hideBtnLoader("#send-otp-btn");
+                        if (response.status === 'error' && response.message === 'You are under probation period.') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Blocked',
+                                text: response.message
+                            });
+                            isOtpSending = false;
+                            $("#send-otp-btn, #resend-otp-btn").prop("disabled", false);
+                            return;
+                        }
+
                         alert(response.message);
 
                         if (response.status === 'success') {
@@ -432,6 +444,15 @@
                         },
                         success: function (response) {
                             hideBtnLoader("#login-btn");
+                            if (response.status === 'error' && response.message === 'You are under probation period.') {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Blocked',
+                                    text: response.message
+                                });
+                                return;
+                            }
+
                             alert(response.message);
                             if (response.status === 'success') {
                                 clearTimeout(resendTimeout);

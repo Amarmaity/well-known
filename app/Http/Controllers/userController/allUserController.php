@@ -79,6 +79,18 @@ class allUserController extends Controller
 
         $userEmail = $user instanceof AllClient ? $user->client_email : $user->email;
 
+        if ($user instanceof SuperAddUser) {
+            $userType = strtolower(trim((string) $user->user_type));
+            $employeeStatus = strtolower(trim((string) ($user->employee_status ?? '')));
+
+            if ($userType === 'users' && $employeeStatus !== 'employee') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'You are under probation period.',
+                ]);
+            }
+        }
+
         if ($user->user_type !== $validated['user_type']) {
             return response()->json([
                 'status' => 'error',
@@ -774,19 +786,19 @@ class allUserController extends Controller
         $request->validate([
             'emp_id' => 'required|string',
             'rate_employee_quality' => 'required|numeric',
-            'comments_rate_employee_quality' => 'max:255',
+            'comments_rate_employee_quality' => 'required|string|max:255',
             'organizational_goals' => 'required|numeric',
-            'comments_organizational_goals' => 'max:255',
+            'comments_organizational_goals' => 'required|string|max:255',
             'collaborate_colleagues' => 'required|numeric',
-            'comments_collaborate_colleagues' => 'max:255',
+            'comments_collaborate_colleagues' => 'required|string|max:255',
             'demonstrated' => 'required|numeric',
-            'comments_demonstrated' => 'max:255',
+            'comments_demonstrated' => 'required|string|max:255',
             'leadership_responsibilities' => 'required|numeric',
-            'comments_leadership_responsibilities' => 'max:255',
+            'comments_leadership_responsibilities' => 'required|string|max:255',
             'thinking_contribution' => 'required|numeric',
-            'comments_thinking_contribution' => 'max:255',
+            'comments_thinking_contribution' => 'required|string|max:255',
             'informed_progress' => 'required|numeric',
-            'comments_comments_informed_progress' => 'max:255',
+            'comments_comments_informed_progress' => 'required|string|max:255',
             'ManagerTotalReview' => 'numeric|max:200',
             'financial_year' => [
                 'required',
@@ -796,6 +808,13 @@ class allUserController extends Controller
             ],
         ], [
             'financial_year.unique' => 'You already submitted for this financial year.',
+            'comments_rate_employee_quality.required' => 'Please enter a justification for question 1.',
+            'comments_organizational_goals.required' => 'Please enter a justification for question 2.',
+            'comments_collaborate_colleagues.required' => 'Please enter a justification for question 3.',
+            'comments_demonstrated.required' => 'Please enter a justification for question 4.',
+            'comments_leadership_responsibilities.required' => 'Please enter a justification for question 5.',
+            'comments_thinking_contribution.required' => 'Please enter a justification for question 6.',
+            'comments_comments_informed_progress.required' => 'Please enter a justification for question 7.',
         ]);
 
         // 6. Store review

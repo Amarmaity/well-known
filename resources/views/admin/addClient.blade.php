@@ -91,8 +91,9 @@
     <!-- CSRF Meta Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- jQuery and jQuery UI -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- AJAX Script -->
     <script>
@@ -109,14 +110,14 @@
 
                 // Client Name
                 if (clientName === '') {
-                    alert('Client Name is required.');
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Client Name is required.' });
                     $('#client-name').focus();
                     return;
                 }
 
                 // Company Name
                 if (companyName === '') {
-                    alert('Company Name is required.');
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Company Name is required.' });
                     $('#company-name').focus();
                     return;
                 }
@@ -125,13 +126,13 @@
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
                 if (email === '') {
-                    alert('Email is required.');
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Email is required.' });
                     $('#client-email').focus();
                     return;
                 }
 
                 if (!emailRegex.test(email)) {
-                    alert('Please enter a valid email address.');
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Please enter a valid email address.' });
                     $('#client-email').focus();
                     return;
                 }
@@ -141,7 +142,7 @@
                     const mobileRegex = /^\+?[1-9]\d{6,14}$/;
 
                     if (!mobileRegex.test(mobile)) {
-                        alert('Please enter a valid mobile number.');
+                        Swal.fire({ icon: 'error', title: 'Validation error', text: 'Please enter a valid mobile number.' });
                         $('#mobno').focus();
                         return;
                     }
@@ -149,14 +150,14 @@
 
                 // Password
                 if (password.length < 6) {
-                    alert('Password must be at least 6 characters.');
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Password must be at least 6 characters.' });
                     $('#password').focus();
                     return;
                 }
 
                 // Confirm Password
                 if (password !== confirmPassword) {
-                    alert('Passwords do not match.');
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Passwords do not match.' });
                     $('#cnf-password').focus();
                     return;
                 }
@@ -173,14 +174,21 @@
                     },
                     success: function (response) {
                         if (response.status === "success") {
-                            alert(response.message || "Client added successfully.");
-                            $('#userForm')[0].reset();
-                            setTimeout(function () {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Saved',
+                                text: response.message || 'Client added successfully.'
+                            }).then(function () {
+                                $('#userForm')[0].reset();
                                 $('#saveBtn').prop('disabled', false).text('Save');
                                 location.reload();
-                            }, 3000);
+                            });
                         } else {
-                            alert(response.message || "Submission failed. Try again.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Save failed',
+                                text: response.message || 'Submission failed. Try again.'
+                            });
                             $('#saveBtn').prop('disabled', false).text('Save');
                         }
                     },
@@ -195,9 +203,17 @@
                                 errorMessages += messages.join("\n") + "\n";
                             });
 
-                            alert(errorMessages);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation error',
+                                text: errorMessages
+                            });
                         } else {
-                            alert("Something went wrong. Please try again.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Something went wrong. Please try again.'
+                            });
                         }
 
                         $('#saveBtn').prop('disabled', false).text('Save');

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\accessmanagement\AccessManagementController;
-
 use App\Http\Controllers\userController\allUserController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -117,8 +116,6 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
         Route::get('/manager-review-list', [allUserController::class, 'getManagerReviewList'])->name('manager-review-list');
         Route::get('/user/details/manager/{employee_id}', [allUserController::class, 'showDetailsManager'])->name('user-manager-details')->middleware(CheckEmployeeAccess::class);
         Route::get('/user/details/client/{employee_id}', [allUserController::class, 'showDetailsClient'])->name('user-client-details')->middleware(CheckEmployeeAccess::class);
-
-        // Route::post('/loged-out', [addUserController::class, 'logedOut'])->name('logged-Out');
     });
 });
 
