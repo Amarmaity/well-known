@@ -148,7 +148,9 @@ class allUserController extends Controller
         $otpEmail = Session::get('otp_email');
         $otpSentTime = Session::get('otp_sent_time');
 
-        if ($otpSentTime && now()->diffInMinutes($otpSentTime) > 10) {
+        if (!$otpSentTime || now()->greaterThan(Carbon::parse($otpSentTime)->addMinutes(5))) {
+            Session::forget(['otp', 'otp_email', 'otp_sent_time']);
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'OTP has expired. Please request a new one.',
@@ -441,11 +443,21 @@ class allUserController extends Controller
     public function clientSearch(Request $request)
     {
         $keyword = $request->input('keyword');
+        $clientId = Session::get('client_id');
+
+        if (!$clientId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Client session not found!'
+            ], 401);
+        }
 
         $query = SuperAddUser::query();
         $query->where('status', 1)
             ->where('user_roles', 'like', '%"client"%')
             ->where('employee_status', 'Employee');
+
+        $this->applyClientAssignmentScope($query, $clientId);
 
         // Search by employee ID or full name
         if (!empty($keyword)) {
@@ -904,6 +916,13 @@ class allUserController extends Controller
 
         $client_id = Session::get('client_id');
 
+        if (!$client_id || !$this->isEmployeeAssignedToClient($employee, $client_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not assigned to review this employee.'
+            ], 403);
+        }
+
         // 5. Check for existing review
         $reviewExists = ClientReviewTable::where('emp_id', $emp_id)
             ->where('financial_year', $financial_year)
@@ -1058,38 +1077,46 @@ class allUserController extends Controller
                 ->with('error', 'Unauthorized access. Please log in again.');
         }
 
-        // Fetch client reviews with client names
+        $currentFYStart = Carbon::now()->month < 4
+            ? Carbon::now()->year - 1
+            : Carbon::now()->year;
+        $selectedFinancialYear = $currentFYStart . '-' . ($currentFYStart + 1);
+
+        // Fetch client reviews with client names for the default selected financial year
         $clientReviews = DB::table('client_review_tables')
             ->join('all_clients', 'client_review_tables.client_id', '=', 'all_clients.id')
             ->where('client_review_tables.emp_id', $emp_id)
+            ->where('client_review_tables.financial_year', $selectedFinancialYear)
             ->select('client_review_tables.*', 'all_clients.client_name')
             ->get();
 
 
-        // Fetch review data
+        // Fetch review data for the default selected financial year
         $userData = [
             'superadduser' => DB::table('super_add_users')->where('employee_id', $emp_id)->first(),
-            'managerReview' => DB::table('manager_review_tables')->where('emp_id', $emp_id)->first(),
-            'adminReview' => DB::table('admin_review_tables')->where('emp_id', $emp_id)->first(),
-            'hrReview' => DB::table('hr_review_tables')->where('emp_id', $emp_id)->first(),
-            'clientReview' => DB::table('client_review_tables')->where('emp_id', $emp_id)->first(),
-            'evaluation' => DB::table('evaluation_tables')->where('emp_id', $emp_id)->first(),
+            'managerReview' => DB::table('manager_review_tables')->where('emp_id', $emp_id)->where('financial_year', $selectedFinancialYear)->first(),
+            'adminReview' => DB::table('admin_review_tables')->where('emp_id', $emp_id)->where('financial_year', $selectedFinancialYear)->first(),
+            'hrReview' => DB::table('hr_review_tables')->where('emp_id', $emp_id)->where('financial_year', $selectedFinancialYear)->first(),
+            'clientReview' => DB::table('client_review_tables')->where('emp_id', $emp_id)->where('financial_year', $selectedFinancialYear)->first(),
+            'evaluation' => DB::table('evaluation_tables')->where('emp_id', $emp_id)->where('financial_year', $selectedFinancialYear)->first(),
         ];
 
-        $user_roles = json_decode(optional($userData['superadduser'])->user_roles ?? '[]', true);
-
-        // Check if user_roles are empty
-        if (!array_filter($user_roles)) {
+        if (!$userData['superadduser']) {
             return redirect()->back()->with('error', 'No review data found for this employee.');
         }
 
+        $user_roles = json_decode($userData['superadduser']->user_roles ?? '[]', true);
+        $user_roles = is_array($user_roles) ? array_values(array_filter($user_roles)) : [];
 
-        // Debugging: Check if $userData is being retrieved
-        if (collect($userData)->filter()->isEmpty()) {
-            return redirect()->back()->with('error', 'No review data found for this employee.');
-        }
+        $pendingReviews = [
+            'evaluation' => $userData['evaluation'] === null,
+            'adminReview' => in_array('admin', $user_roles, true) && $userData['adminReview'] === null,
+            'hrReview' => in_array('hr', $user_roles, true) && $userData['hrReview'] === null,
+            'managerReview' => in_array('manager', $user_roles, true) && $userData['managerReview'] === null,
+            'clientReview' => in_array('client', $user_roles, true) && $clientReviews->isEmpty(),
+        ];
 
-        return view('delostyleUsers.user-review-report', compact('userData', 'emp_id', 'clientReviews', 'user_roles'));
+        return view('delostyleUsers.user-review-report', compact('userData', 'emp_id', 'clientReviews', 'user_roles', 'pendingReviews', 'selectedFinancialYear'));
     }
 
 
@@ -1478,7 +1505,8 @@ class allUserController extends Controller
 
         $user = SuperAddUser::where('employee_id', $empId)->first();
         $roles = json_decode($user?->user_roles ?? '[]', true);
-        $showClient = in_array('client', $roles);
+        $roles = is_array($roles) ? array_values(array_filter($roles)) : [];
+        $showClient = in_array('client', $roles, true);
 
         $evaluation = evaluationTable::where('emp_id', $empId)
             ->where('financial_year', $year)
@@ -1497,10 +1525,16 @@ class allUserController extends Controller
             ->first();
 
         $clientReview = null;
+        $clientReviews = collect();
         if ($showClient) {
-            $clientReview = ClientReviewTable::where('emp_id', $empId)
-                ->where('financial_year', $year)
-                ->first();
+            $clientReviews = DB::table('client_review_tables')
+                ->join('all_clients', 'client_review_tables.client_id', '=', 'all_clients.id')
+                ->where('client_review_tables.emp_id', $empId)
+                ->where('client_review_tables.financial_year', $year)
+                ->select('client_review_tables.emp_id', 'client_review_tables.client_id', 'client_review_tables.ClientTotalReview', 'all_clients.client_name')
+                ->get();
+
+            $clientReview = $clientReviews->first();
         }
 
         $response = [
@@ -1509,6 +1543,26 @@ class allUserController extends Controller
             'managerTotal' => $managerReview?->ManagerTotalReview,
             'total' => $evaluation?->total_scoring_system,
             'showClient' => $showClient,
+            'reports' => [
+                'evaluation' => $evaluation !== null,
+                'adminReview' => $adminReview !== null,
+                'hrReview' => $hrReview !== null,
+                'managerReview' => $managerReview !== null,
+            ],
+            'pendingReviews' => [
+                'evaluation' => $evaluation === null,
+                'adminReview' => in_array('admin', $roles, true) && $adminReview === null,
+                'hrReview' => in_array('hr', $roles, true) && $hrReview === null,
+                'managerReview' => in_array('manager', $roles, true) && $managerReview === null,
+                'clientReview' => $showClient && $clientReviews->isEmpty(),
+            ],
+            'clientReviews' => $clientReviews->map(function ($review) {
+                return [
+                    'emp_id' => $review->emp_id,
+                    'client_id' => $review->client_id,
+                    'client_name' => $review->client_name ?? 'Unknown Client',
+                ];
+            })->values(),
         ];
 
 
@@ -1518,5 +1572,29 @@ class allUserController extends Controller
 
 
         return response()->json($response);
+    }
+
+    private function applyClientAssignmentScope($query, $clientId)
+    {
+        $clientId = (string) $clientId;
+
+        return $query->where(function ($q) use ($clientId) {
+            $q->where('client_id', 'like', '%"' . $clientId . '"%')
+                ->orWhere('client_id', 'like', '%[' . $clientId . ']%')
+                ->orWhere('client_id', 'like', '%[' . $clientId . ',%')
+                ->orWhere('client_id', 'like', '%,' . $clientId . ',%')
+                ->orWhere('client_id', 'like', '%,' . $clientId . ']%');
+        });
+    }
+
+    private function isEmployeeAssignedToClient($employee, $clientId): bool
+    {
+        $clientIds = json_decode($employee->client_id ?? '[]', true);
+
+        if (!is_array($clientIds)) {
+            return false;
+        }
+
+        return in_array((string) $clientId, array_map('strval', $clientIds), true);
     }
 }

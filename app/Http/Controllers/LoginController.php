@@ -54,7 +54,8 @@ class LoginController extends Controller
 
                 Session::put('otp', $otp);
                 Session::put('otp_sent', true);
-                Session::put('otp_email', $validated['email']); 
+                Session::put('otp_email', $validated['email']);
+                Session::put('otp_sent_time', now());
 
                 // Send OTP via email
                 try {
@@ -100,11 +101,21 @@ class LoginController extends Controller
         
         $otpSession = Session::get('otp');
         $otpEmail = Session::get('otp_email');
+        $otpSentTime = Session::get('otp_sent_time');
 
-        
+        if (!$otpSentTime || now()->greaterThan(\Carbon\Carbon::parse($otpSentTime)->addMinutes(5))) {
+            Session::forget(['otp', 'otp_email', 'otp_sent_time']);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'OTP has expired. Please request a new one.',
+            ]);
+        }
+
         if ($validated['otp'] == $otpSession && $validated['email'] == $otpEmail) {
             Session::forget('otp');
             Session::forget('otp_email');
+            Session::forget('otp_sent_time');
 
             
             $user = User::where('email', $validated['email'])->first();

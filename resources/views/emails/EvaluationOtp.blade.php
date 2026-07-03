@@ -42,7 +42,7 @@
         <p>Hello,</p>
         <p>Your OTP code is:</p>
         <div class="otp-code">{{ $otp }}</div>
-        <p>This code is valid for a short period. Do not share it with anyone.</p>
+        <p>This code is valid for 5 minutes. Do not share it with anyone.</p>
         <p>Thank you!</p>
         <p class="footer">If you did not request this, please ignore this email.</p>
     </div>

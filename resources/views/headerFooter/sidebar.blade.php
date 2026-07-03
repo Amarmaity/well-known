@@ -244,7 +244,7 @@
                 @if ($userType === 'users')
                     <li class="nav-item">
                         <a href="{{ route('get-review-reports', ['emp_id' => Session::get('employee_id')]) }}"
-                            class="nav-link {{ request()->is('get-review-reports*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('get-review-reports') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-file-earmark-check text-white"></i>
                             <p>View Review Report</p>
                         </a>

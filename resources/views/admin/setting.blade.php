@@ -60,35 +60,11 @@
             <input type="number" id="companyPercentage" name="company_percentage" placeholder="Enter percentage" min="0" max="100" step="0.01" required>
 
             <label for="financialYear">Financial Year:</label>
-            @php
-                $currentMonth = date('m');
-                $currentYear = date('Y');
-
-                // Indian FY logic (April start)
-                if ($currentMonth < 4) {
-                    $currentFYStart = $currentYear - 1;
-                } else {
-                    $currentFYStart = $currentYear;
-                }
-
-                $years = [
-                    $currentFYStart - 1, // Previous FY
-                    $currentFYStart, // Current FY
-                    $currentFYStart + 1, // Next FY
-                    $currentFYStart + 2, // Next +1 FY
-                ];
-            @endphp
-
             <select id="financialYear" class="form-select client__select" name="financial_year" required>
                 <option value="">Financial Year</option>
 
-                @foreach ($years as $year)
-                    @php
-                        $end = $year + 1;
-                        $fy = $year . '-' . $end;
-                    @endphp
-
-                    <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
+                @foreach ($financialYearOptions as $index => $fy)
+                    <option value="{{ $fy }}" {{ $index === 0 ? 'selected' : '' }}>
                         {{ $fy }}
                     </option>
                 @endforeach
@@ -120,7 +96,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content p-3">
                 <h2>Error</h2>
-                <p>Data already exists for this financial year</p>
+                <p id="errorMessage">Data already exists for this financial year</p>
             </div>
         </div>
     </div>
@@ -138,18 +114,25 @@
                 </thead>
                 <tbody>
                     @foreach ($allowPercentage as $user)
+                        @php
+                            $isLocked = $lockedFinancialYears->has($user->financial_year);
+                        @endphp
                         <tr>
                             <td>{{ $user->financial_year }}</td>
                             <td>{{ $user->company_percentage }}</td>
                             <td>{{ $user->created_at->format('d M Y') }}</td>
                             <td>
-                                <a href="javascript:void(0);" class="edit-user btn btn-sm btn-outline-primary edit-icon"
-                                   data-id="{{ $user->id }}"
-                                   data-financial-year="{{ $user->financial_year }}"
-                                   data-percentage="{{ $user->company_percentage }}">
-                                    {{-- <span class="icon"><img src="{{'images/modalicon.webp'}}" alt="Edit Icon" width="16" height="16"></span> --}}
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                @if ($isLocked)
+                                    <button type="button" class="btn btn-sm btn-secondary" disabled>Locked</button>
+                                @else
+                                    <a href="javascript:void(0);" class="edit-user btn btn-sm btn-outline-primary edit-icon"
+                                       data-id="{{ $user->id }}"
+                                       data-financial-year="{{ $user->financial_year }}"
+                                       data-percentage="{{ $user->company_percentage }}">
+                                        {{-- <span class="icon"><img src="{{'images/modalicon.webp'}}" alt="Edit Icon" width="16" height="16"></span> --}}
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -195,6 +178,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <script>
@@ -224,7 +208,11 @@
             e.preventDefault();
             const percentage = parseFloat(document.getElementById("companyPercentage").value);
             if (percentage < 0 || percentage > 100) {
-                alert("Percentage must be between 0 and 100.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Percentage must be between 0 and 100.'
+                });
                 return;
             }
 
@@ -242,22 +230,27 @@
                 },
                 body: formData,
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === true) {
-                    const modal = new bootstrap.Modal(document.getElementById('successModal'));
-                    modal.show();
-                    setTimeout(() => location.reload(), 2000);
-                } else {
-                    const modal = new bootstrap.Modal(document.getElementById('errorModal'));
-                    modal.show();
-                    submitButton.disabled = false;
-                    submitButton.textContent = "Apply to All";
+            .then(async res => {
+                const data = await res.json();
+
+                if (!res.ok || data.status !== true) {
+                    throw new Error(data.message || 'Unable to save appraisal percentage.');
                 }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message || 'Appraisal applied successfully to all eligible employees.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => location.reload());
             })
-            .catch(() => {
-                const modal = new bootstrap.Modal(document.getElementById('errorModal'));
-                modal.show();
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Unable to save appraisal percentage.'
+                });
                 submitButton.disabled = false;
                 submitButton.textContent = "Apply to All";
             });
@@ -287,17 +280,28 @@
                     },
                     body: JSON.stringify({ company_percentage: percentage })
                 })
-                .then(res => {
-                    if (res.ok) {
-                        alert('Updated successfully.');
-                        editModal.hide();
-                        location.reload();
-                    } else {
-                        throw new Error("Update failed");
+                .then(async res => {
+                    const data = await res.json().catch(() => ({}));
+
+                    if (!res.ok) {
+                        throw new Error(data.error || 'Update failed');
                     }
+
+                    editModal.hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Updated successfully.',
+                        timer: 1600,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
                 })
-                .catch(() => {
-                    alert('Already Started with the Appraisal for this Financial Year.');
+                .catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Already started with the appraisal for this financial year.'
+                    });
                 });
             });
         });

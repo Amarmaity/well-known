@@ -40,7 +40,9 @@ $(function () {
 
         if (selected === 'manager') {
             $managerSearch.hide();
-            $managerName.show();
+            $managerName.hide();
+            $('#manager_name').val(null).trigger('change');
+            $('#manager_name_input').val('');
         }
 
         if (selected === 'admin') {
@@ -126,7 +128,7 @@ $(function () {
 
     $('#salary').on('input', function () {
         const monthlySalary = parseFloat($(this).val()) || 0;
-        const annualCTC = monthlySalary * 12;
+        const annualCTC = monthlySalary / 12;
         let grade = '';
 
         if (annualCTC < 200000) grade = 'F';

@@ -84,6 +84,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -158,8 +159,15 @@
                     },
                     success: function(response) {
                         if (response.status === "success") {
-                            alert(response.message || "Client updated successfully.");
-                            window.location.href = "{{ route('client-list') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message || "Client updated successfully.",
+                                timer: 1800,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = "{{ route('client-list') }}";
+                            });
                         } else {
                             alert(response.message || "Update failed. Try again.");
                             $('#saveBtn').prop('disabled', false).text('Update');

@@ -53,10 +53,15 @@ class HomeController extends Controller
     }
 
     $employee = SuperAddUser::where('employee_id', $employee_id)->firstOrFail();
+    $sessionUser = SuperAddUser::where('email', session('user_email'))->first();
+    $evaluatorName = $sessionUser
+        ? trim($sessionUser->fname . ' ' . $sessionUser->lname)
+        : $employee->fname . ' ' . $employee->lname;
 
     return view('evaluationForm.evaluationForm', [
         'employee_id'        => $employee->employee_id,
         'employee_name'      => $employee->fname.' '.$employee->lname,
+        'evaluator_name'     => $evaluatorName,
         'designation'        => $employee->designation,
         'salary_grade'       => $employee->salary_grade,
         'evaluation_purpose' => $employee->evaluation_purpose,
@@ -82,6 +87,8 @@ class HomeController extends Controller
 
         $otp = random_int(100000, 999999); // Generate 6-digit OTP
         Session::put('otp', $otp);
+        Session::put('otp_email', $sessionEmail);
+        Session::put('otp_sent_time', now());
 
         // Send OTP to user email
         Mail::to($sessionEmail)->send(new EvaluationOtpMail($otp));
@@ -106,6 +113,17 @@ class HomeController extends Controller
             'email' => 'required|email'
         ]);
 
+        $otpSentTime = Session::get('otp_sent_time');
+
+        if (!$otpSentTime || now()->greaterThan(Carbon::parse($otpSentTime)->addMinutes(5))) {
+            Session::forget(['otp', 'otp_email', 'otp_sent_time', 'otp_verified']);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP has expired. Please request a new one.'
+            ], 400);
+        }
+
         // Check if the email matches the one used for OTP generation
         if ($request->email !== $sessionEmail) {
             return response()->json([
@@ -116,7 +134,7 @@ class HomeController extends Controller
 
         // Check if OTP matches the one stored in session
         if ($request->otp == Session::get('otp')) {
-            Session::forget('otp');
+            Session::forget(['otp', 'otp_email', 'otp_sent_time']);
             Session::put('otp_verified', true);
             Session::save();
 
@@ -285,7 +303,9 @@ class HomeController extends Controller
             'comments_problem_solving' => $request->input('comments_problem_solving'),
             'jk_total_rating' => $request->input('jk_total_rating'),
             'total_scoring_system' => $request->input('total_scoring_system'),
-            'evalutors_name' => $request->input('evalutors_name'),
+            'evalutors_name' => optional(SuperAddUser::where('email', Session::get('user_email'))->first(), function ($user) {
+                return trim($user->fname . ' ' . $user->lname);
+            }) ?: $request->input('evalutors_name'),
             'evaluator_signatur' => $evaluatorSignaturePath,
             'evaluator_signatur_date' => $request->input('evaluator_signatur_date'),
             'respond_contributes' => $request->input('respond_contributes'),

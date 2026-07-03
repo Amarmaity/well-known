@@ -118,7 +118,9 @@ class SuperAdminController extends Controller
         $otpSentTime = Session::get('otp_sent_time');
 
         // Check if the OTP is expired (valid for 5 minutes)
-        if ($otpSentTime && now()->diffInMinutes($otpSentTime) > 10) {
+        if (!$otpSentTime || now()->greaterThan(Carbon::parse($otpSentTime)->addMinutes(5))) {
+            Session::forget(['otp', 'otp_email', 'otp_sent_time']);
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'OTP has expired. Please request a new one.',
@@ -456,6 +458,7 @@ class SuperAdminController extends Controller
     //     ]);
     // }
 
+
     public function getAppraisalData(Request $request)
     {
         $employeeQuery = trim($request->query('employee_query', ''));
@@ -473,19 +476,29 @@ class SuperAdminController extends Controller
             return response()->json(['error' => 'Employee ID or Name is required'], 400);
         }
 
+        $searchInput = strtolower($employeeQuery);
+
         $query = SuperAddUser::query();
-        $query->where(function ($q) use ($employeeQuery) {
-            $q->orWhere('employee_id', $employeeQuery)
-                ->orWhereRaw("LOWER(TRIM(fname)) LIKE LOWER(?)", ["%{$employeeQuery}%"])
-                ->orWhereRaw("LOWER(TRIM(lname)) LIKE LOWER(?)", ["%{$employeeQuery}%"])
-                ->orWhereRaw("LOWER(CONCAT(TRIM(fname), ' ', TRIM(lname))) LIKE LOWER(?)", ["%{$employeeQuery}%"]);
+        $query->whereExists(function ($subQuery) use ($financialYear) {
+            $subQuery->select(DB::raw(1))
+                ->from('evaluation_tables')
+                ->whereColumn('evaluation_tables.emp_id', 'super_add_users.employee_id')
+                ->where('evaluation_tables.financial_year', $financialYear);
         });
 
-        $employee = $query->first();
+        $query->where(function ($q) use ($searchInput) {
+            $q->whereRaw("LOWER(TRIM(employee_id)) LIKE ?", ["%{$searchInput}%"])
+                ->orWhereRaw("LOWER(TRIM(fname)) LIKE ?", ["%{$searchInput}%"])
+                ->orWhereRaw("LOWER(TRIM(lname)) LIKE ?", ["%{$searchInput}%"])
+                ->orwhereRaw("Lower(TRIM(email)) LIKE ?", ["%{$searchInput}%"])
+                ->orWhereRaw("LOWER(CONCAT(TRIM(fname), ' ', TRIM(lname))) LIKE ?", ["%{$searchInput}%"]);
+        });
+
+        $employee = $query->orderBy('fname')->orderBy('lname')->first();
 
         if (!$employee) {
             Log::error("Employee not found with employee_query: $employeeQuery");
-            return response()->json(['status' => 'error', 'message' => 'No employee found.'], 404);
+            return response()->json(['status' => 'error', 'message' => 'No employee found with submitted evaluation for the selected financial year.'], 404);
         }
 
         $employeeIdentifier = $employee->emp_id ?? $employee->employee_id;
@@ -698,6 +711,9 @@ class SuperAdminController extends Controller
 
             $employee = SuperAddUser::where(function ($query) use ($searchInput) {
                 $query->whereRaw("LOWER(employee_id) = ?", [$searchInput])
+                    ->orWhereRaw("LOWER(TRIM(fname)) LIKE ?", ["%{$searchInput}%"])
+                    ->orWhereRaw("LOWER(TRIM(lname)) LIKE ?", ["%{$searchInput}%"])
+                    ->orwhereRaw("Lower(TRIM(email)) LIKE ?", ["%{$searchInput}%"])
                     ->orWhereRaw("LOWER(CONCAT(TRIM(fname), ' ', TRIM(lname))) LIKE ?", ["%$searchInput%"]);
             })->first();
 
@@ -811,9 +827,13 @@ class SuperAdminController extends Controller
             }
 
             // Salary calculations
-            $updatedSalary = (int) $baseSalary * ($companyPercentage / 100);
-            $appraisalAmount = (int) $updatedSalary * ($finalReviewScore / 100);
-            $finalSalary = (int) $this->roundSalary($baseSalary + $updatedSalary + $appraisalAmount);
+            // $updatedSalary = (int) $baseSalary * ($companyPercentage / 100);
+            // $appraisalAmount = (int) $updatedSalary * ($finalReviewScore / 100);
+            // $finalSalary = (int) $this->roundSalary($baseSalary + $updatedSalary + $appraisalAmount);
+
+            $updatedSalary = ceil($baseSalary * ($companyPercentage / 100));
+            $appraisalAmount = ceil($updatedSalary * ($finalReviewScore / 100));
+            $finalSalary = ceil($baseSalary + $appraisalAmount);
 
             $employee->update(['final_salary' => $finalSalary]);
             $isAlreadySaved = $employee->final_salary == $finalSalary;
@@ -848,10 +868,10 @@ class SuperAdminController extends Controller
     }
 
 
-    private function roundSalary($amount)
-    {
-        return round($amount * 20) / 20;
-    }
+    // private function roundSalary($amount)
+    // {
+    //     return round($amount * 20) / 20;
+    // }
 
 
 
@@ -881,7 +901,6 @@ class SuperAdminController extends Controller
             ->get();
 
 
-
         $users = [
             'evaluation' => DB::table('evaluation_tables')->where('emp_id', $emp_id)->first(),
             'managerReview' => DB::table('manager_review_tables')->where('emp_id', $emp_id)->first(),
@@ -899,7 +918,7 @@ class SuperAdminController extends Controller
             return redirect()->back()->with('error', 'No review data found for this employee.');
         }
 
-        return view('review/viewDetails', compact('users', 'emp_id', 'user_roles', 'clientReviews'));
+        return view('review.viewDetails', compact('users', 'emp_id', 'user_roles', 'clientReviews'));
     }
 
     public function getSuperAdminEvaluationView(Request $request, $emp_id)
@@ -910,7 +929,7 @@ class SuperAdminController extends Controller
             ->where('financial_year', $financialYear)
             ->firstOrFail();
 
-        return view('reports/evaluationReport', compact('user'));
+        return view('reports.evaluationReport', compact('user'));
     }
 
     public function getSuperAdminHrReview(Request $request, $emp_id)
@@ -921,7 +940,7 @@ class SuperAdminController extends Controller
             ->where('financial_year', $financialYear)
             ->firstOrFail();
 
-        return view('reports/hrReport', compact('user'));
+        return view('reports.hrReport', compact('user'));
     }
 
 

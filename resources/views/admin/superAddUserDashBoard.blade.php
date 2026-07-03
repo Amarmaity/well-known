@@ -120,8 +120,8 @@
                                         </div> --}}
                                     <div class="client-hide" id="search_manager_div" style="display: block;">
                                         <label for="manager_name" class="forms-label">Search Manager Name</label>
-                                        <select class="form-control" id="manager_name" name="manager_id" style="width: 100%"
-                                            data-route="{{ route('get.manager') }}">
+                                        <select class="form-control" id="manager_name" name="manager_id"
+                                            style="width: 100%" data-route="{{ route('get.manager') }}">
                                             <!-- Select2 will load options via AJAX -->
                                         </select>
                                     </div>
@@ -131,8 +131,8 @@
 
                                     <div class="client-hide" id="manager_name_div" style="display: none;">
                                         <label for="manager_name_input" class="forms-label">Manager Name</label>
-                                        <input type="text" class="form-control" id="manager_name_input" name="manager_name"
-                                            placeholder="Enter Manager name">
+                                        <input type="text" class="form-control" id="manager_name_input"
+                                            name="manager_name" placeholder="Enter Manager name">
                                     </div>
 
                                     <div class="client-hide mt-3" id="search_hr_div">
@@ -151,8 +151,10 @@
                                             placeholder="e.g..DS00001">
                                     </div>
                                     {{-- Evaluation Purpose --}}
-                                    <div class="client-hide" style="display: none;>
-                                            <label for=" Evaluation Purpose" class="forms-label">Evaluation Purpose</label>
+                                    <div class="client-hide"
+                                        style="display: none;>
+                                            <label for="
+                                        Evaluation Purpose" class="forms-label">Evaluation Purpose</label>
                                         <select class="form-control" id="evaluation_purpose" name="evaluation_purpose">
                                             <option value="" selected>Select Purpose</option>
                                             <option value="Appraisal" selected>Appraisal</option>
@@ -162,8 +164,9 @@
 
                                     <div class="client-hide">
                                         <label for="client_id" class="forms-label">Select Client</label>
-                                        <select class="form-control" id="client_id" name="client_id[]" multiple="multiple"
-                                            style="width: 100%" data-route="{{ route('get.clients') }}">
+                                        <select class="form-control" id="client_id" name="client_id[]"
+                                            multiple="multiple" style="width: 100%"
+                                            data-route="{{ route('get.clients') }}">
                                             <!-- Options loaded via AJAX -->
                                         </select>
                                     </div>
@@ -243,8 +246,8 @@
                             <div class="row g-3">
                                 <div class="client-hide col-md-6">
                                     <label for="salary" class="forms-label">Salary</label>
-                                    <input type="text" class="form-control" id="salary" name="salary" max="7"
-                                        placeholder="Enter Salary" min="0" required>
+                                    <input type="text" class="form-control" id="salary" name="salary"
+                                        max="7" placeholder="Enter Salary" min="0" required>
                                 </div>
 
                                 <div class="col-md-6">

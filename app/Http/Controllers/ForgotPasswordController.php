@@ -68,6 +68,14 @@ class ForgotPasswordController extends Controller
             'otp' => 'required|digits:6'
         ]);
 
+        $otpSentTime = Session::get('otp_sent_time');
+
+        if (!$otpSentTime || now()->greaterThan(\Carbon\Carbon::parse($otpSentTime)->addMinutes(5))) {
+            Session::forget(['forgot_password_otp', 'forgot_password_email', 'otp_sent_time']);
+
+            return back()->with('error', 'OTP has expired. Please request a new one.');
+        }
+
         if (Session::get('forgot_password_otp') != $request->otp) {
             return back()->with('error', 'Invalid OTP.');
         }
@@ -136,7 +144,8 @@ class ForgotPasswordController extends Controller
         Session::forget([
             'forgot_password_otp',
             'forgot_password_email',
-            'forgot_password_user_table'
+            'forgot_password_user_table',
+            'otp_sent_time'
         ]);
 
         return redirect()->route('all-user-login')->with('success', 'Password reset successfully.');

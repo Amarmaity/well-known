@@ -156,7 +156,7 @@ class UserOnbordController extends Controller
     //     $otpEmail = Session::get('otp_email');
     //     $otpSentTime = Session::get('otp_sent_time');
 
-    //     if ($otpSentTime && now()->diffInMinutes($otpSentTime) > 10) {
+    //     if (!$otpSentTime || now()->greaterThan(\Carbon\Carbon::parse($otpSentTime)->addMinutes(5))) {
     //         return response()->json([
     //             'status' => 'error',
     //             'message' => 'OTP has expired. Please request a new one.',
@@ -253,7 +253,9 @@ class UserOnbordController extends Controller
         $otpEmail = Session::get('otp_email');
         $otpSentTime = Session::get('otp_sent_time');
 
-        if ($otpSentTime && now()->diffInMinutes($otpSentTime) > 10) {
+        if (!$otpSentTime || now()->greaterThan(\Carbon\Carbon::parse($otpSentTime)->addMinutes(5))) {
+            Session::forget(['otp', 'otp_email', 'otp_sent_time']);
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'OTP has expired. Please request a new one.',

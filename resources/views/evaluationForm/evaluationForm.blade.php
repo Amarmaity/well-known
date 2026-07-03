@@ -749,7 +749,7 @@
                                     <div class="col-12 col-md-4">
                                         <label for="evalutors_name" class="second-label">Evaluator's Name:</label>
                                         <input type="text" id="evalutors_name" name="evalutors_name"
-                                            placeholder="Enter Name" class="form-control">
+                                            value="{{ $evaluator_name ?? '' }}" placeholder="Enter Name" class="form-control" readonly>
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label for="signatur" class="second-label">Signature:</label>

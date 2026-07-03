@@ -56,7 +56,7 @@
                         $fy = $year . '-' . $end;
                     @endphp
 
-                    <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
+                    <option value="{{ $fy }}" {{ ($selectedFinancialYear ?? '') === $fy ? 'selected' : '' }}>
                         {{ $fy }}
                     </option>
                 @endforeach
@@ -92,22 +92,30 @@
         </div>
 
         <!-- Buttons for each report -->
-        <div class="evaluation-report">
+        <div class="evaluation-report" id="evaluationReportActions">
             @if ($userData['evaluation'] !== null)
                 <button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')">Evaluation
                     Details</button>
+            @elseif($pendingReviews['evaluation'] ?? false)
+                <p>Your evaluation is pending.</p>
             @endif
 
             @if ($userData['adminReview'] !== null)
                 <button class="btn secondary-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')">Admin Report</button>
+            @elseif($pendingReviews['adminReview'] ?? false)
+                <p>Admin review is pending.</p>
             @endif
 
             @if ($userData['hrReview'] !== null)
                 <button class="btn secondary-btn" onclick="loadReport('hrReport', '{{ $emp_id }}')">HR Report</button>
+            @elseif($pendingReviews['hrReview'] ?? false)
+                <p>HR review is pending.</p>
             @endif
 
             @if ($userData['managerReview'] !== null)
                 <button class="btn secondary-btn" onclick="loadReport('managerReport', '{{ $emp_id }}')">Manager Report</button>
+            @elseif($pendingReviews['managerReview'] ?? false)
+                <p>Manager review is pending.</p>
             @endif
 
             {{-- @if ($userData['clientReview'] !== null)
@@ -124,8 +132,8 @@
                         View Client Review for: {{ $clientReview->client_name ?? 'Unknown Client' }}
                     </button>
                 @endforeach
-            @elseif(in_array('client', $user_roles))
-                <p>Your client review is pending.</p>
+            @elseif($pendingReviews['clientReview'] ?? false)
+                <p>Client review is pending.</p>
             @endif
 
         </div>
@@ -173,13 +181,61 @@
             });
         }
 
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, function (char) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char];
+            });
+        }
+
+        function renderReportActions(data) {
+            const actions = document.getElementById('evaluationReportActions');
+            let html = '';
+
+            if (data.reports?.evaluation) {
+                html += `<button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')">Evaluation Details</button>`;
+            } else if (data.pendingReviews?.evaluation) {
+                html += '<p>Your evaluation is pending.</p>';
+            }
+
+            if (data.reports?.adminReview) {
+                html += `<button class="btn secondary-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')">Admin Report</button>`;
+            } else if (data.pendingReviews?.adminReview) {
+                html += '<p>Admin review is pending.</p>';
+            }
+
+            if (data.reports?.hrReview) {
+                html += `<button class="btn secondary-btn" onclick="loadReport('hrReport', '{{ $emp_id }}')">HR Report</button>`;
+            } else if (data.pendingReviews?.hrReview) {
+                html += '<p>HR review is pending.</p>';
+            }
+
+            if (data.reports?.managerReview) {
+                html += `<button class="btn secondary-btn" onclick="loadReport('managerReport', '{{ $emp_id }}')">Manager Report</button>`;
+            } else if (data.pendingReviews?.managerReview) {
+                html += '<p>Manager review is pending.</p>';
+            }
+
+            if (Array.isArray(data.clientReviews) && data.clientReviews.length > 0) {
+                data.clientReviews.forEach(function (clientReview) {
+                    html += `<button class="btn secondary-btn" onclick="loadClientReport('${clientReview.emp_id}', '${clientReview.client_id}')">View Client Review for: ${escapeHtml(clientReview.client_name || 'Unknown Client')}</button>`;
+                });
+            } else if (data.pendingReviews?.clientReview) {
+                html += '<p>Client review is pending.</p>';
+            }
+
+            actions.innerHTML = html || '<p>No review data found for this financial year.</p>';
+        }
+
         document.getElementById('employeeDetails').addEventListener('change', function () {
             const selectedYear = this.value;
             const table = document.getElementById('reviewTableContainer');
             const empId = "{{ $emp_id }}";
 
+            $('#reportDetails').empty();
+
             if (!selectedYear) {
                 table.style.display = 'none';
+                renderReportActions({});
                 return;
             }
 
@@ -195,8 +251,11 @@
                 .then(data => {
                     if (!data) {
                         table.style.display = 'none';
+                        renderReportActions({});
                         return;
                     }
+
+                    renderReportActions(data);
 
                     const totalCell = document.getElementById("totalScoreCell");
                     const adminCell = document.getElementById("adminScoreCell");
@@ -244,7 +303,12 @@
                 .catch(error => {
                     console.error("Error fetching review scores:", error);
                     table.style.display = 'none';
+                    renderReportActions({});
                 });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('employeeDetails').dispatchEvent(new Event('change'));
         });
 
 
