@@ -1086,7 +1086,8 @@ class SuperAdminController extends Controller
         // Get user info
         $user = SuperAddUser::where('employee_id', $empId)->first();
         $roles = json_decode($user?->user_roles ?? '[]', true);
-        $showClient = in_array('client', $roles);
+        $roles = is_array($roles) ? array_values(array_filter($roles)) : [];
+        $showClient = in_array('client', $roles, true);
 
         // Fetch total scores from individual review tables
         $evaluation = evaluationTable::where('emp_id', $empId)
@@ -1106,19 +1107,54 @@ class SuperAdminController extends Controller
             ->first();
 
         $clientReview = null;
+        $clientReviews = collect();
         if ($showClient) {
-            $clientReview = ClientReviewTable::where('emp_id', $empId)
-                ->where('financial_year', $year)
-                ->first();
+            $clientReviews = DB::table('client_review_tables')
+                ->join('all_clients', 'client_review_tables.client_id', '=', 'all_clients.id')
+                ->where('client_review_tables.emp_id', $empId)
+                ->where('client_review_tables.financial_year', $year)
+                ->select('client_review_tables.emp_id', 'client_review_tables.client_id', 'client_review_tables.ClientTotalReview', 'all_clients.client_name')
+                ->get();
+
+            $clientReview = $clientReviews->first();
         }
+
+        $hasAnyData = $evaluation !== null
+            || $adminReview !== null
+            || $hrReview !== null
+            || $managerReview !== null
+            || $clientReviews->isNotEmpty();
 
         // Build response
         $response = [
+            'success' => true,
+            'hasAnyData' => $hasAnyData,
+            'message' => $hasAnyData ? null : 'No data found for this financial year.',
             'total' => $evaluation?->total_scoring_system,
             'adminTotal' => $adminReview?->AdminTotalReview,
             'hrTotal' => $hrReview?->HrTotalReview,
             'managerTotal' => $managerReview?->ManagerTotalReview,
             'showClient' => $showClient,
+            'reports' => [
+                'evaluation' => $evaluation !== null,
+                'adminReview' => $adminReview !== null,
+                'hrReview' => $hrReview !== null,
+                'managerReview' => $managerReview !== null,
+            ],
+            'pendingReviews' => [
+                'evaluation' => $evaluation === null,
+                'adminReview' => in_array('admin', $roles, true) && $adminReview === null,
+                'hrReview' => in_array('hr', $roles, true) && $hrReview === null,
+                'managerReview' => in_array('manager', $roles, true) && $managerReview === null,
+                'clientReview' => $showClient && $clientReviews->isEmpty(),
+            ],
+            'clientReviews' => $clientReviews->map(function ($review) {
+                return [
+                    'emp_id' => $review->emp_id,
+                    'client_id' => $review->client_id,
+                    'client_name' => $review->client_name ?? 'Unknown Client',
+                ];
+            })->values(),
         ];
 
         if ($showClient) {

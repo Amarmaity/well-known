@@ -175,8 +175,11 @@
                 success: function (response) {
                     $('#reportDetails').html(response).addClass('table-container');
                 },
-                error: function () {
-                    $('#reportDetails').html('<p>Sorry, there was an error loading the report.</p>');
+                error: function (xhr) {
+                    const message = xhr.status === 404
+                        ? 'No data found for this financial year.'
+                        : 'Sorry, there was an error loading the report.';
+                    $('#reportDetails').html('<p>' + message + '</p>');
                 }
             });
         }
@@ -190,6 +193,11 @@
         function renderReportActions(data) {
             const actions = document.getElementById('evaluationReportActions');
             let html = '';
+
+            if (data.hasAnyData === false) {
+                actions.innerHTML = "<p>" + escapeHtml(data.message || "No data found for this financial year.") + "</p>";
+                return;
+            }
 
             if (data.reports?.evaluation) {
                 html += `<button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')">Evaluation Details</button>`;
@@ -330,8 +338,11 @@
                     $('#reportDetails').html(response);
                     $('#reportDetails').addClass('table-container');
                 },
-                error: function () {
-                    $('#reportDetails').html('<p>Sorry, there was an error loading the client review.</p>');
+                error: function (xhr) {
+                    const message = xhr.status === 404
+                        ? 'No data found for this financial year.'
+                        : 'Sorry, there was an error loading the client review.';
+                    $('#reportDetails').html('<p>' + message + '</p>');
                 }
             });
         }

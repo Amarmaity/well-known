@@ -224,6 +224,8 @@ class HomeController extends Controller
             }
         }
 
+        $today = Carbon::today()->toDateString();
+
         /* ===============================
            FORM VALIDATION FIRST
         =============================== */
@@ -231,6 +233,7 @@ class HomeController extends Controller
         $request->validate([
             'evaluator_signatur' => 'required|mimes:jpg,jpeg,png|max:2048',
             'director_signatur' => 'nullable|mimes:jpg,png,pdf|max:2048',
+            'evaluator_signatur_date' => ['required', 'date', 'date_equals:' . $today],
             'financial_year' => [
                 'required',
                 Rule::unique('evaluation_tables', 'financial_year')->where(function ($query) use ($request) {
@@ -239,6 +242,7 @@ class HomeController extends Controller
             ],
         ], [
             'financial_year.unique' => 'You already submitted for this financial year.',
+            'evaluator_signatur_date.date_equals' => 'Evaluation date must be today.',
         ]);
 
         /* ===============================
@@ -307,7 +311,7 @@ class HomeController extends Controller
                 return trim($user->fname . ' ' . $user->lname);
             }) ?: $request->input('evalutors_name'),
             'evaluator_signatur' => $evaluatorSignaturePath,
-            'evaluator_signatur_date' => $request->input('evaluator_signatur_date'),
+            'evaluator_signatur_date' => $today,
             'respond_contributes' => $request->input('respond_contributes'),
             'comments_respond_contributes' => $request->input('comments_respond_contributes'),
             'responds_positively' => $request->input('responds_positively'),

@@ -8,8 +8,6 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
-
-
     <div class="client">
         <h1 class="client__heading">Employee Financial Year(%)</h1>
         @php
@@ -22,7 +20,6 @@
             } else {
                 $currentFYStart = $currentYear;
             }
-
             $years = [
                 $currentFYStart - 1, // Previous FY
                 $currentFYStart, // Current FY
@@ -30,24 +27,18 @@
                 $currentFYStart + 2, // Next +1 FY
             ];
         @endphp
-
         <select id="financialYear" class="form-select client__select" name="financial_year" required>
             <option value="">Financial Year</option>
-
             @foreach ($years as $year)
                 @php
                     $end = $year + 1;
                     $fy = $year . '-' . $end;
                 @endphp
-
                 <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
                     {{ $fy }}
                 </option>
             @endforeach
-
         </select>
-
-
         <div class="client___item">
             <input type="search" id="employee_search" name="search" class="form-control client__search"
                 placeholder="Search" aria-label="Search">
@@ -56,9 +47,6 @@
             </button>
         </div>
         <input type="hidden" name="emp_id" id="selectedEmpId">
-
-
-
     </div>
     <div class="container table-container financial-page">
         <!-- Appraisal Table -->
@@ -107,10 +95,24 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
             let clientExist = false;
+
+            function showSweetAlert(icon, title, text) {
+                if (typeof Swal !== 'undefined') {
+                    return Swal.fire({
+                        icon: icon,
+                        title: title,
+                        text: text
+                    });
+                }
+
+                alert(text);
+                return Promise.resolve();
+            }
 
             function fetchEmployeeData() {
                 const employeeSearch = $('#employee_search').val().trim();
@@ -190,9 +192,6 @@
                         const avgReviewPercentage = count > 0 ? total / count : 0;
 
                         // Salary calculations
-                        // const updatedSalary = baseSalary * (percentage / 100);
-                        // const appraisalBonus = (avgReviewPercentage * updatedSalary) / 100;
-                        // const finalSalary = baseSalary + appraisalBonus;
                         const updatedSalary = Math.ceil(baseSalary * (percentage / 100));
                         const appraisalBonus = Math.ceil(updatedSalary * (avgReviewPercentage / 100));
                         const finalSalary = Math.ceil(baseSalary +  appraisalBonus);
@@ -202,12 +201,10 @@
                                 <td class="employeeName">${employeeName}</td>
                                 <td class="employeeId">${employeeId}</td>
                                 <td class="EvaluationScore">${evaluationScore.toFixed(2)}%</td>
-
                                 ${showHRReview ? `<td class="hrReview">${hrReview.toFixed(2)}%</td>` : ''}
                                 ${showAdminReview ? `<td class="adminReview">${adminReview.toFixed(2)}%</td>` : ''}
                                 ${showManagerReview ? `<td class="managerReview">${managerReview.toFixed(2)}%</td>` : ''}
                                 ${showClientReview ? `<td class="clientReview">${clientReviewValue.toFixed(2)}%</td>` : ''}
-
                                 <td class="avgReview">${avgReviewPercentage.toFixed(2)}%</td>
                                 <td class="currentSalary">₹${Math.floor(baseSalary)}</td>
                                 <td class="percentage">${percentage.toFixed(2)}%</td>
@@ -216,7 +213,6 @@
                                 <td class="appraisal-date">${response.appraisalDate || 'N/A'}</td>
                                 <td class="financial-year">${$('#financialYear').val()}</td>
                             </tr>`;
-
                         $('#appraisal-body').html(tableRows);
                     },
                     error: function(xhr) {
@@ -225,18 +221,15 @@
                     }
                 });
             }
-
             $('#employee_search').on('input', fetchEmployeeData);
             $('#financialYear').on('change', fetchEmployeeData);
-
             $('#save-financial-data').click(function(e) {
                 e.preventDefault();
                 const button = $(this);
                 button.prop('disabled', true).text('Saving...');
-
                 const selectedFinancialYear = $('#financialYear').val();
                 if (!selectedFinancialYear) {
-                    alert("Please select a financial year.");
+                    showSweetAlert('error', 'Validation Error', 'Please select a financial year.');
                     button.prop('disabled', false).text('Save');
                     return;
                 }
@@ -267,7 +260,7 @@
                 });
 
                 if (employees.length === 0) {
-                    alert("No employee data to save!");
+                    showSweetAlert('error', 'Validation Error', 'No employee data to save!');
                     button.prop('disabled', false).text('Save');
                     return;
                 }
@@ -282,10 +275,15 @@
                         employees: employees
                     }),
                     success: function(response) {
-                        alert('Data saved successfully!');
-                        setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message || 'Data saved successfully!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
                             location.reload();
-                        }, 1000);
+                        });
                     },
                     error: function(xhr) {
                         let errorMessage = 'An error occurred. Please try again.';
@@ -297,7 +295,7 @@
                         } catch (e) {
                             console.error("Failed to parse error JSON:", e);
                         }
-                        alert(errorMessage);
+                        showSweetAlert('error', 'Error', errorMessage);
                         button.prop('disabled', false).text('Save');
                     }
                 });

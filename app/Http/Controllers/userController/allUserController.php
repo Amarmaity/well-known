@@ -1537,7 +1537,16 @@ class allUserController extends Controller
             $clientReview = $clientReviews->first();
         }
 
+        $hasAnyData = $evaluation !== null
+            || $adminReview !== null
+            || $hrReview !== null
+            || $managerReview !== null
+            || $clientReviews->isNotEmpty();
+
         $response = [
+            'success' => true,
+            'hasAnyData' => $hasAnyData,
+            'message' => $hasAnyData ? null : 'No data found for this financial year.',
             'admin' => $adminReview?->AdminTotalReview,
             'hr' => $hrReview?->HrTotalReview,
             'managerTotal' => $managerReview?->ManagerTotalReview,

@@ -760,7 +760,8 @@
                                     <div class="col-12 col-md-4">
                                         <label for="date" class="second-label">Date:</label>
                                         <input type="date" id="evaluator_date" name="evaluator_signatur_date"
-                                            placeholder="Select Date" class="form-control">
+                                            value="{{ now()->toDateString() }}" min="{{ now()->toDateString() }}"
+                                            max="{{ now()->toDateString() }}" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>

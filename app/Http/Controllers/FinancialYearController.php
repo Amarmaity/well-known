@@ -139,7 +139,6 @@ class FinancialYearController extends Controller
         // dd($financialData);
     }
 
-
     public function searchEmployee(Request $request)
     {
         $query = $request->input('query');
@@ -196,7 +195,7 @@ class FinancialYearController extends Controller
         if (!$this->isAllowedFinancialYear($financialYear)) {
             return response()->json([
                 'status' => false,
-                'message' => 'Please select the current financial year or one of the next three financial years',
+                'message' => 'Please select the current financial year',
             ], 422);
         }
 
@@ -210,7 +209,7 @@ class FinancialYearController extends Controller
         }
 
         DB::transaction(function () use ($financialYear, $companyPercentage) {
-            // Employees should receive only the selected current/future FY percentage.
+            // Employees should receive only the current FY percentage.
             // Do not overwrite employees who are already assigned to another financial year.
             SuperAddUser::where('employee_status', 'Employee')
                 ->where(function ($query) use ($financialYear) {
@@ -294,13 +293,7 @@ class FinancialYearController extends Controller
             ? Carbon::now()->year - 1
             : Carbon::now()->year;
 
-        return collect(range(0, 3))
-            ->map(function ($offset) use ($currentFYStart) {
-                $start = $currentFYStart + $offset;
-
-                return $start . '-' . ($start + 1);
-            })
-            ->all();
+        return [$currentFYStart . '-' . ($currentFYStart + 1)];
     }
 
     private function isAllowedFinancialYear(string $financialYear): bool

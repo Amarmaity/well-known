@@ -85,7 +85,7 @@
     </div>
 
 
-    <div class="evaluation-report">
+    <div class="evaluation-report" id="evaluationReportActions">
         @php $userRoles = $user_roles ?? []; @endphp
         @if (optional($users['evaluation'])->emp_id)
             <button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $users['evaluation']->emp_id }}')">
@@ -212,13 +212,72 @@
                         $('#reportDetails').html(response);
                         $('#reportDetails').addClass('table-container');
                     },
-                    error: function() {
-                        $('#reportDetails').html('<p>Sorry, there was an error loading the report.</p>');
+                    error: function(xhr) {
+                        const message = xhr.status === 404
+                            ? 'No data found for this financial year.'
+                            : 'Sorry, there was an error loading the report.';
+                        $('#reportDetails').html('<p>' + message + '</p>');
                     }
                 });
             } else {
                 $('#reportDetails').html('<p>Invalid report type provided.</p>');
             }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"'\/]/g, function(char) {
+                return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" }[char];
+            });
+        }
+
+        function renderReportActions(data) {
+            const actions = document.getElementById("evaluationReportActions");
+            let html = "";
+
+            if (data.hasAnyData === false) {
+                actions.innerHTML = "<p>" + escapeHtml(data.message || "No data found for this financial year.") + "</p>";
+                return;
+            }
+
+            if (data.reports?.evaluation) {
+                html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('evaluation', '{{ $emp_id }}')\">Evaluation Details</button>";
+            } else if (data.pendingReviews?.evaluation) {
+                html += "<p>Evaluation review is pending.</p>";
+            }
+
+            if (userRoles.includes("admin")) {
+                if (data.reports?.adminReview) {
+                    html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('adminReport', '{{ $emp_id }}')\">View Admin Review</button>";
+                } else if (data.pendingReviews?.adminReview) {
+                    html += "<p>Admin review is pending.</p>";
+                }
+            }
+
+            if (userRoles.includes("hr")) {
+                if (data.reports?.hrReview) {
+                    html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('hrReport', '{{ $emp_id }}')\">View HR Review</button>";
+                } else if (data.pendingReviews?.hrReview) {
+                    html += "<p>HR review is pending.</p>";
+                }
+            }
+
+            if (userRoles.includes("manager")) {
+                if (data.reports?.managerReview) {
+                    html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('managerReport', '{{ $emp_id }}')\">View Manager Review</button>";
+                } else if (data.pendingReviews?.managerReview) {
+                    html += "<p>Manager review is pending.</p>";
+                }
+            }
+
+            if (Array.isArray(data.clientReviews) && data.clientReviews.length > 0) {
+                data.clientReviews.forEach(function(clientReview) {
+                    html += "<button class=\"btn secondary-btn\" onclick=\"loadClientReport('" + clientReview.emp_id + "', '" + clientReview.client_id + "')\">View Client Review for: " + escapeHtml(clientReview.client_name || "Unknown Client") + "</button>";
+                });
+            } else if (data.pendingReviews?.clientReview) {
+                html += "<p>Your client review is pending.</p>";
+            }
+
+            actions.innerHTML = html || "<p>No data found for this financial year.</p>";
         }
 
         // Get employee ID and optionally default year from Blade variables
@@ -232,10 +291,12 @@
             const dropdown = document.getElementById('employeeDetails');
 
             function loadTableData(selectedYear) {
-                const table = document.getElementById('reviewTableContainer');
+                const table = document.getElementById("reviewTableContainer");
+                $("#reportDetails").empty();
 
                 if (!selectedYear) {
                     table.style.display = 'none';
+                    renderReportActions({ hasAnyData: false, message: 'Please select a financial year first.' });
                     return;
                 }
 
@@ -257,10 +318,24 @@
                             table.style.display = 'none';
                             return null;
                         }
+                        if (!response.ok) {
+                            throw new Error('Network error');
+                        }
                         return response.json();
                     })
                     .then(data => {
-                        if (!data) return;
+                        if (!data) {
+                            table.style.display = 'none';
+                            renderReportActions({ hasAnyData: false, message: 'No data found for this financial year.' });
+                            return;
+                        }
+
+                        renderReportActions(data);
+
+                        if (data.hasAnyData === false) {
+                            table.style.display = 'none';
+                            return;
+                        }
 
                         table.style.display = '';
 
@@ -309,6 +384,11 @@
                             document.getElementById("clientScoreCell").style.display = '';
                             setCell("clientScoreCell", data.clientTotal, 100);
                         }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching review scores:", error);
+                        table.style.display = 'none';
+                        renderReportActions({ hasAnyData: false, message: 'No data found for this financial year.' });
                     });
             }
 
@@ -340,8 +420,11 @@
                     $('#reportDetails').html(response);
                     $('#reportDetails').addClass('table-container');
                 },
-                error: function() {
-                    $('#reportDetails').html('<p>Sorry, there was an error loading the client review.</p>');
+                error: function(xhr) {
+                    const message = xhr.status === 404
+                        ? 'No data found for this financial year.'
+                        : 'Sorry, there was an error loading the client review.';
+                    $('#reportDetails').html('<p>' + message + '</p>');
                 }
             });
         }
