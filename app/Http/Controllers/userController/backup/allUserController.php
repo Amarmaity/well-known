@@ -134,6 +134,8 @@ class allUserController extends Controller
         }
     }
 
+
+
     public function loginUserverifyOtp(Request $request)
     {
         $validated = $request->validate([
@@ -268,6 +270,7 @@ class allUserController extends Controller
         ]);
     }
 
+
     public function userLogOut(Request $request)
     {
 
@@ -281,6 +284,7 @@ class allUserController extends Controller
         return redirect('/')->with('logout_reload', true);
     }
 
+    //All Users view dashboard
 
     public function admin()
     {
@@ -301,6 +305,61 @@ class allUserController extends Controller
 
 
     //Admin, Hr, Manager,
+    // public function searchUser(Request $request)
+    // {
+    //     $keyword = $request->input('keyword');
+
+    //     // Get current user's type from session
+    //     $currentUserType = session('user_type');
+
+    //     if (!$currentUserType) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'User type not found in session!'
+    //         ]);
+    //     }
+
+    //     $query = SuperAddUser::query();
+
+    //     // Role-based logic
+    //     if ($currentUserType === 'hr') {
+    //         // HR can search Admin and Manager
+    //         $query->whereIn('user_type', ['admin', 'manager', 'users']);
+    //     } elseif ($currentUserType === 'admin') {
+    //         // Admin can search HR and Manager
+    //         $query->whereIn('user_type', ['hr', 'manager', 'users']);
+    //     } else {
+    //         // Other roles: exclude hr, admin, manager
+    //         $query->whereNotIn('user_type', ['admin', 'hr', 'manager']);
+    //     }
+
+
+    //     $query->where('status', 1)
+    //         ->where('employee_status', 'Employee');
+
+
+
+    //     // Search by employee ID or full name
+    //     $query->where(function ($q) use ($keyword) {
+    //         $q->where('employee_id', 'like', "%{$keyword}%")
+    //             ->orWhereRaw("CONCAT(fname, ' ', lname) LIKE ?", ["%{$keyword}%"]);
+    //     });
+
+    //     $users = $query->get();
+
+    //     if ($users->isNotEmpty()) {
+    //         return response()->json([
+    //             'success' => true,
+    //             'users' => $users
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'No users found!'
+    //         ]);
+    //     }
+    // }
+
     public function searchUser(Request $request)
     {
         $keyword = trim($request->input('keyword'));
@@ -680,6 +739,8 @@ class allUserController extends Controller
     }
 
 
+
+
     public function managerReviewStore(Request $request)
     {
         $emp_id = $request->input('emp_id');
@@ -795,16 +856,20 @@ class allUserController extends Controller
     }
 
 
+
     public function client()
     {
         return view('delostyleUsers.client-dashboard');
     }
+
+
 
     public function viewClientDashBoard()
     {
 
         return view('delostyleUsers.client-dashboard');
     }
+
 
 
     public function clientReviewStore(Request $request)
@@ -1182,6 +1247,8 @@ class allUserController extends Controller
     }
 
 
+
+
     public function showDetailsHr($employee_id)
     {
 
@@ -1381,6 +1448,8 @@ class allUserController extends Controller
             )
         );
     }
+
+
 
     public function showDetailsClient($employee_id)
     {

@@ -203,10 +203,15 @@
 
                         const avgReviewPercentage = count > 0 ? total / count : 0;
 
+                        function customRound(value) {
+                            const decimal = value - Math.floor(value);
+                            return decimal > 0.5 ? Math.ceil(value) : Math.floor(value);
+                        }
+
                         // Salary calculations
-                        const updatedSalary = baseSalary * (percentage / 100);
-                        const appraisalBonus = (avgReviewPercentage * updatedSalary) / 100;
-                        const finalSalary = baseSalary + appraisalBonus;
+                        const incrementSalaryRaw = baseSalary * (avgReviewPercentage / 100) * (percentage / 100);
+                        const updatedSalary = customRound(incrementSalaryRaw);
+                        const finalSalary = customRound(baseSalary + incrementSalaryRaw);
 
                         // Build row
                         tableRows += `<tr>

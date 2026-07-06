@@ -189,13 +189,21 @@
                             count++;
                         }
 
-                        const avgReviewPercentage = count > 0 ? total / count : 0;
+                        // const avgReviewPercentage = count > 0 ? total / count : 0;
 
                         // Salary calculations
-                        const updatedSalary = Math.ceil(baseSalary * (percentage / 100));
-                        const appraisalBonus = Math.ceil(updatedSalary * (avgReviewPercentage / 100));
-                        const finalSalary = Math.ceil(baseSalary +  appraisalBonus);
+                        // const updatedSalary = Math.ceil(baseSalary * (percentage / 100));
+                        // const appraisalBonus = Math.ceil(updatedSalary * (avgReviewPercentage / 100));
+                        // const finalSalary = Math.ceil(baseSalary +  appraisalBonus);
+                        // const updatedSalary = parseFloat(response.updatedSalary) || 0;
+                        // const appraisalAmount = parseFloat(response.appraisalAmount) || 0;
+                        // const finalSalary = parseFloat(response.finalSalary) || 0;
 
+                        const avgReviewPercentage = parseFloat(response.appraisalScore) || 0;
+
+                        const updatedSalary = parseFloat(response.updatedSalary) || 0;
+                        const appraisalAmount = parseFloat(response.appraisalAmount) || 0;
+                        const finalSalary = parseFloat(response.finalSalary) || 0;
                         // Build row
                         tableRows += `<tr>
                                 <td class="employeeName">${employeeName}</td>

@@ -152,22 +152,19 @@
                     },
                     success: function(response) {
                         let rows = '';
-                        const query = $('#employee_search').val().trim().toLowerCase();
+                        const hasPercentageData = (values) => Array.isArray(values)
+                            ? values.some((value) => Number(value) > 0)
+                            : Number(values) > 0;
 
-                        const isAdminAppraisal = query.includes('admin');
-                        const isHrAppraisal = query.includes('hr');
-
-                        //const showClient = response.clientReviewData?.length > 0;
-                        //const showManager = response.managerReviewData?.length > 0;
-                        const showManager = response.showManager;
-                        const showClient = response.showClient;
-                        const showHr = !isHrAppraisal;
-                        const showAdmin = !isAdminAppraisal;
+                        const showHr = hasPercentageData(response.hrReviewData);
+                        const showAdmin = hasPercentageData(response.adminReviewData);
+                        const showManager = hasPercentageData(response.managerReviewData);
+                        const showClient = hasPercentageData(response.clientReviewData);
 
                         $('#client-column-header').toggle(showClient);
                         $('#manager-column-header').toggle(showManager);
-                        $('#table-header th:nth-child(3)').toggle(showHr); // HR Review
-                        $('#table-header th:nth-child(4)').toggle(showAdmin); // Admin Review
+                        $('#hr-column-header').toggle(showHr);
+                        $('#admin-column-header').toggle(showAdmin);
 
                         if (response.status === 'error') {
                             $('#appraisal-body').html(
