@@ -276,6 +276,10 @@ $(document).ready(function () {
             .removeClass('is-success is-error is-info')
             .addClass('is-visible is-' + type)
             .text(message);
+
+        window.noticeTimer = setTimeout(function () {
+            notice.removeClass('is-visible');
+        }, 2000);
     }
 });
 
