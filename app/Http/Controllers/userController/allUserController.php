@@ -82,8 +82,15 @@ class allUserController extends Controller
         if ($user instanceof SuperAddUser) {
             $userType = strtolower(trim((string) $user->user_type));
             $employeeStatus = strtolower(trim((string) ($user->employee_status ?? '')));
+            $isUnderProbation = $employeeStatus === 'probation period';
 
-            if ($userType === 'users' && $employeeStatus !== 'employee') {
+            if ($user->probation_date) {
+                $isUnderProbation = $isUnderProbation || Carbon::parse($user->probation_date)
+                    ->startOfDay()
+                    ->gte(Carbon::today());
+            }
+
+            if ($userType === 'users' && $isUnderProbation) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'You are under probation period.',

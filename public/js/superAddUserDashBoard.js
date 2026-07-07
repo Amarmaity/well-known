@@ -9,6 +9,8 @@ $(function () {
     const $managerName = $('#manager_name_div');
     const $adminSearch = $('#search_admin_div');
     const $hrSearch = $('#search_hr_div');
+    const $clientCheckbox = $('#client-checkbox');
+    const $clientSelectDiv = $('#client_select_div');
 
     function normalize(value) {
         return (value || '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
@@ -23,6 +25,16 @@ $(function () {
         });
     }
 
+    function syncClientSelect() {
+        const shouldShow = $clientCheckbox.is(':checked') && $clientCheckbox.closest('.form-check').is(':visible');
+
+        $clientSelectDiv.toggle(shouldShow);
+
+        if (!shouldShow) {
+            $('#client_id').val(null).trigger('change');
+        }
+    }
+
     function syncDesignationUi() {
         const selected = normalize($designationDropdown.val());
 
@@ -35,6 +47,8 @@ $(function () {
 
         if (selected === 'client') {
             $reviewSection.hide();
+            $clientCheckbox.prop('checked', false);
+            syncClientSelect();
             return;
         }
 
@@ -55,7 +69,7 @@ $(function () {
 
         const hideReviewRoles = ['hr', 'manager', 'client', 'admin'];
         if (hideReviewRoles.includes(selected)) {
-            $('#client-checkbox').closest('.form-check').hide();
+            $clientCheckbox.prop('checked', false).closest('.form-check').hide();
         }
 
         if (selected === 'users') {
@@ -101,9 +115,11 @@ $(function () {
         const userType = userTypeMap[selected] || 'users';
         $userTypeDropdown.val(userType).prop('disabled', true);
         $userTypeHidden.val(userType);
+        syncClientSelect();
     }
 
     $designationDropdown.on('change', syncDesignationUi);
+    $clientCheckbox.on('change', syncClientSelect);
     syncDesignationUi();
 
     $('#employee_id').on('input', function () {

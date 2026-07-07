@@ -162,7 +162,7 @@
                                     </div>
                                     {{-- <option value="Salt Lake 3B">Salt Lake 3B</option> --}}
 
-                                    <div class="client-hide">
+                                    <div class="client-hide" id="client_select_div" style="display: none;">
                                         <label for="client_id" class="forms-label">Select Client</label>
                                         <select class="form-control" id="client_id" name="client_id[]"
                                             multiple="multiple" style="width: 100%"
@@ -227,7 +227,7 @@
                                                 name="user_roles[]" value="client"> --}}
                                         <input class="form-check-input check-input" type="checkbox" id="client-checkbox"
                                             name="user_roles[]" value="client">
-                                        <label class="form-check-label" for="client">Client</label>
+                                        <label class="form-check-label" for="client-checkbox">Client</label>
                                     </div>
                                 </div>
 
