@@ -126,11 +126,13 @@
                                 <input type="text" name="division" id="division" placeholder="Enter Division"
                                     value="{{ $division ?? '' }}" readonly class="form-control">
                             </div>
-                            <div class="col-12 col-sm-6">
-                                <label for="manager_name" class="forms-label">Manager Name:</label>
-                                <input type="text" name="manager_name" id="manager_name" placeholder="Enter Manager Name"
-                                    value="{{ $manager_name ?? '' }}" class="form-control" readonly>
-                            </div>
+                            @if (!empty($manager_name))
+                                <div class="col-12 col-sm-6">
+                                    <label for="manager_name" class="forms-label">Manager Name:</label>
+                                    <input type="text" name="manager_name" id="manager_name" placeholder="Enter Manager Name"
+                                        value="{{ $manager_name }}" class="form-control" readonly>
+                                </div>
+                            @endif
                             <div class="col-12 col-sm-6">
                                 <label for="joining_date" class="forms-label">Joining Date:</label>
                                 <input type="date" name="joining_date" id="joining_date" class="form-control" readonly

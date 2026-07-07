@@ -311,154 +311,6 @@ class SuperAdminController extends Controller
     }
 
 
-
-    // public function getAppraisalData(Request $request)
-    // {
-    //     $employeeQuery = trim($request->query('employee_query', ''));
-    //     $financialYear = trim($request->query('financial_year', ''));
-    //     $financialYear = str_replace('/', '-', $financialYear);
-
-    //     if ($financialYear && preg_match('/(\d{4})-(\d{4})/', $financialYear, $matches)) {
-    //         $startDate = "{$matches[1]}-04-01";
-    //         $endDate = "{$matches[2]}-03-31";
-    //     } else {
-    //         return response()->json(['status' => 'error', 'message' => 'Invalid or missing financial year'], 400);
-    //     }
-
-    //     if (empty($employeeQuery)) {
-    //         return response()->json(['error' => 'Employee ID or Name is required'], 400);
-    //     }
-
-    //     $query = SuperAddUser::query();
-    //     $query->where(function ($q) use ($employeeQuery) {
-    //         $q->orWhere('employee_id', $employeeQuery)
-    //             ->orWhereRaw("LOWER(TRIM(fname)) LIKE LOWER(?)", ["%{$employeeQuery}%"])
-    //             ->orWhereRaw("LOWER(TRIM(lname)) LIKE LOWER(?)", ["%{$employeeQuery}%"])
-    //             ->orWhereRaw("LOWER(CONCAT(TRIM(fname), ' ', TRIM(lname))) LIKE LOWER(?)", ["%{$employeeQuery}%"]);
-    //     });
-
-    //     $employee = $query->first();
-
-    //     if (!$employee) {
-    //         Log::error("Employee not found with employee_query: $employeeQuery");
-    //         return response()->json(['status' => 'error', 'message' => 'No employee found.'], 404);
-    //     }
-
-    //     $employeeIdentifier = $employee->emp_id ?? $employee->employee_id;
-
-    //     $hasData = SuperAddUser::where('employee_id', $employeeIdentifier)
-    //         ->where('financial_year', $financialYear)
-    //         ->exists();
-
-    //     if (!$hasData) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'No appraisal data found for the selected financial year.'
-    //         ], 404);
-    //     }
-
-    //     $adminReviewData = AdminReviewTable::where('emp_id', $employeeIdentifier)
-    //         ->where('financial_year', $financialYear)
-    //         ->pluck('AdminTotalReview')
-    //         ->map(fn($score) => $score > 0 ? min(($score / 45) * 100, 100) : null)
-    //         ->filter()
-    //         ->toArray();
-
-    //     $hrReviewData = HrReviewTable::where('emp_id', $employeeIdentifier)
-    //         ->where('financial_year', $financialYear)
-    //         ->pluck('HrTotalReview')
-    //         ->map(fn($score) => $score > 0 ? min(($score / 30) * 100, 100) : null)
-    //         ->filter()
-    //         ->toArray();
-
-    //     $managerReviewData = ManagerReviewTable::where('emp_id', $employeeIdentifier)
-    //         ->where('financial_year', $financialYear)
-    //         ->pluck('ManagerTotalReview')
-    //         ->map(fn($score) => $score > 0 ? min(($score / 35) * 100, 100) : null)
-    //         ->filter()
-    //         ->toArray();
-
-    //     $evaluationScore = evaluationTable::where('emp_id', $employeeIdentifier)
-    //         ->where('financial_year', $financialYear)
-    //         ->pluck('total_scoring_system')
-    //         ->map(fn($score) => $score > 0 ? min(($score / 100) * 100, 100) : null)
-    //         ->filter()
-    //         ->toArray();
-
-    //     // Optional: Client Review
-    //     $clientReviewData = [];
-    //     $userRoles = json_decode($employee->user_roles, true);
-    //     $hasClient = is_array($userRoles) && in_array('client', $userRoles);
-
-    //     if ($hasClient) {
-    //         $clientReviews = ClientReviewTable::where('emp_id', $employeeIdentifier)
-    //             ->where('financial_year', $financialYear)
-    //             ->get();
-
-    //         if ($clientReviews->isNotEmpty()) {
-    //             $clientScores = [];
-
-    //             foreach ($clientReviews as $review) {
-    //                 $clientScores[$review->client_id][] = $review->ClientTotalReview;
-    //             }
-
-    //             $averagedClientScores = array_map(function ($scores) {
-    //                 $valid = array_filter($scores, fn($s) => is_numeric($s) && $s > 0);
-    //                 return count($valid) ? array_sum($valid) / count($valid) : null;
-    //             }, $clientScores);
-
-    //             $validClientScores = array_filter($averagedClientScores, fn($s) => is_numeric($s));
-    //             $clientAverage = count($validClientScores) ? round(array_sum($validClientScores) / count($validClientScores), 2) : null;
-
-    //             if (is_numeric($clientAverage)) {
-    //                 $clientReviewData[] = min(($clientAverage / 100) * 100, 100);
-    //             }
-    //         }
-    //     }
-
-    //     // Average all component scores
-    //     $eval = count($evaluationScore) ? array_sum($evaluationScore) / count($evaluationScore) : null;
-    //     $admin = count($adminReviewData) ? array_sum($adminReviewData) / count($adminReviewData) : null;
-    //     $hr = count($hrReviewData) ? array_sum($hrReviewData) / count($hrReviewData) : null;
-    //     $manager = count($managerReviewData) ? array_sum($managerReviewData) / count($managerReviewData) : null;
-    //     $client = count($clientReviewData) ? array_sum($clientReviewData) / count($clientReviewData) : null;
-
-    //     $userType = strtolower($employee->user_type ?? 'user');
-    //     $appraisalScore = 'Pending';
-
-    //     if ($userType === 'admin' && is_numeric($eval) && is_numeric($hr)) {
-    //         $appraisalScore = round(($eval + $hr) / 2, 2);
-    //     } elseif ($userType === 'hr' && is_numeric($eval) && is_numeric($admin)) {
-    //         $appraisalScore = round(($eval + $admin) / 2, 2);
-    //     } elseif ($userType === 'manager' && is_numeric($eval) && is_numeric($admin) && is_numeric($hr)) {
-    //         $appraisalScore = round(($eval + $admin + $hr) / 3, 2);
-    //     } elseif ($userType === 'user' && is_numeric($eval) && is_numeric($admin) && is_numeric($hr) && is_numeric($manager)) {
-    //         if (is_numeric($client)) {
-    //             $appraisalScore = round(($eval + $admin + $hr + $manager + $client) / 5, 2);
-    //         } else {
-    //             $appraisalScore = round(($eval + $admin + $hr + $manager) / 4, 2);
-    //         }
-    //     }
-
-    //     return response()->json([
-    //         'employee_name' => "{$employee->fname} {$employee->lname}",
-    //         'adminReviewData' => $adminReviewData,
-    //         'hrReviewData' => $hrReviewData,
-    //         'managerReviewData' => $managerReviewData,
-    //         'clientReviewData' => $hasClient ? ($clientReviewData ?? ['Pending']) : [],
-    //         'evaluationScore' => $evaluationScore,
-    //         'showClientColumn' => $hasClient,
-    //         'appraisal_score' => $appraisalScore,
-    //         'status' => 'success',
-    //         'showEvaluation' => !empty($evaluationScore),
-    //         'showAdmin' => !empty($adminReviewData),
-    //         'showHR' => !empty($hrReviewData),
-    //         'showManager' => !empty($managerReviewData),
-    //         'showClient' => $hasClient && !empty($clientReviewData),
-    //     ]);
-    // }
-
-
     public function getAppraisalData(Request $request)
     {
         $employeeQuery = trim($request->query('employee_query', ''));
@@ -619,8 +471,8 @@ class SuperAdminController extends Controller
             'showEvaluation' => !empty($evaluationScore),
             'showAdmin' => !empty($adminReviewData),
             'showHR' => !empty($hrReviewData),
-            'showManager' => true,
-            'showClient' => $hasClient,
+            'showManager' => !empty($managerReviewData),
+            'showClient' => !empty($clientReviewData),
         ]);
     }
 
@@ -806,34 +658,66 @@ class SuperAdminController extends Controller
             $companyPercentage = (float) $employee->company_percentage;
 
             // Compute averages
+            // $adminAvg = !empty($adminReviewData) ? array_sum($adminReviewData) / count($adminReviewData) : 0;
+            // $hrAvg = !empty($hrReviewData) ? array_sum($hrReviewData) / count($hrReviewData) : 0;
+            // $evaluationScore = (float) $avgReviewPercentage;
+            // $managerAvg = $avgManagerReview;
+            // $clientAvg = $clientReviewData;
+
+            // // Determine final review score
+            // if ($hasClientReview) {
+            //     $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg + $managerAvg + $clientAvg) / 5;
+            // } elseif ($userType === 'manager') {
+            //     $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg) / 3;
+            // } elseif ($userType === 'admin') {
+            //     $finalReviewScore = ($evaluationScore + $hrAvg) / 2;
+            // } elseif ($userType === 'hr') {
+            //     $finalReviewScore = ($evaluationScore + $adminAvg) / 2;
+            // } else {
+            //     // Default: user or unknown
+            //     $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg + $managerAvg) / 4;
+            // }
+            // Compute averages
             $adminAvg = !empty($adminReviewData) ? array_sum($adminReviewData) / count($adminReviewData) : 0;
             $hrAvg = !empty($hrReviewData) ? array_sum($hrReviewData) / count($hrReviewData) : 0;
             $evaluationScore = (float) $avgReviewPercentage;
             $managerAvg = $avgManagerReview;
             $clientAvg = $clientReviewData;
 
-            // Determine final review score
-            if ($hasClientReview) {
-                $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg + $managerAvg + $clientAvg) / 5;
-            } elseif ($userType === 'manager') {
-                $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg) / 3;
-            } elseif ($userType === 'admin') {
-                $finalReviewScore = ($evaluationScore + $hrAvg) / 2;
-            } elseif ($userType === 'hr') {
-                $finalReviewScore = ($evaluationScore + $adminAvg) / 2;
-            } else {
-                // Default: user or unknown
-                $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg + $managerAvg) / 4;
+            // Take only submitted review scores
+            $scores = [];
+
+            $scores[] = $evaluationScore;
+
+            if (!empty($adminReviewData)) {
+                $scores[] = $adminAvg;
             }
+
+            if (!empty($hrReviewData)) {
+                $scores[] = $hrAvg;
+            }
+
+            if ($managerReviewScores->isNotEmpty()) {
+                $scores[] = $managerAvg;
+            }
+
+            if ($hasClientReview) {
+                $scores[] = $clientAvg;
+            }
+
+            $finalReviewScore = round(array_sum($scores) / count($scores), 2);
 
             // Salary calculations
             // $updatedSalary = (int) $baseSalary * ($companyPercentage / 100);
             // $appraisalAmount = (int) $updatedSalary * ($finalReviewScore / 100);
             // $finalSalary = (int) $this->roundSalary($baseSalary + $updatedSalary + $appraisalAmount);
 
-            $updatedSalary = ceil($baseSalary * ($companyPercentage / 100));
-            $appraisalAmount = ceil($updatedSalary * ($finalReviewScore / 100));
-            $finalSalary = ceil($baseSalary + $appraisalAmount);
+            $incrementSalaryRaw = $baseSalary
+                * ($finalReviewScore / 100)
+                * ($companyPercentage / 100);
+            $incrementSalary = $this->customRound($incrementSalaryRaw);
+            $finalSalary = $this->customRound($baseSalary + $incrementSalaryRaw);
+
 
             $employee->update(['final_salary' => $finalSalary]);
             $isAlreadySaved = $employee->final_salary == $finalSalary;
@@ -852,8 +736,8 @@ class SuperAdminController extends Controller
                 'clientReviewData' => $clientReviewData,
                 'salary' => (int) $baseSalary,
                 'company_percentage' => $companyPercentage,
-                'updatedSalary' => (int) $updatedSalary,
-                'appraisalAmount' => (int) $appraisalAmount,
+                'updatedSalary' => (int) $incrementSalary,
+                'appraisalAmount' => (int) $incrementSalary,
                 'finalSalary' => (int) $finalSalary,
                 'appraisalDate' => now()->toDateString(),
                 'isAlreadySaved' => $isAlreadySaved,
@@ -868,11 +752,12 @@ class SuperAdminController extends Controller
     }
 
 
-    // private function roundSalary($amount)
-    // {
-    //     return round($amount * 20) / 20;
-    // }
+    private function customRound($value)
+    {
+        $decimal = $value - floor($value);
 
+        return $decimal > 0.50 ? ceil($value) : floor($value);
+    }
 
 
     public function userListView()

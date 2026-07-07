@@ -75,13 +75,15 @@ $(function () {
         if (selected === 'users') {
             $('#users').closest('.form-check').hide();
         } else if (selected === 'admin') {
-            ['admin', 'hr', 'users', 'client'].forEach(function (id) {
+            ['admin', 'users', 'client'].forEach(function (id) {
                 $('#' + id).closest('.form-check').hide();
             });
+            $('#hr').closest('.form-check').show();
         } else if (selected === 'hr') {
-            ['hr', 'admin', 'users', 'client'].forEach(function (id) {
+            ['hr', 'users', 'client'].forEach(function (id) {
                 $('#' + id).closest('.form-check').hide();
             });
+            $('#admin').closest('.form-check').show();
         } else if (selected === 'manager') {
             ['manager', 'client', 'users'].forEach(function (id) {
                 $('#' + id).closest('.form-check').hide();
@@ -144,7 +146,7 @@ $(function () {
 
     $('#salary').on('input', function () {
         const monthlySalary = parseFloat($(this).val()) || 0;
-        const annualCTC = monthlySalary / 12;
+        const annualCTC = monthlySalary * 12;
         let grade = '';
 
         if (annualCTC < 200000) grade = 'F';

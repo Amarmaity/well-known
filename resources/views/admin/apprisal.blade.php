@@ -195,15 +195,8 @@
                             const client = showClient ? (isNaN(Number(response.clientReviewData?.[i])) ?
                                 0 : Number(response.clientReviewData[i])) : 0;
 
-                            const scores = [evaluation]
-                                .concat(showHr ? [hr] : [])
-                                .concat(showAdmin ? [admin] : [])
-                                .concat(showManager ? [manager] : [])
-                                .concat(showClient ? [client] : []);
-
-                            const total = scores.reduce((sum, val) => sum + val, 0);
-                            const average = scores.length ? total / scores.length : 0;
-                            const status = average >= 80 ? 'Excellent' : average >= 60 ? 'Good' :
+                            const appraisalScore = Number(response.appraisal_score) || 0;
+                            const status = appraisalScore >= 80 ? 'Excellent' : appraisalScore >= 60 ? 'Good' :
                                 'Needs Improvement';
 
                             rows += `
@@ -214,7 +207,7 @@
                     ${showAdmin ? `<td>${admin.toFixed(2)}%</td>` : ''}
                     ${showManager ? `<td>${manager.toFixed(2)}%</td>` : ''}
                     ${showClient ? `<td>${client.toFixed(2)}%</td>` : ''}
-                    <td>${status} (${average.toFixed(2)}%)</td>
+                    <td>${status} (${appraisalScore.toFixed(2)}%)</td>
                 </tr>`;
                         }
 

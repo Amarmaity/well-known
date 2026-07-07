@@ -387,9 +387,6 @@ class SuperAdminController extends Controller
             ->filter()
             ->toArray();
 
-        if (empty($managerReviewData)) {
-            $managerReviewData = [0];
-        }
 
         $evaluationScore = evaluationTable::where('emp_id', $employeeIdentifier)
             ->where('financial_year', $financialYear)
@@ -425,12 +422,10 @@ class SuperAdminController extends Controller
                 $clientAverage = count($validClientScores) ? round(array_sum($validClientScores) / count($validClientScores), 2) : null;
 
                 if (is_numeric($clientAverage)) {
-                    $clientReviewData[] = min(($clientAverage / 100) * 100, 100);
+                    $clientReviewData[] = min(($clientAverage / 200) * 100, 100);
                 }
             }
-            if (empty($clientReviewData)) {
-                $clientReviewData = [0];
-            }
+
         }
 
 
@@ -441,29 +436,36 @@ class SuperAdminController extends Controller
         $manager = count($managerReviewData) ? array_sum($managerReviewData) / count($managerReviewData) : null;
         $client = count($clientReviewData) ? array_sum($clientReviewData) / count($clientReviewData) : null;
 
-        $userType = strtolower($employee->user_type ?? 'user');
-        $appraisalScore = 'Pending';
+        $scores = [];
 
-        if ($userType === 'admin' && is_numeric($eval) && is_numeric($hr)) {
-            $appraisalScore = round(($eval + $hr) / 2, 2);
-        } elseif ($userType === 'hr' && is_numeric($eval) && is_numeric($admin)) {
-            $appraisalScore = round(($eval + $admin) / 2, 2);
-        } elseif ($userType === 'manager' && is_numeric($eval) && is_numeric($admin) && is_numeric($hr)) {
-            $appraisalScore = round(($eval + $admin + $hr) / 3, 2);
-        } elseif ($userType === 'user' && is_numeric($eval) && is_numeric($admin) && is_numeric($hr) && is_numeric($manager)) {
-            if (is_numeric($client)) {
-                $appraisalScore = round(($eval + $admin + $hr + $manager + $client) / 5, 2);
-            } else {
-                $appraisalScore = round(($eval + $admin + $hr + $manager) / 4, 2);
-            }
+        if (is_numeric($eval)) {
+            $scores[] = $eval;
         }
+
+        if (is_numeric($admin)) {
+            $scores[] = $admin;
+        }
+
+        if (is_numeric($hr)) {
+            $scores[] = $hr;
+        }
+
+        if (is_numeric($manager)) {
+            $scores[] = $manager;
+        }
+
+        if (is_numeric($client)) {
+            $scores[] = $client;
+        }
+
+        $appraisalScore = count($scores) ? round(array_sum($scores) / count($scores), 2) : 'Pending';
 
         return response()->json([
             'employee_name' => "{$employee->fname} {$employee->lname}",
             'adminReviewData' => $adminReviewData,
             'hrReviewData' => $hrReviewData,
             'managerReviewData' => $managerReviewData,
-            'clientReviewData' => $hasClient ? ($clientReviewData ?? ['Pending']) : [],
+            'clientReviewData' => $clientReviewData,
             'evaluationScore' => $evaluationScore,
             'showClientColumn' => $hasClient,
             'appraisal_score' => $appraisalScore,
@@ -622,7 +624,7 @@ class SuperAdminController extends Controller
                 : 0;
 
             $clientReviewData = $hasClientReview
-                ? round($clientReviewDetails->avg('avg_score'), 2)
+                ? round(min(($clientReviewDetails->avg('avg_score') / 200) * 100, 100), 2)
                 : 0;
 
             $avgReviewPercentage = evaluationTable::where('emp_id', $employeeIdentifier)

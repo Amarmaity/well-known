@@ -223,11 +223,15 @@
                             <label class="forms-label d-block">Selected Person Can Review:</label>
                             @php
                                 $availableRoles = ['admin', 'hr', 'users', 'manager', 'client'];
+                                $designationType = strtolower(trim($user->designation ?? ''));
+                                $profileType = in_array($designationType, ['admin', 'hr', 'manager'])
+                                    ? $designationType
+                                    : strtolower(trim($user->user_type ?? ''));
 
-                                // Define roles to hide based on user_type
+                                // Define roles to hide based on the profile being edited.
                                 $hiddenRoles = [];
 
-                                switch ($user->user_type) {
+                                switch ($profileType) {
                                     case 'admin':
                                         $hiddenRoles = ['admin', 'users', 'manager', 'client'];
                                         break;
@@ -425,6 +429,14 @@
         //         $('#manager-name-field').hide();
         //     }
         // }
+        function normalizeDesignation(value) {
+            return (value || '').toString().trim().toLowerCase();
+        }
+
+        function clearSelect($select) {
+            $select.val(null).trigger('change');
+        }
+
         function toggleManagerField() {
             const isManagerChecked = $('#manager').is(':checked');
             const $managerField = $('#manager-name-field');
@@ -436,17 +448,43 @@
             } else {
                 $managerField.hide();
                 $managerSelect.prop('required', false);
-                $managerSelect.val(null).trigger('change');
+                clearSelect($managerSelect);
+                $('#manager_name').val('');
+            }
+        }
+
+        function syncDesignationAssignmentFields() {
+            const selectedDesignation = normalizeDesignation($('#designation_dropdown').val());
+
+            $('#admin-name-field, #hr-name-field').show();
+
+            if (selectedDesignation === 'admin') {
+                $('#admin-name-field').hide();
+                clearSelect($('#admin_id'));
+            }
+
+            if (selectedDesignation === 'hr') {
+                $('#hr-name-field').hide();
+                clearSelect($('#hr_id'));
+            }
+
+            if (selectedDesignation === 'manager') {
+                $('#manager-name-field').hide();
+                $('#manager_id').prop('required', false);
+                clearSelect($('#manager_id'));
                 $('#manager_name').val('');
             }
         }
 
         $(document).ready(function() {
-            // Initial check
-            toggleManagerField();
+            function syncEditFields() {
+                toggleManagerField();
+                syncDesignationAssignmentFields();
+            }
 
-            // Trigger on change
-            $('.check-input').on('change', toggleManagerField);
+            syncEditFields();
+            $('.check-input').on('change', syncEditFields);
+            $('#designation_dropdown').on('change', syncEditFields);
         });
 
         document.querySelector('.forms-block').addEventListener('submit', function(e) {
