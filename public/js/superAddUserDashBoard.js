@@ -144,17 +144,37 @@ $(function () {
         });
     }
 
+    // $('#salary').on('input', function () {
+    //     const monthlySalary = parseFloat($(this).val()) || 0;
+    //     const annualCTC = monthlySalary * 12;
+    //     let grade = '';
+
+    //     if (annualCTC < 200000) grade = 'F';
+    //     else if (annualCTC <= 349999) grade = 'E';
+    //     else if (annualCTC <= 499999) grade = 'D';
+    //     else if (annualCTC <= 649999) grade = 'C';
+    //     else if (annualCTC <= 900000) grade = 'B';
+    //     else grade = 'A';
+
+    //     $('#salary_grade').val(grade);
+    // });
     $('#salary').on('input', function () {
-        const monthlySalary = parseFloat($(this).val()) || 0;
-        const annualCTC = monthlySalary * 12;
+        const annualCTC = parseFloat($(this).val()) || 0;
         let grade = '';
 
-        if (annualCTC < 200000) grade = 'F';
-        else if (annualCTC <= 349999) grade = 'E';
-        else if (annualCTC <= 499999) grade = 'D';
-        else if (annualCTC <= 649999) grade = 'C';
-        else if (annualCTC <= 900000) grade = 'B';
-        else grade = 'A';
+        if (annualCTC < 200000) {
+            grade = 'F';
+        } else if (annualCTC >= 200000 && annualCTC <= 349999) {
+            grade = 'E';
+        } else if (annualCTC >= 350000 && annualCTC <= 499999) {
+            grade = 'D';
+        } else if (annualCTC >= 500000 && annualCTC <= 649999) {
+            grade = 'C';
+        } else if (annualCTC >= 650000 && annualCTC <= 900000) {
+            grade = 'B';
+        } else {
+            grade = 'A';
+        }
 
         $('#salary_grade').val(grade);
     });

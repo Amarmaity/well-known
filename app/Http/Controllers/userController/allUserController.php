@@ -1458,12 +1458,14 @@ class allUserController extends Controller
             ->where('financial_year', $year)
             ->first();
 
-        $managerReview = ManagerReviewTable::where('emp_id', $empId)
+        $managerReviews = ManagerReviewTable::where('emp_id', $empId)
             ->where('financial_year', $year)
-            ->first();
+            ->pluck('ManagerTotalReview')
+            ->filter(fn ($score) => is_numeric($score));
+        $managerTotal = $managerReviews->isNotEmpty() ? round($managerReviews->avg(), 2) : null;
 
-        $clientReview = null;
         $clientReviews = collect();
+        $clientTotal = null;
         if ($showClient) {
             $clientReviews = DB::table('client_review_tables')
                 ->join('all_clients', 'client_review_tables.client_id', '=', 'all_clients.id')
@@ -1472,13 +1474,16 @@ class allUserController extends Controller
                 ->select('client_review_tables.emp_id', 'client_review_tables.client_id', 'client_review_tables.ClientTotalReview', 'all_clients.client_name')
                 ->get();
 
-            $clientReview = $clientReviews->first();
+            $clientScores = $clientReviews
+                ->pluck('ClientTotalReview')
+                ->filter(fn ($score) => is_numeric($score));
+            $clientTotal = $clientScores->isNotEmpty() ? round($clientScores->avg(), 2) : null;
         }
 
         $hasAnyData = $evaluation !== null
             || $adminReview !== null
             || $hrReview !== null
-            || $managerReview !== null
+            || $managerReviews->isNotEmpty()
             || $clientReviews->isNotEmpty();
 
         $response = [
@@ -1487,20 +1492,20 @@ class allUserController extends Controller
             'message' => $hasAnyData ? null : 'No data found for this financial year.',
             'admin' => $adminReview?->AdminTotalReview,
             'hr' => $hrReview?->HrTotalReview,
-            'managerTotal' => $managerReview?->ManagerTotalReview,
+            'managerTotal' => $managerTotal,
             'total' => $evaluation?->total_scoring_system,
             'showClient' => $showClient,
             'reports' => [
                 'evaluation' => $evaluation !== null,
                 'adminReview' => $adminReview !== null,
                 'hrReview' => $hrReview !== null,
-                'managerReview' => $managerReview !== null,
+                'managerReview' => $managerReviews->isNotEmpty(),
             ],
             'pendingReviews' => [
                 'evaluation' => $evaluation === null,
                 'adminReview' => in_array('admin', $roles, true) && $adminReview === null,
                 'hrReview' => in_array('hr', $roles, true) && $hrReview === null,
-                'managerReview' => in_array('manager', $roles, true) && $managerReview === null,
+                'managerReview' => in_array('manager', $roles, true) && $managerReviews->isEmpty(),
                 'clientReview' => $showClient && $clientReviews->isEmpty(),
             ],
             'clientReviews' => $clientReviews->map(function ($review) {
@@ -1514,7 +1519,7 @@ class allUserController extends Controller
 
 
         if ($showClient) {
-            $response['clientTotal'] = $clientReview?->ClientTotalReview;
+            $response['clientTotal'] = $clientTotal;
         }
 
 

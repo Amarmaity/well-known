@@ -422,7 +422,7 @@ class SuperAdminController extends Controller
                 $clientAverage = count($validClientScores) ? round(array_sum($validClientScores) / count($validClientScores), 2) : null;
 
                 if (is_numeric($clientAverage)) {
-                    $clientReviewData[] = min(($clientAverage / 200) * 100, 100);
+                    $clientReviewData[] = min($clientAverage, 100);
                 }
             }
 
@@ -624,7 +624,7 @@ class SuperAdminController extends Controller
                 : 0;
 
             $clientReviewData = $hasClientReview
-                ? round(min(($clientReviewDetails->avg('avg_score') / 200) * 100, 100), 2)
+                ? round(min($clientReviewDetails->avg('avg_score'), 100), 2)
                 : 0;
 
             $avgReviewPercentage = evaluationTable::where('emp_id', $employeeIdentifier)
@@ -989,12 +989,14 @@ class SuperAdminController extends Controller
             ->where('financial_year', $year)
             ->first();
 
-        $managerReview = ManagerReviewTable::where('emp_id', $empId)
+        $managerReviews = ManagerReviewTable::where('emp_id', $empId)
             ->where('financial_year', $year)
-            ->first();
+            ->pluck('ManagerTotalReview')
+            ->filter(fn ($score) => is_numeric($score));
+        $managerTotal = $managerReviews->isNotEmpty() ? round($managerReviews->avg(), 2) : null;
 
-        $clientReview = null;
         $clientReviews = collect();
+        $clientTotal = null;
         if ($showClient) {
             $clientReviews = DB::table('client_review_tables')
                 ->join('all_clients', 'client_review_tables.client_id', '=', 'all_clients.id')
@@ -1003,13 +1005,16 @@ class SuperAdminController extends Controller
                 ->select('client_review_tables.emp_id', 'client_review_tables.client_id', 'client_review_tables.ClientTotalReview', 'all_clients.client_name')
                 ->get();
 
-            $clientReview = $clientReviews->first();
+            $clientScores = $clientReviews
+                ->pluck('ClientTotalReview')
+                ->filter(fn ($score) => is_numeric($score));
+            $clientTotal = $clientScores->isNotEmpty() ? round($clientScores->avg(), 2) : null;
         }
 
         $hasAnyData = $evaluation !== null
             || $adminReview !== null
             || $hrReview !== null
-            || $managerReview !== null
+            || $managerReviews->isNotEmpty()
             || $clientReviews->isNotEmpty();
 
         // Build response
@@ -1020,19 +1025,19 @@ class SuperAdminController extends Controller
             'total' => $evaluation?->total_scoring_system,
             'adminTotal' => $adminReview?->AdminTotalReview,
             'hrTotal' => $hrReview?->HrTotalReview,
-            'managerTotal' => $managerReview?->ManagerTotalReview,
+            'managerTotal' => $managerTotal,
             'showClient' => $showClient,
             'reports' => [
                 'evaluation' => $evaluation !== null,
                 'adminReview' => $adminReview !== null,
                 'hrReview' => $hrReview !== null,
-                'managerReview' => $managerReview !== null,
+                'managerReview' => $managerReviews->isNotEmpty(),
             ],
             'pendingReviews' => [
                 'evaluation' => $evaluation === null,
                 'adminReview' => in_array('admin', $roles, true) && $adminReview === null,
                 'hrReview' => in_array('hr', $roles, true) && $hrReview === null,
-                'managerReview' => in_array('manager', $roles, true) && $managerReview === null,
+                'managerReview' => in_array('manager', $roles, true) && $managerReviews->isEmpty(),
                 'clientReview' => $showClient && $clientReviews->isEmpty(),
             ],
             'clientReviews' => $clientReviews->map(function ($review) {
@@ -1045,7 +1050,7 @@ class SuperAdminController extends Controller
         ];
 
         if ($showClient) {
-            $response['clientTotal'] = $clientReview?->ClientTotalReview;
+            $response['clientTotal'] = $clientTotal;
         }
 
         return response()->json($response);

@@ -339,10 +339,15 @@
 
                         table.style.display = '';
 
+                        function formatScore(value) {
+                            const numeric = Number(value);
+                            return Number.isInteger(numeric) ? numeric.toString() : numeric.toFixed(2);
+                        }
+
                         function setCell(cellId, value, max) {
                             const cell = document.getElementById(cellId);
                             if (value !== null && value !== undefined && value !== '') {
-                                cell.textContent = Math.round(value) + ' / ' + max;
+                                cell.textContent = formatScore(value) + ' / ' + max;
                             } else {
                                 cell.textContent = '';
                             }

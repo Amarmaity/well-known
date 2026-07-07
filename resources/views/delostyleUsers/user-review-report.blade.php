@@ -277,10 +277,14 @@
                     const managerHeader = document.querySelector("th:nth-child(4)");
                     const clientHeader = document.getElementById("clientColumnHeader");
 
+                    function formatScore(value) {
+                        const numeric = Number(value);
+                        return Number.isInteger(numeric) ? numeric.toString() : numeric.toFixed(2);
+                    }
+
                     function set(cell, header, val, max) {
                         if (val !== null && val !== undefined && val !== '') {
-                            const rounded = Math.round(Number(val));
-                            cell.textContent = `${rounded} / ${max}`;
+                            cell.textContent = `${formatScore(val)} / ${max}`;
                             cell.style.display = '';
                             header.style.display = '';
                             return true;
