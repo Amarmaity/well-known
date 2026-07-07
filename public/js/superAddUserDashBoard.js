@@ -52,7 +52,7 @@ $(function () {
             return;
         }
 
-        if (selected === 'manager') {
+        if (['manager', 'admin', 'hr'].includes(selected)) {
             $managerSearch.hide();
             $managerName.hide();
             $('#manager_name').val(null).trigger('change');
@@ -73,15 +73,15 @@ $(function () {
         }
 
         if (selected === 'users') {
-            $('#users').closest('.form-check').hide();
+            $('#users').prop('checked', false).closest('.form-check').hide();
         } else if (selected === 'admin') {
-            ['admin', 'users', 'client'].forEach(function (id) {
-                $('#' + id).closest('.form-check').hide();
+            ['admin', 'users', 'manager', 'client'].forEach(function (id) {
+                $('#' + id).prop('checked', false).closest('.form-check').hide();
             });
             $('#hr').closest('.form-check').show();
         } else if (selected === 'hr') {
-            ['hr', 'users', 'client'].forEach(function (id) {
-                $('#' + id).closest('.form-check').hide();
+            ['hr', 'users', 'manager', 'client'].forEach(function (id) {
+                $('#' + id).prop('checked', false).closest('.form-check').hide();
             });
             $('#admin').closest('.form-check').show();
         } else if (selected === 'manager') {
