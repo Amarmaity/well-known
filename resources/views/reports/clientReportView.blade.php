@@ -133,7 +133,7 @@
                                     @endphp
 
                                     <select class="form-control financial-year input-block" required>
-                                        <option value="">Financial Year</option>
+                                        <option value="" selected disabled>Financial Year</option>
 
                                         @foreach ($years as $year)
                                             @php

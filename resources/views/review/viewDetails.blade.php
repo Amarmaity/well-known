@@ -39,7 +39,7 @@
         @endphp
 
         <select id="employeeDetails" class="form-select client__select" name="financial_year" required>
-            <option value="">Financial Year</option>
+            <option value="" selected disabled>Financial Year</option>
 
             @foreach ($years as $year)
                 @php

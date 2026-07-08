@@ -40,7 +40,7 @@
             <div class="client">
                 <h1 class="client__heading">Evaluation</h1>
                 <select id="financialYear" class="form-select client__select" name="financial_year" required>
-                    <option value="" selected>Financial Year</option>
+                    <option value="" selected disabled>Financial Year</option>
                     <option value="2025-2026">2025-2026</option>
                     <option value="2026-2027">2026-2027</option>
                     <option value="2027-2028">2027-2028</option>
