@@ -90,7 +90,7 @@
 
         <div class="client___item">
             <input type="search" id="employee_search" name="search" class="form-control client__search"
-                placeholder="Search" aria-label="Search">
+                placeholder="Search By Full Employee Id or Name" aria-label="Search">
             <button class="client__btn" type="submit">
                 <img src="{{ asset('images/search.png') }}" alt="Search">
             </button>

@@ -24,9 +24,15 @@ class AccessManagementController extends Controller
             ->get();
         // dd($roles);
 
-        $modules = AccessModule::with('children')
+        $modules = AccessModule::with(['children' => function ($query) {
+                $query->where('status', 1)
+                    ->whereRaw('LOWER(module_key) != ?', ['dashboard'])
+                    ->whereRaw('LOWER(module_name) != ?', ['dashboard']);
+            }])
             ->whereNull('parent_id')
             ->where('status', 1)
+            ->whereRaw('LOWER(module_key) != ?', ['dashboard'])
+            ->whereRaw('LOWER(module_name) != ?', ['dashboard'])
             ->orderBy('sort_order')
             ->get();
 
@@ -64,6 +70,8 @@ class AccessManagementController extends Controller
             'access_modules.id'
         )
             ->where('access_permissions.user_id', $userId)
+            ->whereRaw('LOWER(access_modules.module_key) != ?', ['dashboard'])
+            ->whereRaw('LOWER(access_modules.module_name) != ?', ['dashboard'])
             ->select(
                 'access_modules.id',
                 'access_modules.module_name as name'
