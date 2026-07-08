@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="dob" class="forms-label">Joining Date</label>
-                                    <input type="date" class="form-control" id="dob" name="dob" required>
+                                    <input type="date" class="form-control" id="dob" name="dob" max="{{ date('Y-m-d') }}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="gender" class="forms-label">Gender</label>

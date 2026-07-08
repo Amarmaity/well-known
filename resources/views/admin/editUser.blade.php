@@ -117,10 +117,14 @@
                                 <option value="Kasba Office" {{ $user->division == 'Kasba Office' ? 'selected' : '' }}>
                                     Kasba
                                     Office</option>
+                                <option value="Salt Lake 3A" {{ $user->division == 'Salt Lake 3A' ? 'selected' : '' }}>Salt
+                                    Lake 3A</option>
                                 <option value="Salt Lake 3B" {{ $user->division == 'Salt Lake 3B' ? 'selected' : '' }}>Salt
                                     Lake 3B</option>
                                 <option value="Salt Lake 17B" {{ $user->division == 'Salt Lake 17B' ? 'selected' : '' }}>
                                     Salt Lake 17B</option>
+                                <option value="Salt Lake 504" {{ $user->division == 'Salt Lake 504' ? 'selected' : '' }}>
+                                    Salt Lake 504</option>
                             </select>
                         </div>
 

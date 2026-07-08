@@ -25,6 +25,20 @@ $(function () {
         });
     }
 
+    function todayString() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function isFutureDate(value) {
+        return value && value > todayString();
+    }
+
+    $('#dob').attr('max', todayString());
+
     function syncClientSelect() {
         const shouldShow = $clientCheckbox.is(':checked') && $clientCheckbox.closest('.form-check').is(':visible');
 
@@ -284,6 +298,13 @@ $(function () {
             return;
         }
 
+        if (isFutureDate(joiningDate)) {
+            $(this).val('');
+            $('#probation_date').val('');
+            showToast('error', 'Validation error', 'Joining date cannot be a future date.');
+            return;
+        }
+
         const date = new Date(joiningDate);
         date.setMonth(date.getMonth() + 6);
 
@@ -306,6 +327,12 @@ $(function () {
 
         const joiningDateVal = $('#dob').val();
         const probationDateVal = $('input[name="probation_date"]').val();
+
+        if (isFutureDate(joiningDateVal)) {
+            showToast('error', 'Validation error', 'Joining date cannot be a future date.');
+            return;
+        }
+
 
         if (joiningDateVal && probationDateVal) {
             const joiningDate = new Date(joiningDateVal);

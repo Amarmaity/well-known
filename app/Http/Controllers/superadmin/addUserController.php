@@ -44,7 +44,7 @@ class addUserController extends Controller
             $rules = [
                 'fname' => 'required|string|max:255',
                 'lname' => 'required|string|max:255',
-                'dob' => 'required|date',
+                'dob' => 'required|date|before_or_equal:today',
                 'mobno' => 'required|regex:/^[6-9]\d{9}$/',
                 'gender' => 'required|string',
                 'email' => [
@@ -84,12 +84,13 @@ class addUserController extends Controller
                     'employee_id.unique' => 'This Employee ID is already registered.',
                     'employee_id.regex' => 'Employee ID must be in the format DS00001.',
                     'mobno.regex' => 'Please enter a valid 10-digit mobile number.',
+                    'dob.before_or_equal' => 'Joining date cannot be a future date.',
                 ],
                 [
                     'mobno' => 'Mobile No',
                     'fname' => 'First Name',
                     'lname' => 'Last Name',
-                    'dob' => 'Date of Birth',
+                    'dob' => 'Joining Date',
                     'gender' => 'Gender',
                     'email' => 'Email',
                     'password' => 'Password',
