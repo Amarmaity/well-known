@@ -173,10 +173,10 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        if (response.status === "success") {
+                        if (response.status === "success" || response.status === "warning") {
                             Swal.fire({
-                                icon: 'success',
-                                title: 'Saved',
+                                icon: response.status === "warning" ? 'warning' : 'success',
+                                title: response.status === "warning" ? 'Saved with warning' : 'Saved',
                                 text: response.message || 'Client added successfully.'
                             }).then(function () {
                                 $('#userForm')[0].reset();

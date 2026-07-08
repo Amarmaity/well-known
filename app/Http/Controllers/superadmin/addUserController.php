@@ -83,7 +83,7 @@ class addUserController extends Controller
                     'email.unique' => 'This email is already registered.',
                     'employee_id.unique' => 'This Employee ID is already registered.',
                     'employee_id.regex' => 'Employee ID must be in the format DS00001.',
-                    'mobno.regex' => 'Please enter a valid 10-digit Indian mobile number.',
+                    'mobno.regex' => 'Please enter a valid 10-digit mobile number.',
                 ],
                 [
                     'mobno' => 'Mobile No',

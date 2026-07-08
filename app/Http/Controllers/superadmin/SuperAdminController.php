@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ClientWelcomeMail;
 use App\Mail\OtpMail;
 use App\Models\AdminReviewTable;
 use App\Models\AllClient;
@@ -1080,7 +1081,7 @@ class SuperAdminController extends Controller
                 'client_email.required' => 'Email is required.',
                 'client_email.email' => 'Please enter a valid email address.',
                 'client_email.unique' => 'This email is already registered.',
-                'client_mobno.regex' => 'Please enter a valid 10-digit Indian mobile number.',
+                'client_mobno.regex' => 'Please enter a valid  mobile number.',
                 'password.required' => 'Password is required.',
                 'password.min' => 'Password must be at least 6 characters.',
             ]
@@ -1095,18 +1096,34 @@ class SuperAdminController extends Controller
 
         $validated = $validator->validated();
 
-        // Store client (hash password if stored)
-        AllClient::create([
+        $plainPassword = $validated['password'];
+
+        $client = AllClient::create([
             'client_name' => $validated['client_name'],
             'company_name' => $validated['company_name'],
             'client_mobno' => $validated['client_mobno'],
             'client_email' => strtolower(trim($validated['client_email'])),
-            'password' => bcrypt($validated['password']),
+            'password' => bcrypt($plainPassword),
             'user_type' => $validated['user_type'],
         ]);
+
+        try {
+            Mail::to($client->client_email)->send(new ClientWelcomeMail($client, $plainPassword));
+        } catch (\Exception $e) {
+            Log::error('Client welcome email failed: ' . $e->getMessage(), [
+                'client_id' => $client->id,
+                'client_email' => $client->client_email,
+            ]);
+
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'Client added successfully, but welcome email could not be sent.'
+            ]);
+        }
+
         return response()->json([
             'status' => 'success',
-            'message' => 'Client added successfully.'
+            'message' => 'Client added successfully and welcome email sent.'
         ]);
     }
 
@@ -1315,7 +1332,7 @@ class SuperAdminController extends Controller
                 'client_email.required' => 'Email is required.',
                 'client_email.email' => 'Please enter a valid email address.',
                 'client_email.unique' => 'This email is already registered.',
-                'client_mobno.regex' => 'Please enter a valid 10-digit Indian mobile number.',
+                'client_mobno.regex' => 'Please enter a valid 10-digit mobile number.',
                 'password.min' => 'Password must be at least 6 characters.',
             ]
         );
