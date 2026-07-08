@@ -965,44 +965,6 @@ class allUserController extends Controller
     }
 
 
-
-    // public function reviewUserReport($emp_id)
-    // {
-
-    //     // Fetch client reviews with client names
-    //     $clientReviews = DB::table('client_review_tables')
-    //         ->join('all_clients', 'client_review_tables.client_id', '=', 'all_clients.id')
-    //         ->where('client_review_tables.emp_id', $emp_id)
-    //         ->select('client_review_tables.*', 'all_clients.client_name')
-    //         ->get();
-
-
-    //     // Fetch review data
-    //     $userData = [
-    //         'superadduser' => DB::table('super_add_users')->where('employee_id', $emp_id)->first(),
-    //         'managerReview' => DB::table('manager_review_tables')->where('emp_id', $emp_id)->first(),
-    //         'adminReview' => DB::table('admin_review_tables')->where('emp_id', $emp_id)->first(),
-    //         'hrReview' => DB::table('hr_review_tables')->where('emp_id', $emp_id)->first(),
-    //         'clientReview' => DB::table('client_review_tables')->where('emp_id', $emp_id)->first(),
-    //         'evaluation' => DB::table('evaluation_tables')->where('emp_id', $emp_id)->first(),
-    //     ];
-
-    //     $user_roles = json_decode(optional($userData['superadduser'])->user_roles ?? '[]', true);
-
-    //     // Check if user_roles are empty
-    //     if (!array_filter($user_roles)) {
-    //         return redirect()->back()->with('error', 'No review data found for this employee.');
-    //     }
-
-
-    //     // Debugging: Check if $userData is being retrieved
-    //     if (collect($userData)->filter()->isEmpty()) {
-    //         return redirect()->back()->with('error', 'No review data found for this employee.');
-    //     }
-
-    //     return view('delostyleUsers.user-review-report', compact('userData', 'emp_id', 'clientReviews', 'user_roles'));
-    // }
-
     public function reviewUserReport($emp_id)
     {
         if (!session('user_type') || !session('employee_id')) {
@@ -1050,12 +1012,14 @@ class allUserController extends Controller
         $user_roles = json_decode($userData['superadduser']->user_roles ?? '[]', true);
         $user_roles = is_array($user_roles) ? array_values(array_filter($user_roles)) : [];
 
+        $hasEvaluation = $userData['evaluation'] !== null;
+
         $pendingReviews = [
-            'evaluation' => $userData['evaluation'] === null,
-            'adminReview' => in_array('admin', $user_roles, true) && $userData['adminReview'] === null,
-            'hrReview' => in_array('hr', $user_roles, true) && $userData['hrReview'] === null,
-            'managerReview' => in_array('manager', $user_roles, true) && $userData['managerReview'] === null,
-            'clientReview' => in_array('client', $user_roles, true) && $clientReviews->isEmpty(),
+            'evaluation' => !$hasEvaluation,
+            'adminReview' => $hasEvaluation && in_array('admin', $user_roles, true) && $userData['adminReview'] === null,
+            'hrReview' => $hasEvaluation && in_array('hr', $user_roles, true) && $userData['hrReview'] === null,
+            'managerReview' => $hasEvaluation && in_array('manager', $user_roles, true) && $userData['managerReview'] === null,
+            'clientReview' => $hasEvaluation && in_array('client', $user_roles, true) && $clientReviews->isEmpty(),
         ];
 
         return view('delostyleUsers.user-review-report', compact('userData', 'emp_id', 'clientReviews', 'user_roles', 'pendingReviews', 'selectedFinancialYear'));
@@ -1489,7 +1453,7 @@ class allUserController extends Controller
         $response = [
             'success' => true,
             'hasAnyData' => $hasAnyData,
-            'message' => $hasAnyData ? null : 'No data found for this financial year.',
+            'message' => $evaluation === null ? 'Review your self first.' : ($hasAnyData ? null : 'No data found for this financial year.'),
             'admin' => $adminReview?->AdminTotalReview,
             'hr' => $hrReview?->HrTotalReview,
             'managerTotal' => $managerTotal,
@@ -1503,10 +1467,10 @@ class allUserController extends Controller
             ],
             'pendingReviews' => [
                 'evaluation' => $evaluation === null,
-                'adminReview' => in_array('admin', $roles, true) && $adminReview === null,
-                'hrReview' => in_array('hr', $roles, true) && $hrReview === null,
-                'managerReview' => in_array('manager', $roles, true) && $managerReviews->isEmpty(),
-                'clientReview' => $showClient && $clientReviews->isEmpty(),
+                'adminReview' => $evaluation !== null && in_array('admin', $roles, true) && $adminReview === null,
+                'hrReview' => $evaluation !== null && in_array('hr', $roles, true) && $hrReview === null,
+                'managerReview' => $evaluation !== null && in_array('manager', $roles, true) && $managerReviews->isEmpty(),
+                'clientReview' => $evaluation !== null && $showClient && $clientReviews->isEmpty(),
             ],
             'clientReviews' => $clientReviews->map(function ($review) {
                 return [

@@ -18,16 +18,7 @@
         </div>
 
         <div class="col-12 col-sm-6 search-container">
-            <label for="financialYear" class="forms-label">Financial Years:</label>
-            <!--<select id="employeeDetails" name="financial_year" required class="form-control">-->
-            <!--    <option value="" selected>Select Financial Years</option>-->
-            <!--    <option value="2025-2026">2025-2026</option>-->
-            <!--    <option value="2026-2027">2026-2027</option>-->
-            <!--    <option value="2027-2028">2027-2028</option>-->
-            <!--    <option value="2028-2029">2028-2029</option>-->
-            <!--    <option value="2029-2030">2029-2030</option>-->
-            <!--</select>-->
-            
+            <label for="financialYear" class="forms-label">Financial Years:</label>            
             @php
                 $currentMonth = date('m');
                 $currentYear = date('Y');
@@ -97,7 +88,7 @@
                 <button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')">Evaluation
                     Details</button>
             @elseif($pendingReviews['evaluation'] ?? false)
-                <p>Your evaluation is pending.</p>
+                <p>Review your self first.</p>
             @endif
 
             @if ($userData['adminReview'] !== null)
@@ -202,7 +193,7 @@
             if (data.reports?.evaluation) {
                 html += `<button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')">Evaluation Details</button>`;
             } else if (data.pendingReviews?.evaluation) {
-                html += '<p>Your evaluation is pending.</p>';
+                html += '<p>Review your self first.</p>';
             }
 
             if (data.reports?.adminReview) {
