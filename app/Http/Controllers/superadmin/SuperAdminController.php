@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 
 
@@ -1216,6 +1217,37 @@ class SuperAdminController extends Controller
         return view('admin.editUser', compact('user', 'clients', 'clientIds', 'userRoles', 'userType'));
     }
 
+    private function salaryGradeFromSalary($salary): ?string
+    {
+        if ($salary === null || $salary === '') {
+            return null;
+        }
+
+        $annualCTC = (float) $salary;
+
+        if ($annualCTC < 200000) {
+            return 'F';
+        }
+
+        if ($annualCTC <= 349999) {
+            return 'E';
+        }
+
+        if ($annualCTC <= 499999) {
+            return 'D';
+        }
+
+        if ($annualCTC <= 649999) {
+            return 'C';
+        }
+
+        if ($annualCTC <= 900000) {
+            return 'B';
+        }
+
+        return 'A';
+    }
+
     public function updateUser(Request $request, $id)
     {
         $request->validate([
@@ -1223,7 +1255,11 @@ class SuperAdminController extends Controller
             'lname' => 'required|string|max:255',
             'mobno' => 'required|string|max:15',
             'email' => 'required|email|max:255',
-            'employee_id' => 'nullable|string|max:255',
+            'employee_id' => [
+                'nullable',
+                'regex:/^DS\d{5}$/',
+                Rule::unique('super_add_users', 'employee_id')->ignore($id),
+            ],
             'dob' => 'required|date',
             'gender' => 'nullable|in:male,female,other',
             'designation' => 'nullable|string|max:255',
@@ -1235,21 +1271,28 @@ class SuperAdminController extends Controller
             'user_type' => 'required|string|in:admin,hr,users,manager',
             'probation_date' => 'nullable|date',
             'salary' => 'nullable|numeric|min:0',
+            'salary_grade' => 'nullable|in:A,B,C,D,E,F',
             'password' => 'nullable|string|confirmed|min:6',
             'client_id' => 'nullable|array',
             'client_id.*' => 'integer|exists:all_clients,id',
             'user_roles' => 'nullable|array',
             'user_roles.*' => 'string',
+        ], [
+            'employee_id.unique' => 'This Employee ID is already registered.',
+            'employee_id.regex' => 'Employee ID must be in the format DS00001.',
         ]);
         // var_dump($request);
 
         $user = SuperAddUser::findOrFail($id);
+        $oldEmployeeId = $user->employee_id;
+        $newEmployeeId = $request->employee_id;
+
         // Update base user fields
         $user->fname = $request->fname;
         $user->lname = $request->lname;
         $user->mobno = $request->mobno;
         $user->email = $request->email;
-        $user->employee_id = $request->employee_id; // if editable
+        $user->employee_id = $newEmployeeId;
         $user->dob = $request->dob;
         $user->gender = $request->gender;
         $user->designation = $request->designation;
@@ -1261,6 +1304,7 @@ class SuperAdminController extends Controller
         $user->user_type = $request->user_type;
         $user->probation_date = $request->probation_date;
         $user->salary = $request->salary;
+        $user->salary_grade = $this->salaryGradeFromSalary($request->salary) ?? $request->salary_grade;
 
         // Save JSON fields
         $user->client_id = json_encode($request->client_id ?? []);
@@ -1271,7 +1315,19 @@ class SuperAdminController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        $user->save();
+        DB::transaction(function () use ($user, $oldEmployeeId, $newEmployeeId) {
+            $user->save();
+
+            if ($oldEmployeeId && $newEmployeeId && $oldEmployeeId !== $newEmployeeId) {
+                evaluationTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                HrReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                ManagerReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                AdminReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                ClientReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                FinancialData::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+            }
+        });
+
         return redirect()->back()->with('success', 'User updated successfully!');
     }
 

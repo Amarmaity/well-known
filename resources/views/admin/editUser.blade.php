@@ -64,8 +64,8 @@
 
                         <div class="col-md-6">
                             <label for="employee_id" class="forms-label">Employee ID</label>
-                            <input type="text" name="employee_id" id="employee_id" class="form-control readonly-field"
-                                value="{{ $user->employee_id }}" readonly>
+                            <input type="text" name="employee_id" id="employee_id" class="form-control"
+                                value="{{ $user->employee_id }}" placeholder="e.g. DS00001" required>
                         </div>
 
                         <div class="col-md-6">
@@ -210,8 +210,18 @@
 
                         <div class="client-hide col-md-6">
                             <label for="salary" class="forms-label">Salary</label>
-                            <input type="number" class="form-control readonly-field" id="salary" name="salary"
+                            <input type="number" class="form-control" id="salary" name="salary"
                                 placeholder="Enter Salary" min="0" value="{{ $user->salary }}" required>
+                        </div>
+
+                        <div class="client-hide col-md-6">
+                            <label for="salary_grade" class="forms-label">Salary Grade/Band</label>
+                            <select class="form-control" id="salary_grade" name="salary_grade" required>
+                                <option value="" disabled {{ $user->salary_grade == null ? 'selected' : '' }}>Salary Grade</option>
+                                @foreach (['A', 'B', 'C', 'D', 'E', 'F'] as $grade)
+                                    <option value="{{ $grade }}" {{ $user->salary_grade == $grade ? 'selected' : '' }}>{{ $grade }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
 
@@ -441,6 +451,21 @@
             $select.val(null).trigger('change');
         }
 
+        function salaryGradeFromSalary(salary) {
+            const annualCTC = parseFloat(salary) || 0;
+
+            if (annualCTC < 200000) return 'F';
+            if (annualCTC <= 349999) return 'E';
+            if (annualCTC <= 499999) return 'D';
+            if (annualCTC <= 649999) return 'C';
+            if (annualCTC <= 900000) return 'B';
+            return 'A';
+        }
+
+        function syncSalaryGrade() {
+            $('#salary_grade').val(salaryGradeFromSalary($('#salary').val()));
+        }
+
         function toggleManagerField() {
             const isManagerChecked = $('#manager').is(':checked');
             const $managerField = $('#manager-name-field');
@@ -489,6 +514,14 @@
             syncEditFields();
             $('.check-input').on('change', syncEditFields);
             $('#designation_dropdown').on('change', syncEditFields);
+            $('#salary').on('input', syncSalaryGrade);
+            syncSalaryGrade();
+        });
+
+        $('#employee_id').on('input', function() {
+            let value = $(this).val().replace(/^DS/i, '');
+            value = value.replace(/\D/g, '').slice(0, 5);
+            $(this).val('DS' + value);
         });
 
         document.querySelector('.forms-block').addEventListener('submit', function(e) {
