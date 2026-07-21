@@ -312,7 +312,6 @@ class SuperAdminController extends Controller
         return view('admin.apprisal', compact('users')); // Looks for resources/views/apprisal.blade.php
     }
 
-
     public function getAppraisalData(Request $request)
     {
         $employeeQuery = trim($request->query('employee_query', ''));
@@ -480,7 +479,6 @@ class SuperAdminController extends Controller
         ]);
     }
 
-
     public function toggleStatus($user_type, $identifier)
     {
         $user = $user_type === 'client'
@@ -500,7 +498,6 @@ class SuperAdminController extends Controller
         ]);
     }
 
-
     public function getActiveUsers()
     {
         try {
@@ -510,7 +507,6 @@ class SuperAdminController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 
     // Search users by Employee ID or Name (Show active/inactive when searching)
     public function searchEmployee(Request $request)
@@ -549,7 +545,6 @@ class SuperAdminController extends Controller
             return response()->json(['error' => 'Server error', 'details' => $e->getMessage()], 500);
         }
     }
-
 
     //Financial View
     public function financialView()
@@ -755,14 +750,12 @@ class SuperAdminController extends Controller
         }
     }
 
-
     private function customRound($value)
     {
         $decimal = $value - floor($value);
 
         return $decimal > 0.50 ? ceil($value) : floor($value);
     }
-
 
     public function userListView()
     {
@@ -777,7 +770,6 @@ class SuperAdminController extends Controller
 
         return view('admin.userList', compact('users'));
     }
-
 
     public function viewDetailsAll($emp_id)
     {
@@ -831,7 +823,6 @@ class SuperAdminController extends Controller
 
         return view('reports.hrReport', compact('user'));
     }
-
 
     public function getSuperAdminManagerReview(Request $request, $emp_id)
     {
@@ -994,7 +985,7 @@ class SuperAdminController extends Controller
         $managerReviews = ManagerReviewTable::where('emp_id', $empId)
             ->where('financial_year', $year)
             ->pluck('ManagerTotalReview')
-            ->filter(fn ($score) => is_numeric($score));
+            ->filter(fn($score) => is_numeric($score));
         $managerTotal = $managerReviews->isNotEmpty() ? round($managerReviews->avg(), 2) : null;
 
         $clientReviews = collect();
@@ -1009,7 +1000,7 @@ class SuperAdminController extends Controller
 
             $clientScores = $clientReviews
                 ->pluck('ClientTotalReview')
-                ->filter(fn ($score) => is_numeric($score));
+                ->filter(fn($score) => is_numeric($score));
             $clientTotal = $clientScores->isNotEmpty() ? round($clientScores->avg(), 2) : null;
         }
 
@@ -1331,15 +1322,10 @@ class SuperAdminController extends Controller
         return redirect()->back()->with('success', 'User updated successfully!');
     }
 
-
     public function search(Request $request)
     {
         $search = $request->get('q');
 
-        // $clients = AllClient::where('client_name', 'like', '%' . $search . '%')
-        //     ->select('id', 'client_name', 'company_name')
-        //     ->limit(20)
-        //     ->get();
         $clients = AllClient::where('status', 1)
             ->where('client_name', 'like', '%' . $search . '%')
             ->select('id', 'client_name', 'company_name')
@@ -1349,8 +1335,6 @@ class SuperAdminController extends Controller
         return response()->json($clients);
     }
 
-
-
     //Client Managemrnt page
     public function viewClints(Request $request)
     {
@@ -1359,7 +1343,6 @@ class SuperAdminController extends Controller
 
         return view('admin.clientManagement', compact('allClients'));
     }
-
 
     public function editClientView($id)
     {
