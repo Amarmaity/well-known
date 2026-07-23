@@ -173,7 +173,6 @@ class SuperAdminController extends Controller
     // Retrieve the logged-in user's email from the session
     public function showDashboard()
     {
-
         $userEmail = Session::get('user_email');
 
 
@@ -656,26 +655,6 @@ class SuperAdminController extends Controller
 
             $companyPercentage = (float) $employee->company_percentage;
 
-            // Compute averages
-            // $adminAvg = !empty($adminReviewData) ? array_sum($adminReviewData) / count($adminReviewData) : 0;
-            // $hrAvg = !empty($hrReviewData) ? array_sum($hrReviewData) / count($hrReviewData) : 0;
-            // $evaluationScore = (float) $avgReviewPercentage;
-            // $managerAvg = $avgManagerReview;
-            // $clientAvg = $clientReviewData;
-
-            // // Determine final review score
-            // if ($hasClientReview) {
-            //     $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg + $managerAvg + $clientAvg) / 5;
-            // } elseif ($userType === 'manager') {
-            //     $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg) / 3;
-            // } elseif ($userType === 'admin') {
-            //     $finalReviewScore = ($evaluationScore + $hrAvg) / 2;
-            // } elseif ($userType === 'hr') {
-            //     $finalReviewScore = ($evaluationScore + $adminAvg) / 2;
-            // } else {
-            //     // Default: user or unknown
-            //     $finalReviewScore = ($evaluationScore + $adminAvg + $hrAvg + $managerAvg) / 4;
-            // }
             // Compute averages
             $adminAvg = !empty($adminReviewData) ? array_sum($adminReviewData) / count($adminReviewData) : 0;
             $hrAvg = !empty($hrReviewData) ? array_sum($hrReviewData) / count($hrReviewData) : 0;
