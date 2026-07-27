@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 
 class SuperAddUser extends Model
 {
@@ -39,6 +41,63 @@ class SuperAddUser extends Model
         'probation_date',
         'employee_status'
     ];
+
+    public function getMobnoAttribute($value)
+    {
+        return $this->decryptSensitiveValue($value);
+    }
+
+    public function setMobnoAttribute($value): void
+    {
+        $this->attributes['mobno'] = $this->encryptSensitiveValue($value);
+    }
+
+    public function getSalaryAttribute($value)
+    {
+        return $this->decryptSensitiveValue($value);
+    }
+
+    public function setSalaryAttribute($value): void
+    {
+        $this->attributes['salary'] = $this->encryptSensitiveValue($value);
+    }
+
+    private function encryptSensitiveValue($value): ?string
+    {
+        if ($value === null || $value === '') {
+            return $value;
+        }
+
+        if ($this->canDecrypt($value)) {
+            return $value;
+        }
+
+        return Crypt::encryptString((string) $value);
+    }
+
+    private function decryptSensitiveValue($value)
+    {
+        if ($value === null || $value === '') {
+            return $value;
+        }
+
+        try {
+            return Crypt::decryptString($value);
+        } catch (DecryptException $e) {
+            return $value;
+        }
+    }
+
+    private function canDecrypt($value): bool
+    {
+        try {
+            Crypt::decryptString($value);
+
+            return true;
+        } catch (DecryptException $e) {
+            return false;
+        }
+    }
 
     public function financialData()
     {

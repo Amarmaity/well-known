@@ -64,9 +64,7 @@ Route::post("/verify-otp", [SuperAdminController::class, 'verifyOtp'])->name("ve
 
 //Super Admin
 
-Route::post('/Save-user', [addUserController::class, 'addUser'])
-    ->middleware([DissableBackBtn::class, CheckRole::class])
-    ->name('save-user');
+Route::post('/Save-user', [addUserController::class, 'addUser'])->middleware([DissableBackBtn::class, CheckRole::class])->name('save-user');
 
 Route::group(['middleware' => DissableBackBtn::class], function () {
     Route::group(['middleware' => CheckRole::class], function () {

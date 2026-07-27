@@ -10,3 +10,4 @@
 <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/browser/overlayscrollbars.browser.es6.min.js"
     integrity="sha256-H2VM7BKda+v2Z4+DRy69uknwxjyDRhszjXFhsL4gD3w=" crossorigin="anonymous"></script>
 <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
