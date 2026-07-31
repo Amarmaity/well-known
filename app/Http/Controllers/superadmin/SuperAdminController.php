@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers\superadmin;
 
-use App\Http\Controllers\Controller;
-use App\Mail\ClientWelcomeMail;
-use App\Mail\OtpMail;
-use App\Models\AdminReviewTable;
-use App\Models\AllClient;
-use App\Models\ClientReviewTable;
-use App\Models\evaluationTable;
-use App\Models\FinancialData;
-use App\Models\HrReviewTable;
-use App\Models\ManagerReviewTable;
-use App\Models\SuperAddUser;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
-use App\Models\SuperUserTable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use App\Models\ManagerReviewTable;
+use App\Models\ClientReviewTable;
+use App\Models\AdminReviewTable;
+use App\Mail\ClientWelcomeMail;
+use App\Models\evaluationTable;
+use App\Models\FinancialData;
+use App\Models\HrReviewTable;
+use App\Models\SuperAddUser;
+use Illuminate\Http\Request;
+use App\Models\AllClient;
+use App\Models\SuperUserTable;
 use Illuminate\Validation\Rule;
+use App\Mail\OtpMail;
 use Carbon\Carbon;
 
 
@@ -188,11 +188,19 @@ class SuperAdminController extends Controller
     {
         $currentDate = Carbon::now()->toDateString();
 
-        $evaluationEmployeeIds = evaluationTable::pluck('emp_id')->unique()->toArray();
+        $latestEvaluations = evaluationTable::select('emp_id', DB::raw('MAX(created_at) as latest_evaluation_at'))
+            ->groupBy('emp_id');
 
-        $employees = SuperAddUser::where('probation_date', '<=', $currentDate)
-            ->whereIn('employee_id', $evaluationEmployeeIds)
+        $employees = SuperAddUser::select('super_add_users.*')
+            ->joinSub($latestEvaluations, 'latest_evaluations', function ($join) {
+                $join->on('super_add_users.employee_id', '=', 'latest_evaluations.emp_id');
+            })
+            ->where('super_add_users.status', 1)
+            ->whereDate('super_add_users.probation_date', '<=', $currentDate)
+            ->orderByDesc('latest_evaluations.latest_evaluation_at')
+            ->orderByDesc('super_add_users.created_at')
             ->get();
+
         return view('admin.superView', compact('employees'));
     }
 
@@ -735,19 +743,20 @@ class SuperAdminController extends Controller
         return $decimal > 0.50 ? ceil($value) : floor($value);
     }
 
-    // public function userListView()
-    // {
-    //     $currentDate = Carbon::now()->toDateString();
+        // public function userListView()
+        // {
+        //     $currentDate = Carbon::now()->toDateString();
 
-    //     $users = SuperAddUser::where('probation_date', '<=', $currentDate)
-    //         ->orWhere('designation', 'Client')
-    //         ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
-    //         ->orderBy('probation_date', 'desc')
-    //         ->orderBy('created_at', 'desc')
-    //         ->get();
+        //     $users = SuperAddUser::where('probation_date', '<=', $currentDate)
+        //         ->orWhere('designation', 'Client')
+        //         ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
+        //         ->orderBy('probation_date', 'desc')
+        //         ->orderBy('created_at', 'desc')
+        //         ->get();
 
-    //     return view('admin.userList', compact('users'));
-    // }
+        //     return view('admin.userList', compact('users'));
+        // }
+
 
     public function userListView(Request $request)
     {
