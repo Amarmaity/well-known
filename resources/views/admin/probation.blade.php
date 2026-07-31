@@ -11,6 +11,7 @@
     <head>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
     </head>
 
@@ -54,6 +55,27 @@
             font-weight: bold;
         }
 
+        .action-cell {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .action-cell .edit-user {
+            align-items: center;
+            color: #0d6efd;
+            display: inline-flex;
+            gap: 4px;
+            text-decoration: none;
+        }
+
+        .action-cell .edit-user .fa-edit {
+            color: #00274D;
+            font-size: 20px;
+            margin-top: 0;
+        }
+
         .calendar-container {
             display: none;
         }
@@ -86,16 +108,6 @@
 
     <div class="client">
         <h1 class="client__heading">Probation Employee Table</h1>
-
-        <!--<select id="financialYear" class="form-select client__select" name="financial_year" required>-->
-        <!--    <option value="" selected>Financial Year</option>-->
-        <!--    <option value="2025-2026">2025-2026</option>-->
-        <!--    <option value="2026-2027">2026-2027</option>-->
-        <!--    <option value="2027-2028">2027-2028</option>-->
-        <!--    <option value="2028-2029">2028-2029</option>-->
-        <!--    <option value="2029-2030">2029-2030</option>-->
-        <!--</select>-->
-
         <div class="client___item">
             <input type="search" id="employee_search" name="search" class="form-control client__search" placeholder="Search"
                 aria-label="Search">
@@ -104,9 +116,12 @@
             </button>
         </div>
     </div>
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
     <div class="container table-container probation-page">
         <div class="table-responsive table-wrapper"> 
-            <table id="employeeTable" class="table table-bordered table-hover main-table table-view probation-table" class="probation-table">
+            <table id="employeeTable" class="table table-bordered table-hover main-table table-view probation-table">
                 <thead>
                     <tr>
                         <th>Employee Name</th>
@@ -116,9 +131,7 @@
                         <th>Probation Date</th>
                         <th>Salary</th>
                         <th>Email</th>
-                        <th>Financial Year</th>
-                        <th>Status</th> <!-- Ensure this column is present -->
-                        {{-- <th>Action</th> --}}
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -132,9 +145,17 @@
                                     {{$users->probation_date ?? 'Not Set'}}</span></td>
                             <td>{{$users->salary}}</td>
                             <td>{{$users->email}}</td>
-                            <td>{{$users->financial_year}}
-                            <td><span class="status-text" id="status{{$users->employee_id}}">
-                                    {{$users->employee_status ?? '--'}}</span></td>
+                            <td>
+                                <div class="action-cell">
+                                    <span class="status-text" id="status{{$users->employee_id}}">
+                                        {{$users->employee_status ?? '--'}}
+                                    </span>
+                                    <a href="{{ route('edit-probation-user', ['id' => $users->id]) }}" class="edit-user" title="Edit probation employee">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -190,7 +211,6 @@
                                         employee[4],
                                         employee[5],
                                         employee[6],
-                                        employee[7],
                                         employee[8]
                                     ]);
                                 });

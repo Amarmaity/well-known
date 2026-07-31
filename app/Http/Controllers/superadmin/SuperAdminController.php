@@ -854,6 +854,68 @@ class SuperAdminController extends Controller
         return view('admin.probation', compact('user'));
     }
 
+    public function editProbationUserView($id)
+    {
+        $user = SuperAddUser::findOrFail($id);
+
+        return view('admin.editProbationUser', compact('user'));
+    }
+
+    public function updateProbationUser(Request $request, $id)
+    {
+        $request->validate([
+            'fname' => 'required|string|max:255',
+            'lname' => 'required|string|max:255',
+            'employee_id' => [
+                'nullable',
+                'regex:/^DS\d{5}$/',
+                Rule::unique('super_add_users', 'employee_id')->ignore($id),
+            ],
+            'designation' => 'nullable|string|max:255',
+            'dob' => 'required|date',
+            'probation_date' => 'nullable|date|after_or_equal:dob',
+            'salary' => 'nullable|numeric|min:0',
+            'salary_grade' => 'nullable|in:A,B,C,D,E,F',
+            'email' => 'required|email|max:255',
+            'mobno' => 'required|string|max:15',
+            'employee_status' => 'nullable|string|max:255',
+        ], [
+            'employee_id.unique' => 'This Employee ID is already registered.',
+            'employee_id.regex' => 'Employee ID must be in the format DS00001.',
+        ]);
+
+        $user = SuperAddUser::findOrFail($id);
+        $oldEmployeeId = $user->employee_id;
+        $newEmployeeId = $request->employee_id;
+
+        $user->fname = $request->fname;
+        $user->lname = $request->lname;
+        $user->employee_id = $newEmployeeId;
+        $user->designation = $request->designation;
+        $user->dob = $request->dob;
+        $user->probation_date = $request->probation_date;
+        $user->salary = $request->salary;
+        $user->salary_grade = $this->salaryGradeFromSalary($request->salary) ?? $request->salary_grade;
+        $user->email = $request->email;
+        $user->mobno = $request->mobno;
+        $user->employee_status = $request->employee_status;
+
+        DB::transaction(function () use ($user, $oldEmployeeId, $newEmployeeId) {
+            $user->save();
+
+            if ($oldEmployeeId && $newEmployeeId && $oldEmployeeId !== $newEmployeeId) {
+                evaluationTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                HrReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                ManagerReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                AdminReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                ClientReviewTable::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+                FinancialData::where('emp_id', $oldEmployeeId)->update(['emp_id' => $newEmployeeId]);
+            }
+        });
+
+        return redirect()->route('get-probation')->with('success', 'Probation employee updated successfully!');
+    }
+
     public function getPendingAppraisalView(Request $request)
     {
         $users = SuperAddUser::where('user_type', '!=', 'client')->whereNotExists(function ($query) {

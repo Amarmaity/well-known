@@ -26,7 +26,7 @@ class CheckRole
         }
 
         $roleRoutes = [
-            'admin' => ['admin-dashboard', 'admin-review', 'input-evaluation', 'admin-review-section', 'admin-review-list', 'user-admin-details', 'user-report-view-evaluation'],
+            'admin' => ['admin-dashboard', 'admin-review', 'input-evaluation', 'admin-review-section', 'admin-review-list', 'user-admin-details', 'user-report-view-evaluation','break-details'],
 
             'hr' => ['hr-dashboard', 'hr-review', 'input-evaluation', 'hr-review-list', 'user-hr-details', 'user-report-view-evaluation'],
             'manager' => ['manager-dashboard', 'manager-review', 'input-evaluation', 'manager-review-list', 'user-manager-details', 'manager-review-list', 'user-manager-details', 'user-report-view-evaluation'],
@@ -60,6 +60,8 @@ class CheckRole
                 'edit-client',
                 'update-client',
                 'get-probation',
+                'edit-probation-user',
+                'update-probation-user',
                 'financial-view-tables',
                 'get-pending-apprasil',
                 'setting-view',
@@ -100,6 +102,8 @@ class CheckRole
 
             // Probation period List
             'get-probation' => 6,
+            'edit-probation-user' => 6,
+            'update-probation-user' => 6,
             'employees.filter-financial-year' => 6,
             'employee.update-status' => 6,
             'employee.update-probation-date' => 6,

@@ -90,6 +90,7 @@ Route::group(['middleware' => DissableBackBtn::class], function () {
         Route::get('/appraisal', [SuperAdminController::class, 'appraisalView'])->name('appraisal-view');
         Route::get('/financial', [SuperAdminController::class, 'financialView'])->name('financial.view');
         Route::get('/probation-period', [SuperAdminController::class, 'getProbationPeriod'])->name('get-probation');
+        Route::get('/probation-period/edit/{id}', [SuperAdminController::class, 'editProbationUserView'])->name('edit-probation-user');
         Route::get('/financial-view-table', [FinancialYearController::class, 'financialTableView'])->name('financial-view-tables');
         Route::get('/appraisal-pending', [SuperAdminController::class, 'getPendingAppraisalView'])->name('get-pending-apprasil');
         Route::get('/setting', [FinancialYearController::class, 'getSettingView'])->name('setting-view');
@@ -233,6 +234,7 @@ Route::get('/get-clients', [SuperAdminController::class, 'getClients'])->middlew
 
 
 Route::put('/update-user/{id}', [SuperAdminController::class, 'updateUser'])->middleware([DissableBackBtn::class, CheckRole::class])->name('update-user');
+Route::put('/probation-period/update/{id}', [SuperAdminController::class, 'updateProbationUser'])->middleware([DissableBackBtn::class, CheckRole::class])->name('update-probation-user');
 Route::put('/update-client/{id}', [SuperAdminController::class, 'updateClient'])->middleware([DissableBackBtn::class, CheckRole::class])->name('update-client');
 
 //Search edit
