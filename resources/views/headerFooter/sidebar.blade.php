@@ -55,7 +55,7 @@
                 @endphp
 
                 {{-- @if ($userType === 'Super User') --}}
-                @if (canAccess(2))
+                {{-- @if (canAccess(2))
                     <li class="nav-item">
                         <a href="{{ route('add-user') }}"
                             class="nav-link {{ request()->routeIs('add-user') ? 'active' : '' }}">
@@ -63,7 +63,7 @@
                             <p>Add Users</p>
                         </a>
                     </li>
-                @endif
+                @endif --}}
                 @if (canAccess(3))
                     <li class="nav-item">
                         <a href="{{ route('create-client') }}"
@@ -78,7 +78,7 @@
                         <a href="{{ route('userlist') }}"
                             class="nav-link {{ request()->routeIs('userlist') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-people"></i>
-                            <p>User Management</p>
+                            <p>Employee Management</p>
                         </a>
                     </li>
                 @endif

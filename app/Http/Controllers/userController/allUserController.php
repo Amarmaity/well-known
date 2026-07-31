@@ -131,6 +131,7 @@ class allUserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'OTP has been sent to your email!',
+                'OTP' => $otp
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -174,6 +175,8 @@ class allUserController extends Controller
                 Session::put('user_email', $user->email);
                 Session::put('user_type', $user->user_type);
                 Session::put('user_id', $user->id);
+                Session::put('first_name', $user->fname);
+                Session::put('last_name', $user->lname);
 
                 $permissions = AccessPermission::join(
                     'access_modules',
@@ -206,7 +209,8 @@ class allUserController extends Controller
                 Session::put('user_email', $superUser->email);
                 Session::put('user_type', $superUser->user_type);
                 Session::put('user_id', $superUser->id);
-
+                Session::put('first_name', $superUser->name);
+                // dd(session()->all());
                 $permissions = AccessPermission::join(
                     'access_modules',
                     'access_permissions.module_id',
@@ -239,6 +243,8 @@ class allUserController extends Controller
                 Session::put('user_email', $client->client_email);
                 Session::put('user_type', $client->user_type);
                 Session::put('client_id', $client->id);
+                Session::put('first_name', $client->client_name);
+
                 $redirectRoute = match ($client->user_type) {
                     'client' => route('client-dashboard'),
                     default => route('login'),
@@ -1126,7 +1132,7 @@ class allUserController extends Controller
         $hrId = session('user_id');
 
         // Step 1: Get all unique emp_ids from both tables
-        $validEmployeeIds = HrReviewTable::pluck('emp_id', )
+        $validEmployeeIds = HrReviewTable::pluck('emp_id',)
             ->merge(evaluationTable::pluck('emp_id'))
             ->unique()
             ->toArray();
@@ -1425,7 +1431,7 @@ class allUserController extends Controller
         $managerReviews = ManagerReviewTable::where('emp_id', $empId)
             ->where('financial_year', $year)
             ->pluck('ManagerTotalReview')
-            ->filter(fn ($score) => is_numeric($score));
+            ->filter(fn($score) => is_numeric($score));
         $managerTotal = $managerReviews->isNotEmpty() ? round($managerReviews->avg(), 2) : null;
 
         $clientReviews = collect();
@@ -1440,7 +1446,7 @@ class allUserController extends Controller
 
             $clientScores = $clientReviews
                 ->pluck('ClientTotalReview')
-                ->filter(fn ($score) => is_numeric($score));
+                ->filter(fn($score) => is_numeric($score));
             $clientTotal = $clientScores->isNotEmpty() ? round($clientScores->avg(), 2) : null;
         }
 
@@ -1512,5 +1518,11 @@ class allUserController extends Controller
         }
 
         return in_array((string) $clientId, array_map('strval', $clientIds), true);
+    }
+
+
+    public function breakDetails($id)
+    {
+        return view('delostyleUsers.break-details');
     }
 }

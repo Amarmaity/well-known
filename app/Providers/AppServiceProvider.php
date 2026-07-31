@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,8 +26,15 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
+        View::composer('*', function ($view) {
+
+            $view->with('loggedInUser', (object)[
+                'first_name' => session('first_name'),
+                'last_name'  => session('last_name'),
+                'user_type'  => session('user_type'),
+            ]);
+        });
     }
 }

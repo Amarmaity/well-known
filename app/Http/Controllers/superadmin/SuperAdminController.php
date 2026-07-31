@@ -425,7 +425,6 @@ class SuperAdminController extends Controller
                     $clientReviewData[] = min($clientAverage, 100);
                 }
             }
-
         }
 
 
@@ -736,16 +735,37 @@ class SuperAdminController extends Controller
         return $decimal > 0.50 ? ceil($value) : floor($value);
     }
 
-    public function userListView()
+    // public function userListView()
+    // {
+    //     $currentDate = Carbon::now()->toDateString();
+
+    //     $users = SuperAddUser::where('probation_date', '<=', $currentDate)
+    //         ->orWhere('designation', 'Client')
+    //         ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
+    //         ->orderBy('probation_date', 'desc')
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     return view('admin.userList', compact('users'));
+    // }
+
+    public function userListView(Request $request)
     {
         $currentDate = Carbon::now()->toDateString();
 
-        $users = SuperAddUser::where('probation_date', '<=', $currentDate)
-            ->orWhere('designation', 'Client')
-            ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
+        $users = SuperAddUser::query()
+            ->where(function ($query) use ($currentDate) {
+                $query->where('probation_date', '<=', $currentDate)
+                    ->orWhere('designation', 'Client');
+            })
+            ->orderByRaw(
+                "CASE WHEN probation_date = ? THEN 0 ELSE 1 END",
+                [$currentDate]
+            )
             ->orderBy('probation_date', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.userList', compact('users'));
     }
