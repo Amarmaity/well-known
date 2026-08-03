@@ -36,6 +36,13 @@
             background-position: right calc(0.375em + 0.1875rem) center !important;
             padding-right: 2.25rem !important;
         }
+        .review-exists-error {
+            color: #dc3545;
+            display: none;
+            font-weight: 600;
+            margin: 15px 0 0;
+            text-align: center;
+        }
     </style>
 
     <head>
@@ -117,6 +124,7 @@
                 <div class="container">
                     <input type="hidden" name="emp_id" id="emp_id_input" placeholder="Enter Employee Id" required>
                     </input>
+                    <div id="reviewExistsError" class="review-exists-error">Already done review for this financial year.</div>
                     <div class="content-block">
                         <input type="checkbox" name="" id="content8">
                         <label for="content8" class="main-label">A. Understanding Requirements</label>
@@ -338,8 +346,9 @@
                                 $('#selectLabel').show(); // Show label when results found
 
                                 response.users.forEach(function (user) {
+                                    const reviewedYears = JSON.stringify(user.manager_reviewed_financial_years || []);
                                     $('#employeeTableBody').append(`
-                                        <tr class="selectable-row" data-emp-id="${user.employee_id}">
+                                        <tr class="selectable-row" data-emp-id="${user.employee_id}" data-manager-reviewed-years='${reviewedYears}'>
                                             <td>${user.employee_id}</td>
                                             <td>${user.fname} ${user.lname}</td>
                                             <td>${user.designation}</td>
@@ -370,13 +379,48 @@
             // Handle row click
             $(document).on('click', '.selectable-row', function () {
                 var empId = $(this).data('emp-id');
+                var reviewedYears = $(this).data('manager-reviewed-years') || [];
                 $('#emp_id_input').val(empId);
+                $('#emp_id_input').data('manager-reviewed-years', reviewedYears);
 
                 var selectedRow = $(this).clone().addClass('table-active');
                 $('#employeeTableBody').empty().append(selectedRow);
 
                 $('#selectLabel').hide(); // Hide label after selection
+                syncManagerReviewFormState();
             });
+
+            $('#financialYear').on('change', syncManagerReviewFormState);
+
+            function getManagerReviewedYears() {
+                const reviewedYears = $('#emp_id_input').data('manager-reviewed-years') || [];
+
+                if (Array.isArray(reviewedYears)) {
+                    return reviewedYears;
+                }
+
+                if (typeof reviewedYears === 'string') {
+                    try {
+                        return JSON.parse(reviewedYears);
+                    } catch (error) {
+                        return [];
+                    }
+                }
+
+                return [];
+            }
+
+            function syncManagerReviewFormState() {
+                const financialYear = $('#financialYear').val();
+                const reviewedYears = getManagerReviewedYears();
+                const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
+
+                $('#reviewExistsError').toggle(reviewExists);
+                $('#submitBtn').prop('disabled', reviewExists);
+                $('#ManagerReviewSubmit')
+                    .find('select:not(#financialYear), textarea')
+                    .prop('disabled', reviewExists);
+            }
         });
 
         document.getElementById("ManagerReviewSubmit").addEventListener("submit", function (event) {
@@ -461,6 +505,11 @@
                 }
                 return String(field.value ?? '').trim().length > 0;
             };
+
+            if ($('#reviewExistsError').is(':visible')) {
+                showError('Already done review for this financial year.');
+                return;
+            }
 
             if (!financialYear.value) {
                 financialYear.classList.add('is-invalid');
@@ -573,7 +622,6 @@
         });
     </script>
 @endsection
-
 
 
 

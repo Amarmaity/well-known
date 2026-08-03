@@ -384,6 +384,35 @@ class allUserController extends Controller
 
         $users = $query->get();
 
+        $employeeIds = $users->pluck('employee_id');
+
+        $adminReviewedYears = AdminReviewTable::whereIn('emp_id', $employeeIds)
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->filter()->unique()->values();
+            });
+
+        $hrReviewedYears = HrReviewTable::whereIn('emp_id', $employeeIds)
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->filter()->unique()->values();
+            });
+
+        $managerReviewedYears = ManagerReviewTable::whereIn('emp_id', $employeeIds)
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->filter()->unique()->values();
+            });
+
+        $users->each(function ($user) use ($adminReviewedYears, $hrReviewedYears, $managerReviewedYears) {
+            $user->admin_reviewed_financial_years = $adminReviewedYears->get($user->employee_id, collect())->values();
+            $user->hr_reviewed_financial_years = $hrReviewedYears->get($user->employee_id, collect())->values();
+            $user->manager_reviewed_financial_years = $managerReviewedYears->get($user->employee_id, collect())->values();
+        });
+
         return response()->json([
             'success' => $users->isNotEmpty(),
             'users' => $users,
@@ -422,6 +451,19 @@ class allUserController extends Controller
         }
 
         $users = $query->get();
+        $clientId = Session::get('client_id');
+
+        $clientReviewedYears = ClientReviewTable::whereIn('emp_id', $users->pluck('employee_id'))
+            ->where('client_id', $clientId)
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->filter()->unique()->values();
+            });
+
+        $users->each(function ($user) use ($clientReviewedYears) {
+            $user->client_reviewed_financial_years = $clientReviewedYears->get($user->employee_id, collect())->values();
+        });
 
         if ($users->isNotEmpty()) {
             return response()->json([
@@ -479,7 +521,7 @@ class allUserController extends Controller
         if ($reviewExists) {
             return response()->json([
                 'success' => false,
-                'message' => 'You already submitted a review for this employee for the selected financial year.'
+                'message' => 'Already done review for this financial year.'
             ], 409);
         }
 
@@ -519,7 +561,7 @@ class allUserController extends Controller
                 }),
             ],
         ], [
-            'financial_year.unique' => 'You already submitted for this financial year.',
+            'financial_year.unique' => 'Already done review for this financial year.',
         ]);
 
 
@@ -615,7 +657,7 @@ class allUserController extends Controller
         if ($reviewExists) {
             return response()->json([
                 'success' => false,
-                'message' => 'You already submitted a review for this employee for the selected financial year.'
+                'message' => 'Already done review for this financial year.'
             ], 409); // 409 Conflict
         }
 
@@ -642,7 +684,7 @@ class allUserController extends Controller
                 }),
             ],
         ], [
-            'financial_year.unique' => 'You already submitted for this financial year.',
+            'financial_year.unique' => 'Already done review for this financial year.',
 
         ]);
 
@@ -735,7 +777,7 @@ class allUserController extends Controller
         if ($reviewExists) {
             return response()->json([
                 'success' => false,
-                'message' => 'You already submitted a review for this employee for the selected financial year.'
+                'message' => 'Already done review for this financial year.'
             ], 409);
         }
         // 5.Clecking the Finalcial Year with SuperAddUser financil column 
@@ -771,7 +813,7 @@ class allUserController extends Controller
                 }),
             ],
         ], [
-            'financial_year.unique' => 'You already submitted for this financial year.',
+            'financial_year.unique' => 'Already done review for this financial year.',
             'comments_rate_employee_quality.required' => 'Please enter a justification for question 1.',
             'comments_organizational_goals.required' => 'Please enter a justification for question 2.',
             'comments_collaborate_colleagues.required' => 'Please enter a justification for question 3.',
@@ -880,7 +922,7 @@ class allUserController extends Controller
         if ($reviewExists) {
             return response()->json([
                 'success' => false,
-                'message' => 'You already submitted a review for this employee for the selected financial year.'
+                'message' => 'Already done review for this financial year.'
             ], 409);
         }
 
@@ -942,7 +984,7 @@ class allUserController extends Controller
                 'comments_bugs_issues' => 'required|string|max:255',
             ], [
                 '*.required' => 'This field is required.',
-                'financial_year.unique' => 'You already submitted a review for this financial year.'
+                'financial_year.unique' => 'Already done review for this financial year.'
             ]);
 
             // 7. Role check

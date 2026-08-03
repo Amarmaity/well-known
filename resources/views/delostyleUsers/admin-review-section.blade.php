@@ -25,6 +25,13 @@
             background-position: right calc(0.375em + 0.1875rem) center !important;
             padding-right: 2.25rem !important;
         }
+        .review-exists-error {
+            color: #dc3545;
+            display: none;
+            font-weight: 600;
+            margin: 15px 0 0;
+            text-align: center;
+        }
     </style>
 
     <head>
@@ -119,6 +126,7 @@
                 <div>
                     <input type="hidden" id="emp_id_input" name="emp_id" placeholder="Enter Employee Id" required>
                     </input>
+                    <div id="reviewExistsError" class="review-exists-error">Already done review for this financial year.</div>
 
                     <div class="accordion">
                         <div class="content-block">
@@ -444,6 +452,15 @@
                 return;
             }
 
+            if (window.isAdminReviewAlreadyDone && window.isAdminReviewAlreadyDone()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Already done review for this financial year.'
+                });
+                return;
+            }
+
             const ratingSelects = [
                 form.elements['demonstrated_attendance'],
                 form.elements['employee_manage_shift'],
@@ -520,8 +537,9 @@
                         $('#selectLabel').show(); // Show the label
 
                         response.users.forEach(function (user) {
+                            const reviewedYears = JSON.stringify(user.admin_reviewed_financial_years || []);
                             $('#employeeTableBody').append(`
-                                <tr class="selectable-row" data-emp-id="${user.employee_id}">
+                                <tr class="selectable-row" data-emp-id="${user.employee_id}" data-admin-reviewed-years='${reviewedYears}'>
                                     <td>${user.employee_id}</td>
                                     <td>${user.fname} ${user.lname}</td>
                                     <td>${user.designation}</td>
@@ -545,13 +563,52 @@
 
     $(document).on('click', '.selectable-row', function () {
         var empId = $(this).data('emp-id');
+        var reviewedYears = $(this).data('admin-reviewed-years') || [];
         $('#emp_id_input').val(empId);
+        $('#emp_id_input').data('admin-reviewed-years', reviewedYears);
 
         var selectedRow = $(this).clone().addClass('table-active');
         $('#employeeTableBody').empty().append(selectedRow);
 
         $('#selectLabel').hide(); // Hide after selection
+        syncAdminReviewFormState();
     });
+
+    $('#financialYear').on('change', syncAdminReviewFormState);
+
+    function getAdminReviewedYears() {
+        const reviewedYears = $('#emp_id_input').data('admin-reviewed-years') || [];
+
+        if (Array.isArray(reviewedYears)) {
+            return reviewedYears;
+        }
+
+        if (typeof reviewedYears === 'string') {
+            try {
+                return JSON.parse(reviewedYears);
+            } catch (error) {
+                return [];
+            }
+        }
+
+        return [];
+    }
+
+    function syncAdminReviewFormState() {
+        const financialYear = $('#financialYear').val();
+        const reviewedYears = getAdminReviewedYears();
+        const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
+
+        $('#reviewExistsError').toggle(reviewExists);
+        $('#submitBtn').prop('disabled', reviewExists);
+        $('#AdminReviewSubmit')
+            .find('select:not(#financialYear), textarea')
+            .prop('disabled', reviewExists);
+    }
+
+    window.isAdminReviewAlreadyDone = function () {
+        return $('#reviewExistsError').is(':visible');
+    };
 });
 
 
@@ -568,6 +625,11 @@
                     const firstInvalid = adminForm.querySelector('select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
                     const empId = document.getElementById('emp_id_input');
                     const financialYear = document.getElementById('financialYear');
+
+                    if (window.isAdminReviewAlreadyDone && window.isAdminReviewAlreadyDone()) {
+                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Already done review for this financial year.' });
+                        return;
+                    }
 
                     if (!financialYear.value) {
                         financialYear.classList.add('is-invalid');
