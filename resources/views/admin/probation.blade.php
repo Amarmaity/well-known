@@ -147,9 +147,9 @@
                             <td>{{$users->email}}</td>
                             <td>
                                 <div class="action-cell">
-                                    <span class="status-text" id="status{{$users->employee_id}}">
+                                    {{-- <span class="status-text" id="status{{$users->employee_id}}">
                                         {{$users->employee_status ?? '--'}}
-                                    </span>
+                                    </span> --}}
                                     <a href="{{ route('edit-probation-user', ['id' => $users->id]) }}" class="edit-user" title="Edit probation employee">
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>

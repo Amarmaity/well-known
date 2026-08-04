@@ -51,30 +51,6 @@
                     </div>
                     <div class="topbar">
                         <div class="topbar-left">
-                            <h1 class="page-title">
-                                Evalon
-                            </h1>
-                        </div>
-                        {{-- Global Search --}}
-                        {{-- <div class="search-wrap">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="11" cy="11" r="7" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                            <input type="text" placeholder="Search data, reports, employees...">
-                        </div> --}}
-                        <div class="topbar-right">
-                            <button class="icon-btn" aria-label="Notifications">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-                                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                                </svg>
-                                <span class="notif-badge">
-                                    1
-                                </span>
-                            </button>
                             <div class="user-chip">
                                 <img class="user-avatar"
                                     src="https://ui-avatars.com/api/?name={{ urlencode(($loggedInUser->first_name ?? 'User') . ' ' . ($loggedInUser->last_name ?? '')) }}&background=2563eb&color=ffffff&bold=true&size=80"
@@ -94,6 +70,32 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="topbar-right">
+                            <button class="icon-btn" aria-label="Logout" title="Logout"
+                                onclick="event.preventDefault(); confirmLogout();">
+
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+
+                                    <path d="M12 2v8" />
+                                    <path d="M7.05 5.05A9 9 0 1 0 16.95 5.05" />
+
+                                </svg>
+
+                            </button>
+
+                            <form id="logout-form" action="{{ route('logout-users') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+
+                            <script>
+                                function confirmLogout() {
+                                    if (confirm("Are you sure you want to log out?")) {
+                                        document.getElementById('logout-form').submit();
+                                    }
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>

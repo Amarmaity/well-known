@@ -20,8 +20,6 @@
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
                 @php
                     $userType = Session::get('user_type');
-
-                    // Using if conditions to handle multiple user types for admin and manager
                     if ($userType == 'Super User') {
                         $dashboardLink = route('super-admin-view');
                     } elseif ($userType == 'admin' || $userType == 3) {
@@ -35,7 +33,7 @@
                     } elseif ($userType == 'client') {
                         $dashboardLink = route('client-dashboard');
                     } else {
-                        $dashboardLink = '#'; // Default case
+                        $dashboardLink = '#';
                     }
                 @endphp
 
@@ -64,21 +62,21 @@
                         </a>
                     </li>
                 @endif --}}
-                @if (canAccess(3))
-                    <li class="nav-item">
-                        <a href="{{ route('create-client') }}"
-                            class="nav-link {{ request()->routeIs('create-client') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-person-plus"></i>
-                            <p>Add Client</p>
-                        </a>
-                    </li>
-                @endif
                 @if (canAccess(4))
                     <li class="nav-item">
                         <a href="{{ route('userlist') }}"
                             class="nav-link {{ request()->routeIs('userlist') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-people"></i>
                             <p>Employee Management</p>
+                        </a>
+                    </li>
+                @endif
+                @if (canAccess(3))
+                    <li class="nav-item">
+                        <a href="{{ route('create-client') }}"
+                            class="nav-link {{ request()->routeIs('create-client') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-person-plus"></i>
+                            <p>Add Client</p>
                         </a>
                     </li>
                 @endif
@@ -226,11 +224,6 @@
                         </a>
                     </li>
                 @endif
-
-                {{-- @php
-                $employee = \App\Models\SuperAddUser::where('employee_id', session('employee_id'))->first();
-                @endphp --}}
-
                 @if (in_array($userType, ['users', 'admin', 'hr', 'manager']))
                     <li class="nav-item">
                         <a href="{{ route('input-evaluation', ['employee_id' => session('employee_id')]) }}"
@@ -248,28 +241,6 @@
                             <i class="nav-icon bi bi-file-earmark-check text-white"></i>
                             <p>View Review Report</p>
                         </a>
-                    </li>
-                @endif
-
-                @if (in_array($userType, ['Super User', 'users', 'admin', 'manager', 'hr', 'client']))
-                    <li class="nav-item">
-                        <a href="{{ route('logout-users') }}" class="nav-link"
-                            onclick="event.preventDefault(); confirmLogout();">
-                            <img src="{{ asset('images/logout.png') }}" alt="logout icon">
-                            <p>Log Out</p>
-                        </a>
-
-                        <form id="logout-form" action="{{ route('logout-users') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-
-                        <script>
-                            function confirmLogout() {
-                                if (confirm("Are you sure you want to log out?")) {
-                                    document.getElementById('logout-form').submit();
-                                }
-                            }
-                        </script>
                     </li>
                 @endif
             </ul>
