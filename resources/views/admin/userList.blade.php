@@ -13,10 +13,10 @@
 
         <style>
             /* =====================================================
-                                                                                            EMPLOYEE MANAGEMENT — SCOPED DESIGN SYSTEM
-                                                                                            All rules are namespaced under .emp-page to avoid
-                                                                                            leaking into / colliding with global layout styles.
-                                                                                            ===================================================== */
+            EMPLOYEE MANAGEMENT — SCOPED DESIGN SYSTEM
+            All rules are namespaced under .emp-page to avoid
+            leaking into / colliding with global layout styles.
+            ===================================================== */
 
             .emp-page {
                 --emp-primary: #3b5bdb;
@@ -615,7 +615,7 @@
             .emp-page .emp-footer {
                 display: flex;
                 align-items: center;
-                justify-content: flex-end;
+                justify-content: space-between;
                 gap: 12px;
                 padding: 12px 16px;
                 border-top: 1px solid var(--emp-line);
@@ -633,38 +633,43 @@
                 font-weight: 650;
             }
 
-            .emp-page .emp-footer .pagination {
-                margin: 0;
+            .emp-page .emp-pagination {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                flex-wrap: wrap;
             }
 
-            .emp-page .emp-footer .page-link {
-                border: none;
+            .emp-page .emp-page-btn {
+                border: 0;
                 background: transparent;
                 color: var(--emp-ink-500);
                 border-radius: var(--emp-radius-sm);
-                margin: 0 2px;
                 font-size: .78rem;
                 padding: 5px 10px;
+                min-height: 30px;
+                cursor: pointer;
+                transition: background .15s ease, color .15s ease;
             }
 
-            .emp-page .emp-footer .page-item.active .page-link {
+            .emp-page .emp-page-btn:hover {
+                background: var(--emp-canvas);
+                color: var(--emp-ink-900);
+            }
+
+            .emp-page .emp-page-btn.is-active {
                 background: var(--emp-primary);
                 color: #fff;
             }
 
-            .emp-page .emp-footer .page-item.disabled .page-link {
+            .emp-page .emp-page-btn:disabled {
                 color: var(--emp-ink-300);
+                cursor: not-allowed;
+            }
+
+            .emp-page .emp-page-btn:disabled:hover {
                 background: transparent;
-            }
-
-            .emp-page .emp-footer .page-link:hover {
-                background: var(--emp-canvas);
-            }
-
-            /* No rows visible from search */
-
-            .emp-page tr.emp-row-hidden {
-                display: none !important;
+                color: var(--emp-ink-300);
             }
 
             /* ---------- Responsive ---------- */
@@ -980,16 +985,29 @@ $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
                                     </td>
                                 </tr>
                             @endforelse
+
+                            @if (count($users) > 0)
+                                <tr id="employeeNoResults" hidden>
+                                    <td colspan="7">
+                                        <div class="emp-empty">
+                                            <i class="bi bi-search"></i>
+                                            <h5>No matching employees</h5>
+                                            <p>Try a different search term.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
 
                 {{-- ============== FOOTER / PAGINATION ============== --}}
-                <div class="emp-footer">
-                    <div>
-                        {{ $users->links('pagination::bootstrap-5') }}
+                @if (count($users) > 0)
+                    <div class="emp-footer">
+                        <div class="emp-footer-count" id="employeePaginationInfo"></div>
+                        <div class="emp-pagination" id="employeePagination"></div>
                     </div>
-                </div>
+                @endif
             </div>
 
         </div>
@@ -1004,19 +1022,130 @@ $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
             document.addEventListener('DOMContentLoaded', function() {
                 // $('.toggle-btn').bootstrapToggle();
 
-                // ---- Instant client-side search ----
+                // ---- Instant client-side search + pagination ----
                 const searchInput = document.getElementById('employeeSearch');
-                const rows = document.querySelectorAll('#employeeTable tbody tr.emp-row');
+                const rows = Array.from(document.querySelectorAll('#employeeTable tbody tr.emp-row'));
+                const noResultsRow = document.getElementById('employeeNoResults');
+                const paginationInfo = document.getElementById('employeePaginationInfo');
+                const pagination = document.getElementById('employeePagination');
+                const pageSize = 10;
+                let currentPage = 1;
+                let filteredRows = rows;
 
-                if (searchInput) {
-                    searchInput.addEventListener('keyup', function() {
-                        const keyword = this.value.toLowerCase().trim();
+                function getVisiblePages(totalPages) {
+                    const pages = [];
+                    const maxButtons = 5;
+                    let start = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+                    let end = Math.min(totalPages, start + maxButtons - 1);
 
-                        rows.forEach(function(row) {
-                            const text = row.innerText.toLowerCase();
-                            row.classList.toggle('emp-row-hidden', !text.includes(keyword));
-                        });
+                    if (end - start + 1 < maxButtons) {
+                        start = Math.max(1, end - maxButtons + 1);
+                    }
+
+                    for (let page = start; page <= end; page++) {
+                        pages.push(page);
+                    }
+
+                    return pages;
+                }
+
+                function buildPageButton(label, page, options = {}) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.textContent = label;
+                    button.className = 'emp-page-btn';
+
+                    if (options.active) {
+                        button.classList.add('is-active');
+                    }
+
+                    if (options.disabled) {
+                        button.disabled = true;
+                    }
+
+                    button.addEventListener('click', function() {
+                        currentPage = page;
+                        renderTable();
                     });
+
+                    return button;
+                }
+
+                function renderPagination(totalPages) {
+                    if (!pagination) {
+                        return;
+                    }
+
+                    pagination.innerHTML = '';
+
+                    if (totalPages <= 1) {
+                        return;
+                    }
+
+                    pagination.appendChild(buildPageButton('Previous', Math.max(1, currentPage - 1), {
+                        disabled: currentPage === 1
+                    }));
+
+                    getVisiblePages(totalPages).forEach(function(page) {
+                        pagination.appendChild(buildPageButton(String(page), page, {
+                            active: page === currentPage
+                        }));
+                    });
+
+                    pagination.appendChild(buildPageButton('Next', Math.min(totalPages, currentPage + 1), {
+                        disabled: currentPage === totalPages
+                    }));
+                }
+
+                function renderTable() {
+                    const totalRows = filteredRows.length;
+                    const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+
+                    if (currentPage > totalPages) {
+                        currentPage = totalPages;
+                    }
+
+                    const startIndex = (currentPage - 1) * pageSize;
+                    const endIndex = startIndex + pageSize;
+
+                    rows.forEach(function(row) {
+                        row.hidden = true;
+                    });
+
+                    filteredRows.slice(startIndex, endIndex).forEach(function(row) {
+                        row.hidden = false;
+                    });
+
+                    if (noResultsRow) {
+                        noResultsRow.hidden = totalRows !== 0;
+                    }
+
+                    if (paginationInfo) {
+                        const from = totalRows === 0 ? 0 : startIndex + 1;
+                        const to = Math.min(endIndex, totalRows);
+                        paginationInfo.innerHTML = `Showing <strong>${from}</strong> to <strong>${to}</strong> of <strong>${totalRows}</strong> employees`;
+                    }
+
+                    renderPagination(totalPages);
+                }
+
+                function filterRows() {
+                    const keyword = (searchInput?.value || '').toLowerCase().trim();
+
+                    filteredRows = rows.filter(function(row) {
+                        return row.innerText.toLowerCase().includes(keyword);
+                    });
+
+                    currentPage = 1;
+                    renderTable();
+                }
+
+                if (searchInput && rows.length > 0) {
+                    searchInput.addEventListener('keyup', filterRows);
+                }
+
+                if (rows.length > 0) {
+                    renderTable();
                 }
 
                 // ---- Copy-to-clipboard (table icons + dropdown menu items) ----

@@ -1394,7 +1394,9 @@ class SuperAdminController extends Controller
     public function viewClints(Request $request)
     {
 
-        $allClients = AllClient::paginate(10);
+        $allClients = AllClient::query() ->orderBy('created_at', 'desc')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.clientManagement', compact('allClients'));
     }

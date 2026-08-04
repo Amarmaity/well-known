@@ -71,7 +71,7 @@
                         </a>
                     </li>
                 @endif
-                @if (canAccess(3))
+                {{-- @if (canAccess(3))
                     <li class="nav-item">
                         <a href="{{ route('create-client') }}"
                             class="nav-link {{ request()->routeIs('create-client') ? 'active' : '' }}">
@@ -79,7 +79,7 @@
                             <p>Add Client</p>
                         </a>
                     </li>
-                @endif
+                @endif --}}
                 @if (canAccess(5))
                     <li class="nav-item">
                         <a href="{{ route('client-list') }}"
