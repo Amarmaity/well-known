@@ -5,231 +5,399 @@
 @section('page-title', 'Appraisal Section')
 
 @section('content')
-
-<head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-</head>
-<style>
-.top {
 
-    display: flex;
-    width: 100%;
-    flex-direction: column;
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="{{ asset('css/pending-appraisal-management.css') }}?v={{ filemtime(public_path('css/pending-appraisal-management.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/pending-appraisal-extra.css') }}?v={{ filemtime(public_path('css/pending-appraisal-extra.css')) }}" rel="stylesheet">
+    @endpush
 
-}
+    <div class="emp-page pending-appraisal-page">
+        <div class="emp-shell">
+            <div class="emp-header">
+                <div class="emp-header-text">
+                    <h1>Pending Appraisal</h1>
+                    <p>Review employees still waiting for appraisal completion.</p>
+                </div>
 
-.dataTables_filter {
-    display: none;
-}
-</style>
-<div class="client">
-    <h1 class="client__heading">Pending Appraisal</h1>
-    <div class="client___item">
-        <input type="search" id="employee_search" name="search" class="form-control client__search" placeholder="Search"
-            aria-label="Search">
-        <button class="client__btn" type="submit">
-            <img src="{{ asset('images/search.png') }}" alt="Search">
-        </button>
-    </div>
-</div>
-    <div class="container table-container pending-appraisal-table">
-        <div class="table-responsive table-wrapper">
-            <table id="pending-apprasial" class="table table-bordered table-hover main-table table-view">
-                <thead>
-                    <tr>
-                        <th>Employee Name</th>
-                        <th>Employee Id</th>
-                        <th>Designation</th>
-                        <th>Email</th>
-                        <th>Joining Date</th>
-                        <th>Financial Year</th>
-                        <th>Probation Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($users as $user)
-                    <tr>
-                        <td>{{$user->fname}} {{$user->lname}}</td>
-                        <td>{{$user->employee_id}}</td>
-                        <td>{{$user->designation}}</td>
-                        <td>{{$user->email}}</td>
-                        <td>{{$user->dob}}</td>
-                        <td>{{$user->financial_year}}</td>
-                        <td>{{$user->probation_date ?? 'Not Set'}}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                <div class="emp-header-actions">
+                    <div class="emp-search">
+                        <input type="text" id="employee_search" name="search" placeholder="Search employee, email, ID..."
+                            aria-label="Search">
+                        <i class="bi bi-search"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="emp-card">
+                <div class="emp-table-scroll">
+                    <table id="pending-apprasial" class="emp-table">
+                        <thead>
+                            <tr>
+                                <th style="width:260px;">Employee</th>
+                                <th>Employee ID</th>
+                                <th>Designation</th>
+                                <th>Contact</th>
+                                <th>Joining Date</th>
+                                <th>Financial Year</th>
+                                <th>Probation Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingAppraisalBody">
+                            @forelse ($users as $user)
+                                @php
+                                    $fullName = trim(($user->fname ?? '') . ' ' . ($user->lname ?? ''));
+                                    $initials = strtoupper(
+                                        substr($user->fname ?? '', 0, 1) . substr($user->lname ?? '', 0, 1),
+                                    );
+
+                                    if ($initials == '') {
+                                        $initials = 'U';
+                                    }
+
+                                    $avatarPalette = [
+                                        '#6c8bf5',
+                                        '#5cb896',
+                                        '#e0995f',
+                                        '#c97fd1',
+                                        '#5fb0c9',
+                                        '#e08a8a',
+                                        '#8f8ff0',
+                                        '#7bbf6a',
+                                    ];
+                                    $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
+                                @endphp
+
+                                <tr class="emp-row">
+                                    <td>
+                                        <div class="emp-person">
+                                            <div class="emp-avatar" style="background:{{ $avatarColor }};">
+                                                {{ $initials }}
+                                            </div>
+                                            <div>
+                                                <div class="emp-person-name">{{ $fullName }}</div>
+                                                <div class="emp-person-meta">{{ $user->designation }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="pending-muted">{{ $user->employee_id }}</span></td>
+                                    <td><span class="emp-designation">{{ $user->designation }}</span></td>
+                                    <td>
+                                        <div class="emp-copy-row">
+                                            <i class="bi bi-envelope emp-inline-icon"></i>
+                                            <span class="emp-copy-text" title="{{ $user->email }}">{{ $user->email }}</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="pending-date">{{ $user->dob }}</span></td>
+                                    <td><span class="pending-muted">{{ $user->financial_year }}</span></td>
+                                    <td><span class="pending-date">{{ $user->probation_date ?? 'Not Set' }}</span></td>
+                                </tr>
+                            @empty
+                                <tr id="pendingAppraisalEmpty">
+                                    <td colspan="7">
+                                        <div class="pending-message">
+                                            <i class="bi bi-list-check"></i>
+                                            <h5>No pending appraisals</h5>
+                                            <p>There are currently no employees waiting for appraisal.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+
+                            @if (count($users) > 0)
+                                <tr id="pendingAppraisalNoResults" hidden>
+                                    <td colspan="7">
+                                        <div class="pending-message">
+                                            <i class="bi bi-search"></i>
+                                            <h5>No matching pending appraisals</h5>
+                                            <p>Try a different search term.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (count($users) > 0)
+                    <div class="emp-footer" id="pendingAppraisalFooter">
+                        <div class="emp-footer-count" id="pendingAppraisalPaginationInfo"></div>
+                        <div class="emp-pagination" id="pendingAppraisalPagination"></div>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
-    // $(document).ready(function () {
-    //     // Initialize the DataTable
-    //     let table = $('#pending-apprasial').DataTable({
-    //         dom: '<"top"lfr>t<"bottom"ip><"clear">',
-    //         paging: true,
-    //         searching: true,
-    //         ordering: true,
-    //         info: true,
-    //        "lengthChange": false,
-    //         pageLength: 10,
-    //         initComplete: function () {
-    //             const filterDiv = $('div.dataTables_filter');
-    //             const label = filterDiv.find('label');
-    //             const input = label.find('input');
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const body = document.getElementById('pendingAppraisalBody');
+                const searchInput = document.getElementById('employee_search');
+                const noResultsRow = document.getElementById('pendingAppraisalNoResults');
+                const paginationInfo = document.getElementById('pendingAppraisalPaginationInfo');
+                const pagination = document.getElementById('pendingAppraisalPagination');
+                const pageSize = 10;
+                let rows = Array.from(document.querySelectorAll('#pendingAppraisalBody tr.emp-row'));
+                let filteredRows = rows;
+                let currentPage = 1;
 
-    //             // Add a new label element
-    //             const customLabel = $('<label style="margin-right: 10px; font-weight: bold;">Search User:</label>');
-    //             filterDiv.prepend(customLabel);
+                function escapeHtml(value) {
+                    return String(value ?? '').replace(/[&<>"']/g, function(char) {
+                        return {
+                            '&': '&amp;',
+                            '<': '&lt;',
+                            '>': '&gt;',
+                            '"': '&quot;',
+                            "'": '&#039;'
+                        }[char];
+                    });
+                }
 
-    //             label.after(input);
-    //             label.remove();
+                function getInitials(name) {
+                    return name
+                        .split(' ')
+                        .filter(Boolean)
+                        .slice(0, 2)
+                        .map((part) => part.charAt(0).toUpperCase())
+                        .join('') || 'U';
+                }
 
-    //             filterDiv.css({
-    //                 'display': 'flex',
-    //                 'align-items': 'center',
-    //                 'gap': '10px',
-    //                 'justify-content': 'flex-start',
-    //                 'margin-bottom': '10px'
-    //             });
+                function getAvatarColor(name) {
+                    const palette = [
+                        '#6c8bf5',
+                        '#5cb896',
+                        '#e0995f',
+                        '#c97fd1',
+                        '#5fb0c9',
+                        '#e08a8a',
+                        '#8f8ff0',
+                        '#7bbf6a',
+                    ];
+                    let hash = 0;
 
-    //             // Style the search input
-    //             input.attr('placeholder', 'Type to search...');
-    //             input.css({
-    //                 'padding': '6px',
-    //                 'border-radius': '4px',
-    //                 'border': '1px solid #ccc',
-    //                 'width': '200px'
-    //             });
-    //         }
+                    for (let i = 0; i < name.length; i++) {
+                        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+                    }
 
+                    return palette[Math.abs(hash) % palette.length];
+                }
 
-    //     });
+                function buildPendingRow(user) {
+                    const fullName = user.full_name || user[0] || `${user.fname || ''} ${user.lname || ''}`.trim() || 'N/A';
+                    const employeeId = user.employee_id || user[1] || '-';
+                    const designation = user.designation || user[2] || '-';
+                    const email = user.email || user[3] || '-';
+                    const joiningDate = user.dob || user[4] || '-';
+                    const financialYear = user.financial_year || user[5] || '-';
+                    const probationDate = user.probation_date || user[6] || 'Not Set';
+                    const tr = document.createElement('tr');
 
-    //     // Function to fetch and update the DataTable with filtered data by financial year
-    //     function fetchAppraisalPendingList(yearRange) {
-    //         if (!yearRange) {
-    //             console.log("No year selected");
-    //             return;
-    //         }
-    //         $.ajax({
-    //             url: '/filter-by-financial-year',
-    //             method: 'POST',
-    //             data: { financial_year: yearRange, _token: '{{ csrf_token() }}' },
-    //             success: function (response) {
-    //                 // Clear existing rows in the DataTable
-    //                 table.clear();
+                    tr.className = 'emp-row';
+                    tr.innerHTML = `
+                        <td>
+                            <div class="emp-person">
+                                <div class="emp-avatar" style="background:${getAvatarColor(fullName)};">
+                                    ${escapeHtml(getInitials(fullName))}
+                                </div>
+                                <div>
+                                    <div class="emp-person-name">${escapeHtml(fullName)}</div>
+                                    <div class="emp-person-meta">${escapeHtml(designation)}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="pending-muted">${escapeHtml(employeeId)}</span></td>
+                        <td><span class="emp-designation">${escapeHtml(designation)}</span></td>
+                        <td>
+                            <div class="emp-copy-row">
+                                <i class="bi bi-envelope emp-inline-icon"></i>
+                                <span class="emp-copy-text" title="${escapeHtml(email)}">${escapeHtml(email)}</span>
+                            </div>
+                        </td>
+                        <td><span class="pending-date">${escapeHtml(joiningDate)}</span></td>
+                        <td><span class="pending-muted">${escapeHtml(financialYear)}</span></td>
+                        <td><span class="pending-date">${escapeHtml(probationDate)}</span></td>
+                    `;
 
-    //                 // Check if the response contains any data
-    //                 if (response.data && response.data.length === 0) {
-    //                     alert("No users found for the selected financial year.");
-    //                     return;
-    //                 }
+                    return tr;
+                }
 
-    //                 // Add the new filtered data to the DataTable
-    //                 response.data.forEach(function (user) {
-    //                     table.row.add([
-    //                         user[0], // Full Name
-    //                         user[1], // User ID
-    //                         user[2], // Designation
-    //                         user[3], // Email
-    //                         user[4], // Joining Date (DOB)
-    //                         user[5], // Financial Year
-    //                         user[6]  // Probation Date
-    //                     ]).draw();
-    //                 });
-    //             },
-    //             error: function (xhr, status, error) {
-    //                 console.error("Error fetching data: " + error);
-    //             }
-    //         });
-    //     }
+                function getVisiblePages(totalPages) {
+                    const pages = [];
+                    const maxButtons = 5;
+                    let start = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+                    let end = Math.min(totalPages, start + maxButtons - 1);
 
-    //     // When the financial year dropdown value changes, call the fetch function
-    //     $(document).on('change', '#financialYearFilter', function () {
-    //         const yearRange = $(this).val();
-    //         fetchAppraisalPendingList(yearRange); // Fetch the filtered list based on the selected year
-    //     });
+                    if (end - start + 1 < maxButtons) {
+                        start = Math.max(1, end - maxButtons + 1);
+                    }
 
-    //     // Optional: You can trigger the AJAX call immediately when the page loads if a default year is selected
-    //     const defaultYear = $('#financialYearFilter').val();
-    //     if (defaultYear) {
-    //         fetchAppraisalPendingList(defaultYear);
-    //     }
-    // });
+                    for (let page = start; page <= end; page++) {
+                        pages.push(page);
+                    }
 
-    $(document).ready(function() {
-        // Initialize the DataTable
-        let table = $('#pending-apprasial').DataTable({
-            dom: '<"top"lfr>t<"bottom"ip><"clear">',
-            paging: true,
-            searching: true, // required for custom search to work
-            ordering: true,
-            info: true,
-            lengthChange: false,
-            pageLength: 10,
-            language: {
-                emptyTable: "No employee data available"
-            }
-        });
+                    return pages;
+                }
 
-        // ✅ Custom search input logic
-        $('#employee_search').on('keyup', function() {
-            table.search(this.value).draw();
-        });
+                function buildPageButton(label, page, options = {}) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.textContent = label;
+                    button.className = 'emp-page-btn';
 
-        // ✅ AJAX filtering logic
-        function fetchAppraisalPendingList(yearRange) {
-            if (!yearRange) return;
+                    if (options.active) {
+                        button.classList.add('is-active');
+                    }
 
-            $.ajax({
-                url: '/filter-by-financial-year',
-                method: 'POST',
-                data: {
-                    financial_year: yearRange,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    table.clear();
-                    if (!response.data || response.data.length === 0) {
-                        alert("No users found for the selected financial year.");
+                    if (options.disabled) {
+                        button.disabled = true;
+                    }
+
+                    button.addEventListener('click', function() {
+                        currentPage = page;
+                        renderTable();
+                    });
+
+                    return button;
+                }
+
+                function renderPagination(totalPages) {
+                    if (!pagination) {
                         return;
                     }
 
-                    response.data.forEach(function(user) {
-                        table.row.add([
-                            user[0],
-                            user[1],
-                            user[2],
-                            user[3],
-                            user[4],
-                            user[5],
-                            user[6]
-                        ]);
+                    pagination.innerHTML = '';
+
+                    if (totalPages <= 1) {
+                        return;
+                    }
+
+                    pagination.appendChild(buildPageButton('Previous', Math.max(1, currentPage - 1), {
+                        disabled: currentPage === 1
+                    }));
+
+                    getVisiblePages(totalPages).forEach(function(page) {
+                        pagination.appendChild(buildPageButton(String(page), page, {
+                            active: page === currentPage
+                        }));
                     });
 
-                    table.draw();
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching data: " + error);
+                    pagination.appendChild(buildPageButton('Next', Math.min(totalPages, currentPage + 1), {
+                        disabled: currentPage === totalPages
+                    }));
+                }
+
+                function renderTable() {
+                    const totalRows = filteredRows.length;
+                    const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+
+                    if (currentPage > totalPages) {
+                        currentPage = totalPages;
+                    }
+
+                    const startIndex = (currentPage - 1) * pageSize;
+                    const endIndex = startIndex + pageSize;
+
+                    rows.forEach(function(row) {
+                        row.hidden = true;
+                    });
+
+                    filteredRows.slice(startIndex, endIndex).forEach(function(row) {
+                        row.hidden = false;
+                    });
+
+                    if (noResultsRow) {
+                        noResultsRow.hidden = totalRows !== 0;
+                    }
+
+                    if (paginationInfo) {
+                        const from = totalRows === 0 ? 0 : startIndex + 1;
+                        const to = Math.min(endIndex, totalRows);
+                        paginationInfo.innerHTML = `Showing <strong>${from}</strong> to <strong>${to}</strong> of <strong>${totalRows}</strong> employees`;
+                    }
+
+                    renderPagination(totalPages);
+                }
+
+                function filterRows() {
+                    const keyword = (searchInput?.value || '').toLowerCase().trim();
+
+                    filteredRows = rows.filter(function(row) {
+                        return row.innerText.toLowerCase().includes(keyword);
+                    });
+
+                    currentPage = 1;
+                    renderTable();
+                }
+
+                function resetRows(newRows) {
+                    body.querySelectorAll('tr.emp-row').forEach(function(row) {
+                        row.remove();
+                    });
+
+                    newRows.forEach(function(row) {
+                        if (noResultsRow) {
+                            body.insertBefore(row, noResultsRow);
+                        } else {
+                            body.appendChild(row);
+                        }
+                    });
+
+                    rows = newRows;
+                    filteredRows = rows;
+                    currentPage = 1;
+                    renderTable();
+                }
+
+                function fetchAppraisalPendingList(yearRange) {
+                    if (!yearRange) {
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/filter-by-financial-year',
+                        method: 'POST',
+                        data: {
+                            financial_year: yearRange,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            const data = response.data || [];
+
+                            if (!data.length) {
+                                alert("No users found for the selected financial year.");
+                                resetRows([]);
+                                return;
+                            }
+
+                            resetRows(data.map(buildPendingRow));
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error fetching data: " + error);
+                        }
+                    });
+                }
+
+                if (searchInput && rows.length > 0) {
+                    searchInput.addEventListener('keyup', filterRows);
+                }
+
+                if (rows.length > 0) {
+                    renderTable();
+                }
+
+                $(document).on('change', '#financialYearFilter', function() {
+                    fetchAppraisalPendingList($(this).val());
+                });
+
+                const defaultYear = $('#financialYearFilter').val();
+                if (defaultYear) {
+                    fetchAppraisalPendingList(defaultYear);
                 }
             });
-        }
-
-        $(document).on('change', '#financialYearFilter', function() {
-            fetchAppraisalPendingList($(this).val());
-        });
-
-        const defaultYear = $('#financialYearFilter').val();
-        if (defaultYear) {
-            fetchAppraisalPendingList(defaultYear);
-        }
-    });
-    </script>
-
-    @endsection
+        </script>
+    @endpush
+@endsection

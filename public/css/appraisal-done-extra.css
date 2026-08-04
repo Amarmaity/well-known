@@ -1,0 +1,39 @@
+.appraisal-done-page table.emp-table {
+    min-width: 1400px;
+}
+
+.appraisal-done-page .appraisal-done-message {
+    padding: 58px 20px;
+    text-align: center;
+}
+
+.appraisal-done-page .appraisal-done-message i {
+    color: var(--emp-line);
+    font-size: 38px;
+}
+
+.appraisal-done-page .appraisal-done-message h5 {
+    color: var(--emp-ink-900);
+    font-size: .95rem;
+    font-weight: 650;
+    margin: 14px 0 4px;
+}
+
+.appraisal-done-page .appraisal-done-message p {
+    color: var(--emp-ink-500);
+    font-size: .8125rem;
+    margin: 0;
+}
+
+.appraisal-done-page .appraisal-done-score,
+.appraisal-done-page .appraisal-done-money {
+    color: var(--emp-ink-900);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.appraisal-done-page .appraisal-done-muted {
+    color: var(--emp-ink-500);
+    font-size: .78rem;
+    white-space: nowrap;
+}

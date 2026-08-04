@@ -11,14 +11,32 @@
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="{{ asset('css/review-management.css') }}?v={{ filemtime(public_path('css/review-management.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/review-details.css') }}?v={{ filemtime(public_path('css/review-details.css')) }}" rel="stylesheet">
+    @endpush
 
-    {{-- <div class="container"> --}}
-    <h2 class="heading">Employee Review Details:{{ $emp_id }}</h2>
-    <div class="mt-3">
-        <button onclick="history.back()" class="btn btn-secondary">Back</button>
-    </div>
-    <div class="col-12 col-sm-6 search-container forms-block">
-        <label for="financialYear" class="forms-label">Financial Years:</label>
+    <div class="emp-page review-detail-page">
+        <div class="emp-shell">
+            <div class="review-detail-header">
+                <div class="emp-header-text">
+                    <h1>Employee Review Details</h1>
+                    <p>Employee ID: <strong>{{ $emp_id }}</strong></p>
+                </div>
+
+                <button type="button" onclick="history.back()" class="review-back-btn">
+                    <i class="bi bi-arrow-left"></i>
+                    Back
+                </button>
+            </div>
+
+            <div class="review-control-card">
+                <div>
+                    <div class="review-control-label">Financial Year</div>
+                    <div class="review-control-help">Choose a year to load available review scores and reports.</div>
+                </div>
+
         @php
             $currentMonth = date('m');
             $currentYear = date('Y');
@@ -38,61 +56,71 @@
             ];
         @endphp
 
-        <select id="employeeDetails" class="form-select client__select" name="financial_year" required>
-            <option value="" selected disabled>Financial Year</option>
+                <select id="employeeDetails" class="form-select review-year-select" name="financial_year" required>
+                    <option value="" selected disabled>Financial Year</option>
 
-            @foreach ($years as $year)
-                @php
-                    $end = $year + 1;
-                    $fy = $year . '-' . $end;
-                @endphp
+                    @foreach ($years as $year)
+                        @php
+                            $end = $year + 1;
+                            $fy = $year . '-' . $end;
+                        @endphp
 
-                <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
-                    {{ $fy }}
-                </option>
-            @endforeach
+                        <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
+                            {{ $fy }}
+                        </option>
+                    @endforeach
 
-        </select>
-
-    </div>
-
-    <div id="reviewTableContainer" style="display: none; margin-top: 20px;">
-        <div class="table-container">
-            <div class="table-wrapper">
-                <table class="table table-bordered table-hover main-table table-view">
-                    <thead>
-                        <tr>
-                            <!-- Initially hidden -->
-                            <th id="evaluationColumnHeader">Total Evaluation Score</th>
-                            <th id="adminColumnHeader">Admin Review Score</th>
-                            <th id="hrColumnHeader">HR Review Score</th>
-                            <th id="managerColumnHeader">Manager Review Score</th>
-                            <th id="clientColumnHeader" style="display: none;">Client Review Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="totalScoreCell"></td>
-                            <td id="adminScoreCell"></td>
-                            <td id="hrScoreCell"></td>
-                            <td id="managerScoreCell"></td>
-                            <td id="clientScoreCell" style="display: none;"></td> <!-- Initially hidden -->
-                        </tr>
-                    </tbody>
-                </table>
+                </select>
             </div>
+
+            <div id="reviewTableContainer" class="review-score-card" style="display: none;">
+                <div class="review-section-title">
+                    <i class="bi bi-bar-chart-line"></i>
+                    Review Score Summary
+                </div>
+
+                <div class="review-score-grid">
+                    <div class="review-score-item">
+                        <div class="review-score-label" id="evaluationColumnHeader">Total Evaluation Score</div>
+                        <div class="review-score-value" id="totalScoreCell"></div>
+                    </div>
+
+                    <div class="review-score-item" id="adminScoreBlock">
+                        <div class="review-score-label" id="adminColumnHeader">Admin Review Score</div>
+                        <div class="review-score-value" id="adminScoreCell"></div>
+                    </div>
+
+                    <div class="review-score-item" id="hrScoreBlock">
+                        <div class="review-score-label" id="hrColumnHeader">HR Review Score</div>
+                        <div class="review-score-value" id="hrScoreCell"></div>
+                    </div>
+
+                    <div class="review-score-item" id="managerScoreBlock">
+                        <div class="review-score-label" id="managerColumnHeader">Manager Review Score</div>
+                        <div class="review-score-value" id="managerScoreCell"></div>
+                    </div>
+
+                    <div class="review-score-item" id="clientScoreBlock" style="display: none;">
+                        <div class="review-score-label" id="clientColumnHeader">Client Review Score</div>
+                        <div class="review-score-value" id="clientScoreCell"></div>
+                    </div>
+                </div>
+            </div>
+
+
+    <div class="review-actions-card" id="evaluationReportActions">
+        <div class="review-section-title">
+            <i class="bi bi-folder2-open"></i>
+            Available Reports
         </div>
-    </div>
-
-
-    <div class="evaluation-report" id="evaluationReportActions">
         @php $userRoles = $user_roles ?? []; @endphp
         @if (optional($users['evaluation'])->emp_id)
-            <button class="btn secondary-btn" onclick="loadReport('evaluation', '{{ $users['evaluation']->emp_id }}')">
+            <button class="review-action-btn" onclick="loadReport('evaluation', '{{ $users['evaluation']->emp_id }}')">
+                <i class="bi bi-clipboard-check"></i>
                 Evaluation Details
             </button>
         @else
-            <p>Evaluation review is pending.</p>
+            <p class="review-pending">Evaluation review is pending.</p>
         @endif
 
 
@@ -103,63 +131,58 @@
         {{-- Admin --}}
         @if (in_array('admin', $userRoles))
             @if (optional($users['adminReview'])->emp_id)
-                <button class="btn secondary-btn"
+                <button class="review-action-btn"
                     onclick="loadReport('adminReport', '{{ $users['adminReview']->emp_id }}')">
+                    <i class="bi bi-person-check"></i>
                     View Admin Review
                 </button>
             @else
-                <p>Admin review is pending.</p>
+                <p class="review-pending">Admin review is pending.</p>
             @endif
         @endif
 
         {{-- HR --}}
         @if (in_array('hr', $userRoles))
             @if (optional($users['hrReview'])->emp_id)
-                <button class="btn secondary-btn" onclick="loadReport('hrReport', '{{ $users['hrReview']->emp_id }}')">
+                <button class="review-action-btn" onclick="loadReport('hrReport', '{{ $users['hrReview']->emp_id }}')">
+                    <i class="bi bi-people"></i>
                     View HR Review
                 </button>
             @else
-                <p>HR review is pending.</p>
+                <p class="review-pending">HR review is pending.</p>
             @endif
         @endif
 
         {{-- Manager --}}
         @if (in_array('manager', $userRoles))
             @if (optional($users['managerReview'])->emp_id)
-                <button class="btn secondary-btn"
+                <button class="review-action-btn"
                     onclick="loadReport('managerReport', '{{ $users['managerReview']->emp_id }}')">
+                    <i class="bi bi-diagram-3"></i>
                     View Manager Review
                 </button>
             @else
-                <p>Manager review is pending.</p>
+                <p class="review-pending">Manager review is pending.</p>
             @endif
         @endif
 
         @if ($clientReviews->isNotEmpty())
             @foreach ($clientReviews as $clientReview)
-                <button class="btn secondary-btn"
+                <button class="review-action-btn"
                     onclick="loadClientReport('{{ $clientReview->emp_id }}', '{{ $clientReview->client_id }}')">
+                    <i class="bi bi-briefcase"></i>
                     View Client Review for: {{ $clientReview->client_name ?? 'Unknown Client' }}
                 </button>
             @endforeach
         @elseif(in_array('client', $user_roles))
-            <p>Your client review is pending.</p>
+            <p class="review-pending">Your client review is pending.</p>
         @endif
-
-        <!--@if ($clientReviews->isNotEmpty())-->
-        <!--    @foreach ($clientReviews as $clientReview)-->
-        <!--        <button class="btn secondary-btn"-->
-        <!--            onclick="loadClientReport('{{ $clientReview->emp_id }}', '{{ $clientReview->client_id }}')">-->
-        <!--            View Client Review for: {{ $clientReview->client_name ?? 'Unknown Client' }}-->
-        <!--        </button>-->
-        <!--    @endforeach-->
-        <!--@elseif(in_array('client', $user_roles))-->
-        <!--    <p>Your client review is pending.</p>-->
-        <!--@endif-->
 
     </div>
 
-    <div id="reportDetails" class="" style=""></div>
+            <div id="reportDetails" class="review-loaded-report"></div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -235,49 +258,49 @@
             let html = "";
 
             if (data.hasAnyData === false) {
-                actions.innerHTML = "<p>" + escapeHtml(data.message || "No data found for this financial year.") + "</p>";
+                actions.innerHTML = "<div class=\"review-section-title\"><i class=\"bi bi-folder2-open\"></i>Available Reports</div><p class=\"review-pending\">" + escapeHtml(data.message || "No data found for this financial year.") + "</p>";
                 return;
             }
 
             if (data.reports?.evaluation) {
-                html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('evaluation', '{{ $emp_id }}')\">Evaluation Details</button>";
+                html += "<button class=\"review-action-btn\" onclick=\"loadReport('evaluation', '{{ $emp_id }}')\"><i class=\"bi bi-clipboard-check\"></i>Evaluation Details</button>";
             } else if (data.pendingReviews?.evaluation) {
-                html += "<p>Evaluation review is pending.</p>";
+                html += "<p class=\"review-pending\">Evaluation review is pending.</p>";
             }
 
             if (userRoles.includes("admin")) {
                 if (data.reports?.adminReview) {
-                    html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('adminReport', '{{ $emp_id }}')\">View Admin Review</button>";
+                    html += "<button class=\"review-action-btn\" onclick=\"loadReport('adminReport', '{{ $emp_id }}')\"><i class=\"bi bi-person-check\"></i>View Admin Review</button>";
                 } else if (data.pendingReviews?.adminReview) {
-                    html += "<p>Admin review is pending.</p>";
+                    html += "<p class=\"review-pending\">Admin review is pending.</p>";
                 }
             }
 
             if (userRoles.includes("hr")) {
                 if (data.reports?.hrReview) {
-                    html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('hrReport', '{{ $emp_id }}')\">View HR Review</button>";
+                    html += "<button class=\"review-action-btn\" onclick=\"loadReport('hrReport', '{{ $emp_id }}')\"><i class=\"bi bi-people\"></i>View HR Review</button>";
                 } else if (data.pendingReviews?.hrReview) {
-                    html += "<p>HR review is pending.</p>";
+                    html += "<p class=\"review-pending\">HR review is pending.</p>";
                 }
             }
 
             if (userRoles.includes("manager")) {
                 if (data.reports?.managerReview) {
-                    html += "<button class=\"btn secondary-btn\" onclick=\"loadReport('managerReport', '{{ $emp_id }}')\">View Manager Review</button>";
+                    html += "<button class=\"review-action-btn\" onclick=\"loadReport('managerReport', '{{ $emp_id }}')\"><i class=\"bi bi-diagram-3\"></i>View Manager Review</button>";
                 } else if (data.pendingReviews?.managerReview) {
-                    html += "<p>Manager review is pending.</p>";
+                    html += "<p class=\"review-pending\">Manager review is pending.</p>";
                 }
             }
 
             if (Array.isArray(data.clientReviews) && data.clientReviews.length > 0) {
                 data.clientReviews.forEach(function(clientReview) {
-                    html += "<button class=\"btn secondary-btn\" onclick=\"loadClientReport('" + clientReview.emp_id + "', '" + clientReview.client_id + "')\">View Client Review for: " + escapeHtml(clientReview.client_name || "Unknown Client") + "</button>";
+                    html += "<button class=\"review-action-btn\" onclick=\"loadClientReport('" + clientReview.emp_id + "', '" + clientReview.client_id + "')\"><i class=\"bi bi-briefcase\"></i>View Client Review for: " + escapeHtml(clientReview.client_name || "Unknown Client") + "</button>";
                 });
             } else if (data.pendingReviews?.clientReview) {
-                html += "<p>Your client review is pending.</p>";
+                html += "<p class=\"review-pending\">Your client review is pending.</p>";
             }
 
-            actions.innerHTML = html || "<p>No data found for this financial year.</p>";
+            actions.innerHTML = "<div class=\"review-section-title\"><i class=\"bi bi-folder2-open\"></i>Available Reports</div>" + (html || "<p class=\"review-pending\">No data found for this financial year.</p>");
         }
 
         // Get employee ID and optionally default year from Blade variables
@@ -358,35 +381,33 @@
 
                         // Hide all optional columns first
                         ["admin", "hr", "manager", "client"].forEach(role => {
-                            document.getElementById(role + "ColumnHeader").style.display = 'none';
-                            document.getElementById(role + "ScoreCell").style.display = 'none';
+                            const block = document.getElementById(role + "ScoreBlock");
+                            if (block) {
+                                block.style.display = 'none';
+                            }
                         });
 
                         // Admin
                         if (userRoles.includes('admin') && data.adminTotal !== null) {
-                            document.getElementById("adminColumnHeader").style.display = '';
-                            document.getElementById("adminScoreCell").style.display = '';
+                            document.getElementById("adminScoreBlock").style.display = '';
                             setCell("adminScoreCell", data.adminTotal, 45);
                         }
 
                         // HR
                         if (userRoles.includes('hr') && data.hrTotal !== null) {
-                            document.getElementById("hrColumnHeader").style.display = '';
-                            document.getElementById("hrScoreCell").style.display = '';
+                            document.getElementById("hrScoreBlock").style.display = '';
                             setCell("hrScoreCell", data.hrTotal, 30);
                         }
 
                         // Manager
                         if (userRoles.includes('manager') && data.managerTotal !== null) {
-                            document.getElementById("managerColumnHeader").style.display = '';
-                            document.getElementById("managerScoreCell").style.display = '';
+                            document.getElementById("managerScoreBlock").style.display = '';
                             setCell("managerScoreCell", data.managerTotal, 35);
                         }
 
                         // Client
                         if (userRoles.includes('client') && data.showClient) {
-                            document.getElementById("clientColumnHeader").style.display = '';
-                            document.getElementById("clientScoreCell").style.display = '';
+                            document.getElementById("clientScoreBlock").style.display = '';
                             setCell("clientScoreCell", data.clientTotal, 100);
                         }
                     })

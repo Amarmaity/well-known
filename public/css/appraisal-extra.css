@@ -1,0 +1,97 @@
+.appraisal-page .appraisal-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.appraisal-page .appraisal-year-select {
+    width: 210px;
+    height: 38px;
+    border-radius: var(--emp-radius-md);
+    border: 1px solid var(--emp-line);
+    color: var(--emp-ink-700);
+    font-size: .8375rem;
+}
+
+.appraisal-page .appraisal-message {
+    padding: 52px 20px;
+    text-align: center;
+}
+
+.appraisal-page .appraisal-message i {
+    color: var(--emp-line);
+    font-size: 38px;
+}
+
+.appraisal-page .appraisal-message h5 {
+    color: var(--emp-ink-900);
+    font-size: .95rem;
+    font-weight: 650;
+    margin: 14px 0 4px;
+}
+
+.appraisal-page .appraisal-message p {
+    color: var(--emp-ink-500);
+    font-size: .8125rem;
+    margin: 0;
+}
+
+.appraisal-page .appraisal-score {
+    color: var(--emp-ink-900);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.appraisal-page .appraisal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 650;
+    padding: 4px 9px;
+    white-space: nowrap;
+}
+
+.appraisal-page .appraisal-pill::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.appraisal-page .appraisal-pill.is-excellent {
+    background: var(--emp-success-soft);
+    color: var(--emp-success);
+}
+
+.appraisal-page .appraisal-pill.is-excellent::before {
+    background: var(--emp-success);
+}
+
+.appraisal-page .appraisal-pill.is-good {
+    background: var(--emp-primary-soft);
+    color: var(--emp-primary);
+}
+
+.appraisal-page .appraisal-pill.is-good::before {
+    background: var(--emp-primary);
+}
+
+.appraisal-page .appraisal-pill.is-needs {
+    background: var(--emp-danger-soft);
+    color: var(--emp-danger);
+}
+
+.appraisal-page .appraisal-pill.is-needs::before {
+    background: var(--emp-danger);
+}
+
+@media (max-width: 991px) {
+    .appraisal-page .appraisal-control,
+    .appraisal-page .appraisal-year-select,
+    .appraisal-page .emp-search {
+        width: 100%;
+    }
+}

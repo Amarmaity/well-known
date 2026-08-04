@@ -1,0 +1,33 @@
+.pending-appraisal-page table.emp-table {
+    min-width: 1080px;
+}
+
+.pending-appraisal-page .pending-message {
+    padding: 58px 20px;
+    text-align: center;
+}
+
+.pending-appraisal-page .pending-message i {
+    color: var(--emp-line);
+    font-size: 38px;
+}
+
+.pending-appraisal-page .pending-message h5 {
+    color: var(--emp-ink-900);
+    font-size: .95rem;
+    font-weight: 650;
+    margin: 14px 0 4px;
+}
+
+.pending-appraisal-page .pending-message p {
+    color: var(--emp-ink-500);
+    font-size: .8125rem;
+    margin: 0;
+}
+
+.pending-appraisal-page .pending-date,
+.pending-appraisal-page .pending-muted {
+    color: var(--emp-ink-500);
+    font-size: .78rem;
+    white-space: nowrap;
+}
