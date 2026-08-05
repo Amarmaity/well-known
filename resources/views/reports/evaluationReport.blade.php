@@ -292,7 +292,13 @@
                 </tr>
                 <tr>
                     <td>Total score in evaluation: </td>
-                    <td >{{$user->total_scoring_system}}</td>
+                    @php
+                        $totalScore = (float) $user->total_scoring_system;
+                        $totalScoreDisplay = floor($totalScore) === $totalScore
+                            ? number_format($totalScore, 0)
+                            : rtrim(rtrim(number_format($totalScore, 2, '.', ''), '0'), '.');
+                    @endphp
+                    <td>{{ $totalScoreDisplay }}</td>
                 </tr>
                 {{-- @if(in_array(Session::get('user_type'), ['admin', 'hr', 'manage', 'Super User', 'users']))
                     <tr>

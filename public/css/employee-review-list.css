@@ -1,0 +1,218 @@
+.review-list-page {
+    --review-list-primary: #274167;
+    --review-list-primary-soft: #eef3f9;
+    --review-list-ink: #151923;
+    --review-list-muted: #667085;
+    --review-list-line: #e6e8ee;
+    --review-list-line-soft: #f0f2f5;
+    --review-list-bg: #f7f8fb;
+    max-width: 1180px;
+    margin: 0 auto 24px;
+}
+
+.review-list-page .review-list-header {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(280px, 360px);
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    background: #fff;
+    border: 1px solid var(--review-list-line);
+    border-radius: 12px;
+}
+
+.review-list-page .review-list-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.review-list-page .review-list-title i {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: var(--review-list-primary-soft);
+    color: var(--review-list-primary);
+    font-size: 16px;
+}
+
+.review-list-page .client__heading {
+    margin: 0;
+    color: var(--review-list-ink);
+    font-size: 1.18rem;
+    font-weight: 650;
+    line-height: 1.2;
+}
+
+.review-list-page .review-list-subtitle {
+    margin: 2px 0 0;
+    color: var(--review-list-muted);
+    font-size: .78rem;
+}
+
+.review-list-page .client___item {
+    width: 100%;
+    max-width: none;
+    min-height: 38px;
+    max-height: none;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0 12px;
+    background: #fff;
+    border: 1px solid var(--review-list-line) !important;
+    border-radius: 9px !important;
+    box-shadow: none !important;
+}
+
+.review-list-page .client___item:focus-within {
+    border-color: var(--review-list-primary) !important;
+    box-shadow: 0 0 0 3px rgba(39, 65, 103, .12) !important;
+}
+
+.review-list-page .client__search {
+    flex: 1;
+    width: 100%;
+    min-height: 38px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--review-list-ink);
+    font-size: .84rem;
+}
+
+.review-list-page .client__btn {
+    width: 18px;
+    min-width: 18px !important;
+    height: 38px;
+    min-height: 38px !important;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+.review-list-page .client__btn img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    opacity: .55;
+}
+
+.review-list-page .table-container {
+    width: 100%;
+    max-width: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--review-list-line);
+    border-radius: 12px;
+}
+
+.review-list-page .table-wrapper {
+    overflow-x: auto;
+}
+
+.review-list-page table.main-table {
+    width: 100% !important;
+    min-width: 860px;
+    margin: 0 !important;
+    border: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.review-list-page table.main-table th {
+    padding: 11px 14px !important;
+    background: var(--review-list-bg);
+    color: var(--review-list-muted) !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--review-list-line) !important;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.review-list-page table.main-table td {
+    padding: 12px 14px !important;
+    color: var(--review-list-ink) !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--review-list-line-soft) !important;
+    font-size: .84rem;
+    vertical-align: middle;
+}
+
+.review-list-page table.main-table tbody tr:hover td {
+    background: #fbfcfe;
+}
+
+.review-list-page table.main-table tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+.review-list-page .financial-year {
+    width: 170px;
+    min-height: 36px;
+    margin: 0 0 8px;
+    border: 1px solid var(--review-list-line) !important;
+    border-radius: 9px !important;
+    color: var(--review-list-ink);
+    font-size: .82rem;
+}
+
+.review-list-page .btn-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.review-list-page .btn.btn-primary {
+    min-width: auto;
+    min-height: 34px;
+    padding: 8px 12px !important;
+    border-radius: 9px !important;
+    background: var(--review-list-primary) !important;
+    border: 1px solid var(--review-list-primary) !important;
+    color: #fff !important;
+    font-size: .8rem !important;
+    font-weight: 650 !important;
+    line-height: 1.1;
+}
+
+.review-list-page .btn.btn-primary:hover {
+    background: var(--bs-teal) !important;
+    border-color: var(--bs-teal) !important;
+}
+
+.review-list-page .dataTables_wrapper .dataTables_filter,
+.review-list-page .dataTables_wrapper .dataTables_length,
+.review-list-page .dataTables_wrapper .dataTables_info,
+.review-list-page .dataTables_wrapper .dataTables_paginate {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .review-list-page .review-list-header {
+        grid-template-columns: 1fr;
+    }
+
+    .review-list-page .financial-year {
+        width: 100%;
+    }
+}

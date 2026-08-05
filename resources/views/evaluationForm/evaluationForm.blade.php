@@ -3,6 +3,10 @@
 @section('title', 'Evaluation')
 
 @section('content')
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="{{ asset('css/self-review.css') }}?v={{ filemtime(public_path('css/self-review.css')) }}" rel="stylesheet">
+    @endpush
 
 
     <!DOCTYPE html>
@@ -17,39 +21,19 @@
         <!-- CSRF Token for AJAX -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
-    <style>
-        button.info-button {
-            width: 30px !important;
-            border-radius: 50% !important;
-            padding: 0 !important;
-            min-height: 30px !important;
-            min-width: 30px !important;
-            height: 30px !important;
-        }
-
-        .is-invalid {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
-        }
-
-        select.is-invalid,
-        .form-select.is-invalid {
-            background-position: right calc(0.375em + 0.1875rem) center !important;
-            padding-right: 2.25rem !important;
-        }
-    </style>
-
-
     <body>
-
         <!-- Centered Headings -->
-
-
         <form action="{{ route('insert-data-evaluation') }}" method="post" id="evaluationForm"
-            class="evaluation__form form-block form-block--updated" enctype="multipart/form-data">
+            class="evaluation__form form-block form-block--updated self-review-page" enctype="multipart/form-data">
             @csrf
-            <div class="client">
-                <h1 class="client__heading">Evaluation</h1>
+            <div class="client self-review-header">
+                <div class="self-review-title">
+                    <i class="bi bi-clipboard2-check"></i>
+                    <div>
+                        <h1 class="client__heading">Review Yourself</h1>
+                        <p class="self-review-subtitle">Employee ID: {{ $employee_id ?? '' }}</p>
+                    </div>
+                </div>
                 @php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -784,17 +768,11 @@
         </form>
 
         </div>
-
-
         <!-- Loader Overlay -->
         <div id="loaderOverlay"
             style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; text-align:center; color:white; font-size:24px; padding-top:20%;">
             <span>Please wait...</span>
         </div>
-
-
-
-
         {{-- otp modal --}}
         <div id="otpModal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -816,9 +794,7 @@
             </div>
         </div>
     </body>
-
 @endsection
-
 </html>
 
 
@@ -1089,7 +1065,7 @@
 
 
         document.getElementById("total-score").innerText = total;
-        document.getElementById("total_scoring_system").value = average.toFixed(2);
+        document.getElementById("total_scoring_system").value = average;
     }
 
     // Update all subtotal ratings then calculate average

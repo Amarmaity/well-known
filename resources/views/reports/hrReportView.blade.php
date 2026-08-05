@@ -5,6 +5,10 @@
 @section('page-title', 'Hr-Review-Section')
 
 @section('content')
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="{{ asset('css/employee-review-list.css') }}?v={{ filemtime(public_path('css/employee-review-list.css')) }}" rel="stylesheet">
+    @endpush
 
     <!DOCTYPE html>
     <html lang="en">
@@ -74,8 +78,15 @@
 
     <body>
 
-        <div class="client clients-block">
-            <h1 class="client__heading">Employee Review Table</h1>
+        <div class="review-list-page">
+        <div class="client clients-block review-list-header">
+            <div class="review-list-title">
+                <i class="bi bi-card-checklist"></i>
+                <div>
+                    <h1 class="client__heading">View Employee Reviews</h1>
+                    <p class="review-list-subtitle">Search employees and open review details by financial year.</p>
+                </div>
+            </div>
             <div class="client___item">
                 <input type="search" id="employee_search" name="search" class="form-control client__search"
                     placeholder="search employee" aria-label="Search">
@@ -156,6 +167,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
         </div>
     </body>
     <script>

@@ -7,39 +7,26 @@
 @section('page-title', 'Hr-Review Dashboard')
 
 @section('content')
-    <style>
-        /* Loading animation */
-        .loading {
-            color: blue;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: center;
-        }
-         .hidden-label {
-            margin-top: 15px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            margin-left: 28px;
-        }
-
-        .review-exists-error {
-            color: #dc3545;
-            display: none;
-            font-weight: 600;
-            margin: 15px 0 0;
-            text-align: center;
-        }
-    </style>
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="{{ asset('css/hr-review-section.css') }}?v={{ filemtime(public_path('css/hr-review-section.css')) }}" rel="stylesheet">
+    @endpush
 
     <head>
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
 
     <body>
-        <form action="{{route('hr.review.submit')}}" method="post" id="HrReviewSubmit" class="form-inline client__form">
+        <form action="{{route('hr.review.submit')}}" method="post" id="HrReviewSubmit" class="form-inline client__form hr-review-page">
             @csrf
-            <div class="client">
-                <h1 class="client__heading">HR REVIEW</h1>
+            <div class="client hr-review-header">
+                <div class="hr-review-title">
+                    <i class="bi bi-people"></i>
+                    <div>
+                        <h1 class="client__heading">HR Review</h1>
+                        <p class="hr-review-subtitle">Search employee and complete HR policy review.</p>
+                    </div>
+                </div>
                 @php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -85,7 +72,7 @@
             </div>
 
             <!-- Search Results Table -->
-            <div class="container mt-5 employee-table" id="employeeDetails" style="display:none; border: 1px solid #ddd;">
+            <div class="container employee-table" id="employeeDetails" style="display:none;">
                 <div class="table-wrapper">
                     <!-- <div id="selectLabel" class="hidden-label" style="margin-bottom: 10px; font-weight: bold; display: none;">
                         Select the employee:

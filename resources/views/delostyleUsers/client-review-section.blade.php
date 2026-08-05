@@ -6,40 +6,12 @@
 
 @section('page-title', 'Client Dashboard')
 
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ asset('css/client-review-section.css') }}?v={{ filemtime(public_path('css/client-review-section.css')) }}" rel="stylesheet">
+@endpush
+
 @section('content')
-
-    <style>
-        .loading {
-            color: blue;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .hidden-label {
-            margin-top: 15px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            margin-left: 28px;
-        }
-
-        .is-invalid {
-            border: 2px solid red !important;
-        }
-
-        .text-danger {
-            color: red;
-            font-size: 13px;
-        }
-
-        .review-exists-error {
-            color: #dc3545;
-            display: none;
-            font-weight: 600;
-            margin: 15px 0 0;
-            text-align: center;
-        }
-    </style>
 
     <head>
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -47,10 +19,16 @@
 
     <body>
         <form action="{{ route('client.review.submit') }}" method="post" id="ClientReviewSubmit"
-            class="form-inline client__form">
+            class="form-inline client__form client-review-page">
             @csrf
-            <div class="client">
-                <h1 class="client__heading">CLIENT REVIEW</h1>
+            <div class="client client-review-header">
+                <div class="client-review-title">
+                    <i class="bi bi-briefcase"></i>
+                    <div>
+                        <h1 class="client__heading">Client Review</h1>
+                        <p class="client-review-subtitle">Search employee and complete client project feedback.</p>
+                    </div>
+                </div>
                 @php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -97,7 +75,7 @@
             </div>
 
 
-            <div class="employee-table" id="employeeDetails" style="display:none; border: 1px solid #ddd;">
+            <div class="employee-table" id="employeeDetails" style="display:none;">
                 <div class="table-wrapper">
                     <table class="table table-bordered table-hover client-table">
                         <thead>

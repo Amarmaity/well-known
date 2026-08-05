@@ -10,50 +10,27 @@
 @section('page-title', 'Manager Dashboard')
 <!-- Page Title in Breadcrumb -->
 
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ asset('css/manager-review-section.css') }}?v={{ filemtime(public_path('css/manager-review-section.css')) }}" rel="stylesheet">
+@endpush
+
 @section('content')
-
-
-    <style>
-        /* Loading animation */
-        .loading {
-            color: blue;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .hidden-label {
-            margin-top: 15px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            margin-left: 28px;
-        }
-        .is-invalid {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
-        }
-        select.is-invalid, .form-select.is-invalid {
-            background-position: right calc(0.375em + 0.1875rem) center !important;
-            padding-right: 2.25rem !important;
-        }
-        .review-exists-error {
-            color: #dc3545;
-            display: none;
-            font-weight: 600;
-            margin: 15px 0 0;
-            text-align: center;
-        }
-    </style>
-
     <head>
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
 
     <body>
-        <form action="{{route('manager.review.submit')}}" method="post" id="ManagerReviewSubmit" novalidate>
+        <form action="{{route('manager.review.submit')}}" method="post" id="ManagerReviewSubmit" class="manager-review-page" novalidate>
             @csrf
-            <div class="client">
-                <h1 class="client__heading">MANAGER REVIEW</h1>
+            <div class="client manager-review-header">
+                <div class="manager-review-title">
+                    <i class="bi bi-diagram-3"></i>
+                    <div>
+                        <h1 class="client__heading">Manager Review</h1>
+                        <p class="manager-review-subtitle">Search employee and complete manager review.</p>
+                    </div>
+                </div>
                 @php
                     $currentMonth = date('m');
                     $currentYear = date('Y');
@@ -116,7 +93,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
             </div>
 
             <!-- Form Section -->
@@ -300,7 +276,7 @@
                         </ol>
                     </div>
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
                         <button type="reset" class="btn btn-outlined d-none">Clear</button>
                     </div>
                 </div>
@@ -622,6 +598,4 @@
         });
     </script>
 @endsection
-
-
 

@@ -258,7 +258,7 @@ function calculateAverageRating() {
     const average = (part1 / 100) * 100;
 
     document.getElementById("total-score").innerText = total;
-    document.getElementById("total_scoring_system").value = average.toFixed(2);
+    document.getElementById("total_scoring_system").value = average;
 }
 
 // Update all subtotal ratings then calculate average

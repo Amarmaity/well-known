@@ -92,7 +92,7 @@ $(function () {
         $('#ir_total_rating').val(interpersonal);
         $('#leadership_rating').val(leadership);
         $('#total-score').text(total);
-        $('#total_scoring_system').val(total.toFixed(2));
+        $('#total_scoring_system').val(total);
     }
 
     function applyMandatoryFields() {
