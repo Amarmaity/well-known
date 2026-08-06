@@ -150,31 +150,6 @@
                 transition: background .15s ease, transform .05s ease;
             }
 
-            /* .emp-page .emp-add-btn {
-                        height: 38px;
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 6px;
-                        padding: 0 15px;
-                        border-radius: var(--emp-radius-md);
-
-                        background: var(--emp-primary);
-                        color: #fff;
-                        border: 1px solid var(--emp-primary);
-
-                        font-size: .8125rem;
-                        font-weight: 600;
-
-                        text-decoration: none;
-                        white-space: nowrap;
-                        cursor: pointer;
-
-                        transition: background .15s ease,
-                            transform .05s ease,
-                            box-shadow .15s ease;
-                    } */
-
             .emp-page .emp-add-btn:hover {
                 background: var(--bs-teal);
                 color: #fff;
@@ -187,76 +162,6 @@
             .emp-page .emp-add-btn i {
                 font-size: 14px;
             }
-
-            /* ---------- KPI strip ---------- */
-
-            /* .emp-page .emp-kpis {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 12px;
-                margin-bottom: 14px;
-            }
-
-            .emp-page .emp-kpi {
-                background: var(--emp-surface);
-                border: 1px solid var(--emp-line);
-                border-radius: var(--emp-radius-lg);
-                padding: 14px 16px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
-            }
-
-            .emp-page .emp-kpi:hover {
-                border-color: #d6d9e6;
-                box-shadow: 0 4px 14px rgba(20, 22, 31, .05);
-                transform: translateY(-1px);
-            }
-
-            .emp-page .emp-kpi-icon {
-                width: 34px;
-                height: 34px;
-                min-width: 34px;
-                border-radius: var(--emp-radius-md);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 15px;
-                background: var(--emp-primary-soft);
-                color: var(--emp-primary);
-            }
-
-            .emp-page .emp-kpi:nth-child(2) .emp-kpi-icon {
-                background: var(--emp-success-soft);
-                color: var(--emp-success);
-            }
-
-            .emp-page .emp-kpi:nth-child(3) .emp-kpi-icon {
-                background: #fff6e5;
-                color: #a3690a;
-            }
-
-            .emp-page .emp-kpi:nth-child(4) .emp-kpi-icon {
-                background: #f1eefd;
-                color: #6a3cd0;
-            }
-
-            .emp-page .emp-kpi-value {
-                font-size: 1.15rem;
-                font-weight: 700;
-                color: var(--emp-ink-900);
-                line-height: 1.1;
-            }
-
-            .emp-page .emp-kpi-label {
-                font-size: .72rem;
-                color: var(--emp-ink-500);
-                margin-top: 1px;
-                white-space: nowrap;
-            } */
-
-            /* ---------- Table card ---------- */
 
             .emp-page .emp-card {
                 background: var(--emp-surface);

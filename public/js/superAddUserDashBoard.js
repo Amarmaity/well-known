@@ -37,7 +37,374 @@ $(function () {
         return value && value > todayString();
     }
 
+    function getErrorTarget($field) {
+        if ($field.hasClass('select2-hidden-accessible')) {
+            return $field.next('.select2-container');
+        }
+
+        return $field;
+    }
+
+    function getErrorPlacement($field) {
+        if ($field.closest('#review-section').length) {
+            const $lastRole = $field.closest('#review-section').find('.form-check:visible').last();
+            return $lastRole.length ? $lastRole : $field.closest('#review-section');
+        }
+
+        return getErrorTarget($field);
+    }
+
+    function clearFieldError($field) {
+        if (!$field || !$field.length) {
+            return;
+        }
+
+        const $target = getErrorTarget($field);
+        const $placement = getErrorPlacement($field);
+        $field.removeClass('is-invalid');
+        $target.removeClass('is-invalid');
+        $target.next('.field-error').remove();
+        $placement.next('.field-error').remove();
+    }
+
+    function setFieldError(selector, message) {
+        const $field = $(selector).first();
+
+        if (!$field.length) {
+            return null;
+        }
+
+        clearFieldError($field);
+
+        const $target = getErrorTarget($field);
+        const $placement = getErrorPlacement($field);
+        $field.addClass('is-invalid');
+        $target.addClass('is-invalid');
+        $('<div class="field-error"></div>').text(message).insertAfter($placement);
+
+        return $field;
+    }
+
+    function clearAllFieldErrors() {
+        $userForm.find('.is-invalid').removeClass('is-invalid');
+        $userForm.find('.field-error').remove();
+    }
+
+    function focusFirstError($field) {
+        if (!$field || !$field.length) {
+            return;
+        }
+
+        const $target = getErrorTarget($field);
+        const targetOffset = $target.offset();
+
+        if (targetOffset) {
+            $('html, body').animate({
+                scrollTop: Math.max(targetOffset.top - 120, 0)
+            }, 250);
+        }
+
+        if ($field.hasClass('select2-hidden-accessible')) {
+            $field.select2('open');
+            return;
+        }
+
+        $field.trigger('focus');
+    }
+
+    function isFieldActive($field) {
+        if (!$field.length || $field.prop('disabled')) {
+            return false;
+        }
+
+        if ($field.hasClass('select2-hidden-accessible')) {
+            return $field.next('.select2-container').is(':visible');
+        }
+
+        return $field.is(':visible');
+    }
+
+    function validateRequiredField(selector, message) {
+        const $field = $(selector).first();
+
+        if (!isFieldActive($field)) {
+            clearFieldError($field);
+            return null;
+        }
+
+        const value = Array.isArray($field.val()) ? $field.val().filter(Boolean) : $.trim($field.val() || '');
+
+        if (!value || value.length === 0) {
+            return setFieldError(selector, message);
+        }
+
+        clearFieldError($field);
+        return null;
+    }
+
+    const requiredFields = [
+        ['#fname', 'First name is required.'],
+        ['#lname', 'Last name is required.'],
+        ['#dob', 'Joining date is required.'],
+        ['#gender', 'Please select gender.'],
+        ['#mobno', 'Mobile number is required.'],
+        ['#email', 'Email is required.'],
+        ['#designation_dropdown', 'Please select designation.'],
+        ['#division_dropdown', 'Please select division.'],
+        ['#manager_name', 'Please select manager.'],
+        ['#manager_name_input', 'Manager name is required.'],
+        ['#hr_id', 'Please select HR.'],
+        ['#employee_id', 'Employee ID is required.'],
+        ['#client_id', 'Please select client.'],
+        ['#admin_id', 'Please select admin.'],
+        ['#probation_date', 'Probation date is required.'],
+        ['#salary', 'Salary is required.'],
+        ['#salary_grade', 'Salary grade is required.'],
+        ['#password', 'Password is required.'],
+        ['#cnf-password', 'Confirm password is required.']
+    ];
+
+    function getRequiredFieldConfig($field) {
+        return requiredFields.find(function (field) {
+            const $requiredField = $(field[0]).first();
+            return $requiredField.length && $requiredField[0] === $field[0];
+        });
+    }
+
+    function getFieldValue($field) {
+        const value = $field.val();
+        return Array.isArray(value) ? value.filter(Boolean) : $.trim(value || '');
+    }
+
+    function validateFieldInstant($field) {
+        if (!$field || !$field.length || !isFieldActive($field)) {
+            clearFieldError($field);
+            return true;
+        }
+
+        const fieldId = $field.attr('id');
+        const value = getFieldValue($field);
+        const requiredConfig = getRequiredFieldConfig($field);
+
+        if (requiredConfig && (!value || value.length === 0)) {
+            setFieldError('#' + fieldId, requiredConfig[1]);
+            return false;
+        }
+
+        if (fieldId === 'fname' && value && !/^[A-Za-z ]+$/.test(value)) {
+            setFieldError('#fname', 'First name should contain letters only.');
+            return false;
+        }
+
+        if (fieldId === 'lname' && value && !/^[A-Za-z ]+$/.test(value)) {
+            setFieldError('#lname', 'Last name should contain letters only.');
+            return false;
+        }
+
+        if (fieldId === 'mobno' && value && !/^[6-9]\d{9}$/.test(value)) {
+            setFieldError('#mobno', 'Enter a valid Indian mobile number.');
+            return false;
+        }
+
+        if (fieldId === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            setFieldError('#email', 'Enter a valid email address.');
+            return false;
+        }
+
+        if (fieldId === 'dob' && isFutureDate(value)) {
+            setFieldError('#dob', 'Joining date cannot be a future date.');
+            return false;
+        }
+
+        if (fieldId === 'probation_date') {
+            const joiningDateVal = $('#dob').val();
+            if (joiningDateVal && value && new Date(value) < new Date(joiningDateVal)) {
+                setFieldError('#probation_date', 'Probation date cannot be earlier than the joining date.');
+                return false;
+            }
+        }
+
+        if ((fieldId === 'password' || fieldId === 'cnf-password') && $('#password').val() && $('#cnf-password').val()) {
+            if ($('#password').val() !== $('#cnf-password').val()) {
+                setFieldError('#cnf-password', 'Passwords do not match.');
+                return false;
+            }
+
+            clearFieldError($('#cnf-password'));
+        }
+
+        clearFieldError($field);
+        return true;
+    }
+
+    function validateUserForm() {
+        clearAllFieldErrors();
+
+        const errors = [];
+        requiredFields.forEach(function (field) {
+            const errorField = validateRequiredField(field[0], field[1]);
+            if (errorField) {
+                errors.push(errorField);
+            }
+        });
+        const firstName = $.trim($('#fname').val() || '');
+        if (firstName && !/^[A-Za-z ]+$/.test(firstName)) {
+            errors.push(setFieldError('#fname', 'First name should contain letters only.'));
+        }
+
+        const lastName = $.trim($('#lname').val() || '');
+        if (lastName && !/^[A-Za-z ]+$/.test(lastName)) {
+            errors.push(setFieldError('#lname', 'Last name should contain letters only.'));
+        }
+
+        const mobile = $.trim($('#mobno').val() || '');
+        if (mobile && !/^[6-9]\d{9}$/.test(mobile)) {
+            errors.push(setFieldError('#mobno', 'Enter a valid Indian mobile number.'));
+        }
+
+        const email = $.trim($('#email').val() || '');
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errors.push(setFieldError('#email', 'Enter a valid email address.'));
+        }
+
+        const joiningDateVal = $('#dob').val();
+        if (isFutureDate(joiningDateVal)) {
+            errors.push(setFieldError('#dob', 'Joining date cannot be a future date.'));
+        }
+
+        const probationDateVal = $('#probation_date').val();
+        if (joiningDateVal && probationDateVal) {
+            const joiningDate = new Date(joiningDateVal);
+            const probationDate = new Date(probationDateVal);
+
+            if (probationDate < joiningDate) {
+                errors.push(setFieldError('#probation_date', 'Probation date cannot be earlier than the joining date.'));
+            }
+        }
+
+        const password = $('#password').val();
+        const confirmPassword = $('#cnf-password').val();
+        if (password && confirmPassword && password !== confirmPassword) {
+            errors.push(setFieldError('#cnf-password', 'Passwords do not match.'));
+        }
+
+        if (errors.length) {
+            focusFirstError(errors[0]);
+            return false;
+        }
+
+        return true;
+    }
+
+    function hasFieldValue(selector) {
+        const $field = $(selector).first();
+
+        if (!isFieldActive($field)) {
+            return true;
+        }
+
+        const value = Array.isArray($field.val()) ? $field.val().filter(Boolean) : $.trim($field.val() || '');
+        return !!value && value.length !== 0;
+    }
+
+    function canSubmitForm() {
+        const hasRequiredValues = requiredFields.every(function (field) {
+            return hasFieldValue(field[0]);
+        });
+
+        if (!hasRequiredValues) {
+            return false;
+        }
+
+        const firstName = $.trim($('#fname').val() || '');
+        const lastName = $.trim($('#lname').val() || '');
+        const mobile = $.trim($('#mobno').val() || '');
+        const email = $.trim($('#email').val() || '');
+        const joiningDateVal = $('#dob').val();
+        const probationDateVal = $('#probation_date').val();
+        const password = $('#password').val();
+        const confirmPassword = $('#cnf-password').val();
+
+        if (!/^[A-Za-z ]+$/.test(firstName) || !/^[A-Za-z ]+$/.test(lastName)) {
+            return false;
+        }
+
+        if (!/^[6-9]\d{9}$/.test(mobile)) {
+            return false;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return false;
+        }
+
+        if (isFutureDate(joiningDateVal)) {
+            return false;
+        }
+
+        if (joiningDateVal && probationDateVal && new Date(probationDateVal) < new Date(joiningDateVal)) {
+            return false;
+        }
+
+        return password === confirmPassword;
+    }
+
+    function updateSaveButtonState() {
+        $saveBtn.prop('disabled', !canSubmitForm());
+    }
+
+    function selectorForField(fieldName) {
+        const selectors = {
+            fname: '#fname',
+            lname: '#lname',
+            dob: '#dob',
+            gender: '#gender',
+            mobno: '#mobno',
+            email: '#email',
+            designation: '#designation_dropdown',
+            division: '#division_dropdown',
+            manager_id: '#manager_name',
+            manager_name: '#manager_name_input',
+            hr_id: '#hr_id',
+            employee_id: '#employee_id',
+            evaluation_purpose: '#evaluation_purpose',
+            client_id: '#client_id',
+            admin_id: '#admin_id',
+            user_type: '#user_type_hidden',
+            user_roles: '#review-section input[name="user_roles[]"]',
+            probation_date: '#probation_date',
+            salary: '#salary',
+            salary_grade: '#salary_grade',
+            password: '#password'
+        };
+
+        return selectors[fieldName] || selectors[fieldName.replace(/\.\d+$/, '')] || `[name="${fieldName}"]`;
+    }
+
+    function showServerFieldErrors(errors) {
+        clearAllFieldErrors();
+
+        let firstErrorField = null;
+
+        Object.keys(errors || {}).forEach(function (fieldName) {
+            const selector = selectorForField(fieldName);
+            const message = Array.isArray(errors[fieldName]) ? errors[fieldName][0] : errors[fieldName];
+            const $field = setFieldError(selector, message || 'This field is invalid.');
+
+            if (!firstErrorField && $field && $field.length) {
+                firstErrorField = $field;
+            }
+        });
+
+        focusFirstError(firstErrorField);
+    }
+
     $('#dob').attr('max', todayString());
+
+    if (!document.getElementById('add-user-validation-style')) {
+        $('head').append('<style id="add-user-validation-style">#userForm .field-error{display:block;width:100%;clear:both;margin-top:6px;margin-bottom:12px;color:#dc3545;font-size:13px;font-weight:500;line-height:1.4;}#userForm .field-error + .forms-label{margin-top:4px;}#userForm .is-invalid:not(.select2-container){border-color:#dc3545!important;}#userForm .select2-container.is-invalid .select2-selection{border-color:#dc3545!important;box-shadow:0 0 0 .2rem rgba(220,53,69,.12)!important;}#saveBtn:disabled{cursor:not-allowed;opacity:.65;}</style>');
+    }
+
+    updateSaveButtonState();
 
     function syncClientSelect() {
         const shouldShow = $clientCheckbox.is(':checked') && $clientCheckbox.closest('.form-check').is(':visible');
@@ -46,7 +413,10 @@ $(function () {
 
         if (!shouldShow) {
             $('#client_id').val(null).trigger('change');
+            clearFieldError($('#client_id'));
         }
+
+        updateSaveButtonState();
     }
 
     function syncDesignationUi() {
@@ -63,6 +433,7 @@ $(function () {
             $reviewSection.hide();
             $clientCheckbox.prop('checked', false);
             syncClientSelect();
+            updateSaveButtonState();
             return;
         }
 
@@ -134,9 +505,26 @@ $(function () {
         syncClientSelect();
     }
 
-    $designationDropdown.on('change', syncDesignationUi);
+    $designationDropdown.on('change', function () {
+        syncDesignationUi();
+        clearFieldError($(this));
+    });
     $clientCheckbox.on('change', syncClientSelect);
+    $userForm.on('input change select2:select select2:clear', 'input, select, textarea', function () {
+        validateFieldInstant($(this));
+
+        if (this.id === 'password') {
+            validateFieldInstant($('#cnf-password'));
+        }
+
+        if (this.id === 'dob') {
+            validateFieldInstant($('#probation_date'));
+        }
+
+        updateSaveButtonState();
+    });
     syncDesignationUi();
+    updateSaveButtonState();
 
     $('#employee_id').on('input', function () {
         let value = $(this).val().replace(/^DS/i, '');
@@ -191,6 +579,8 @@ $(function () {
         }
 
         $('#salary_grade').val(grade);
+        clearFieldError($('#salary_grade'));
+        updateSaveButtonState();
     });
 
     $('#client_id').select2({
@@ -301,7 +691,8 @@ $(function () {
         if (isFutureDate(joiningDate)) {
             $(this).val('');
             $('#probation_date').val('');
-            showToast('error', 'Validation error', 'Joining date cannot be a future date.');
+            setFieldError('#dob', 'Joining date cannot be a future date.');
+            focusFirstError($('#dob'));
             return;
         }
 
@@ -312,36 +703,14 @@ $(function () {
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         $('#probation_date').val(`${year}-${month}-${day}`);
+        updateSaveButtonState();
     });
 
     $userForm.on('submit', function (e) {
         e.preventDefault();
 
-        const password = $('#password').val();
-        const confirmPassword = $('#cnf-password').val();
-
-        if (password !== confirmPassword) {
-            showToast('error', 'Validation error', 'Passwords do not match.');
+        if (!validateUserForm()) {
             return;
-        }
-
-        const joiningDateVal = $('#dob').val();
-        const probationDateVal = $('input[name="probation_date"]').val();
-
-        if (isFutureDate(joiningDateVal)) {
-            showToast('error', 'Validation error', 'Joining date cannot be a future date.');
-            return;
-        }
-
-
-        if (joiningDateVal && probationDateVal) {
-            const joiningDate = new Date(joiningDateVal);
-            const probationDate = new Date(probationDateVal);
-
-            if (probationDate < joiningDate) {
-                showToast('error', 'Validation error', 'Probation date cannot be earlier than the joining date.');
-                return;
-            }
         }
 
         $saveBtn.prop('disabled', true).text('Saving...');
@@ -373,6 +742,7 @@ $(function () {
                         $userForm[0].reset();
                         $('#client_id, #manager_name, #admin_id, #hr_id').val(null).trigger('change');
                         syncDesignationUi();
+                        updateSaveButtonState();
                         window.location.reload();
                     });
                     return;
@@ -388,7 +758,8 @@ $(function () {
                 let message = 'Something went wrong. Please try again.';
 
                 if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
-                    message = Object.values(xhr.responseJSON.errors).flat().join('\n');
+                    showServerFieldErrors(xhr.responseJSON.errors);
+                    message = 'Please correct the highlighted fields.';
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
                     message = xhr.responseJSON.message;
                 }
