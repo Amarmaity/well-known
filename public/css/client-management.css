@@ -16,7 +16,13 @@
     --emp-radius-sm: 6px;
     --emp-radius-md: 10px;
     --emp-radius-lg: 14px;
-    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family:
+        "Inter",
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Roboto,
+        sans-serif;
     color: var(--emp-ink-700);
     -webkit-font-smoothing: antialiased;
 }
@@ -48,7 +54,7 @@
 }
 
 .emp-page .emp-header-text p {
-    font-size: .8125rem;
+    font-size: 0.8125rem;
     color: var(--emp-ink-500);
     margin: 2px 0 0;
 }
@@ -73,7 +79,7 @@
     font-size: 14px;
     color: var(--emp-ink-300);
     pointer-events: none;
-    transition: color .15s ease;
+    transition: color 0.15s ease;
 }
 
 .emp-page .emp-search input {
@@ -83,10 +89,13 @@
     border: 1px solid var(--emp-line);
     background: var(--emp-surface);
     padding: 0 14px 0 36px;
-    font-size: .8375rem;
+    font-size: 0.8375rem;
     color: var(--emp-ink-900);
     outline: none;
-    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
 }
 
 .emp-page .emp-search input::placeholder {
@@ -96,10 +105,10 @@
 .emp-page .emp-search input:focus {
     border-color: var(--emp-primary);
     background: var(--emp-surface);
-    box-shadow: 0 0 0 3px rgba(59, 91, 219, .12);
+    box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.12);
 }
 
-.emp-page .emp-search input:focus+i {
+.emp-page .emp-search input:focus + i {
     color: var(--emp-primary);
 }
 
@@ -110,14 +119,16 @@
     gap: 6px;
     padding: 0 15px;
     border-radius: var(--emp-radius-md);
-    background: #274167CF;
+    background: #274167cf;
     color: #fff;
-    border: 1px solid #274167CF;
-    font-size: .8125rem;
+    border: 1px solid #274167cf;
+    font-size: 0.8125rem;
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
-    transition: background .15s ease, transform .05s ease;
+    transition:
+        background 0.15s ease,
+        transform 0.05s ease;
 }
 
 .emp-page .emp-add-btn:hover {
@@ -169,8 +180,8 @@
     background: var(--emp-canvas);
     border-bottom: 1px solid var(--emp-line);
     text-transform: uppercase;
-    font-size: .68rem;
-    letter-spacing: .05em;
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
     font-weight: 700;
     color: var(--emp-ink-500);
     padding: 11px 16px;
@@ -186,13 +197,13 @@
     padding: 12px 16px;
     border-bottom: 1px solid var(--emp-line-soft);
     vertical-align: middle;
-    font-size: .8375rem;
+    font-size: 0.8375rem;
     color: var(--emp-ink-700);
 }
 
 .emp-page table.emp-table tbody tr.emp-row {
     height: 60px;
-    transition: background .12s ease;
+    transition: background 0.12s ease;
 }
 
 .emp-page table.emp-table tbody tr.emp-row:hover {
@@ -217,14 +228,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: .74rem;
+    font-size: 0.74rem;
     font-weight: 700;
     color: #fff;
-    letter-spacing: .02em;
+    letter-spacing: 0.02em;
 }
 
 .emp-page .emp-person-name {
-    font-size: .85rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--emp-ink-900);
     line-height: 1.25;
@@ -232,7 +243,7 @@
 }
 
 .emp-page .emp-person-meta {
-    font-size: .715rem;
+    font-size: 0.715rem;
     color: var(--emp-ink-500);
     margin-top: 1px;
     white-space: nowrap;
@@ -245,7 +256,11 @@
     white-space: nowrap;
 }
 
-.emp-page .emp-copy-row+.emp-copy-row {
+.emp-copy-row i::before {
+    color: grey;
+}
+
+.emp-page .emp-copy-row + .emp-copy-row {
     margin-top: 3px;
 }
 
@@ -256,7 +271,7 @@
 }
 
 .emp-page .emp-copy-text {
-    font-size: .78rem;
+    font-size: 0.78rem;
     color: var(--emp-ink-700);
     max-width: 190px;
     overflow: hidden;
@@ -264,7 +279,7 @@
 }
 
 .emp-page .emp-designation {
-    font-size: .825rem;
+    font-size: 0.825rem;
     font-weight: 550;
     color: var(--emp-ink-700);
     white-space: nowrap;
@@ -274,7 +289,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: .78rem;
+    font-size: 0.78rem;
     font-weight: 600;
 }
 
@@ -314,7 +329,7 @@
     color: var(--emp-ink-900);
     border-radius: 8px;
     cursor: pointer;
-    transition: .15s ease;
+    transition: 0.15s ease;
 }
 
 .emp-page .emp-action-btn:hover {
@@ -338,10 +353,10 @@
 .emp-page .emp-menu {
     border: 1px solid var(--emp-line);
     border-radius: var(--emp-radius-md);
-    box-shadow: 0 12px 28px rgba(20, 22, 31, .10);
+    box-shadow: 0 12px 28px rgba(20, 22, 31, 0.1);
     padding: 6px;
     min-width: 220px;
-    font-size: .8125rem;
+    font-size: 0.8125rem;
 }
 
 .emp-page .emp-menu .dropdown-item {
@@ -351,7 +366,7 @@
     align-items: center;
     gap: 9px;
     color: var(--emp-ink-700);
-    font-size: .8125rem;
+    font-size: 0.8125rem;
 }
 
 .emp-page .emp-menu .dropdown-item:hover {
@@ -371,9 +386,9 @@
 }
 
 .emp-page .emp-menu-label {
-    font-size: .68rem;
+    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: 0.04em;
     font-weight: 700;
     color: var(--emp-ink-300);
     padding: 6px 10px 4px;
@@ -387,7 +402,7 @@
 }
 
 .emp-page .emp-menu-toggle-row span {
-    font-size: .8125rem;
+    font-size: 0.8125rem;
     color: var(--emp-ink-700);
     font-weight: 500;
 }
@@ -403,14 +418,14 @@
 }
 
 .emp-page .emp-empty h5 {
-    font-size: .95rem;
+    font-size: 0.95rem;
     font-weight: 650;
     color: var(--emp-ink-900);
     margin: 14px 0 4px;
 }
 
 .emp-page .emp-empty p {
-    font-size: .8125rem;
+    font-size: 0.8125rem;
     color: var(--emp-ink-500);
     margin: 0;
 }
@@ -427,7 +442,7 @@
 }
 
 .emp-page .emp-footer-count {
-    font-size: .78rem;
+    font-size: 0.78rem;
     color: var(--emp-ink-500);
 }
 
@@ -448,11 +463,13 @@
     background: transparent;
     color: var(--emp-ink-500);
     border-radius: var(--emp-radius-sm);
-    font-size: .78rem;
+    font-size: 0.78rem;
     padding: 5px 10px;
     min-height: 30px;
     cursor: pointer;
-    transition: background .15s ease, color .15s ease;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
 }
 
 .emp-page .emp-page-btn:hover {

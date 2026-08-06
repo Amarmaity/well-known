@@ -65,7 +65,7 @@
                         <div class="col-md-6">
                             <label for="employee_id" class="forms-label">Employee ID</label>
                             <input type="text" name="employee_id" id="employee_id" class="form-control"
-                                value="{{ $user->employee_id }}" placeholder="e.g. DS00001" required>
+                                value="{{ $user->employee_id }}" placeholder="e.g. DS00001" required readonly>
                         </div>
 
                         <div class="col-md-6">
@@ -186,7 +186,8 @@
 
                         <div class="col-md-6">
                             <label for="user_type_dropdown" class="forms-label">User Type</label>
-                            <select class="form-control readonly-select" id="user_type_dropdown" name="user_type" required>
+                            <select class="form-control readonly-select" id="user_type_dropdown" name="user_type"
+                                required>
                                 <option value="" disabled {{ $user->user_type == null ? 'selected' : '' }}>Select
                                     User Type
                                 </option>
@@ -217,9 +218,11 @@
                         <div class="client-hide col-md-6">
                             <label for="salary_grade" class="forms-label">Salary Grade/Band</label>
                             <select class="form-control" id="salary_grade" name="salary_grade" required>
-                                <option value="" disabled {{ $user->salary_grade == null ? 'selected' : '' }}>Salary Grade</option>
+                                <option value="" disabled {{ $user->salary_grade == null ? 'selected' : '' }}>Salary
+                                    Grade</option>
                                 @foreach (['A', 'B', 'C', 'D', 'E', 'F'] as $grade)
-                                    <option value="{{ $grade }}" {{ $user->salary_grade == $grade ? 'selected' : '' }}>{{ $grade }}</option>
+                                    <option value="{{ $grade }}"
+                                        {{ $user->salary_grade == $grade ? 'selected' : '' }}>{{ $grade }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -407,7 +410,7 @@
                 icon: 'success',
                 title: 'Success!',
                 text: '{{ session('
-                                                success ') }}',
+                                                                success ') }}',
                 timer: 2500,
                 showConfirmButton: false
             });

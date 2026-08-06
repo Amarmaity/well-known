@@ -88,16 +88,30 @@
                                     </td>
 
                                     <td>
-                                        <div class="emp-copy-row">
-                                            <i class="bi bi-telephone emp-inline-icon"></i>
-                                            <span class="emp-copy-text">{{ $client->client_mobno }}</span>
-                                        </div>
-                                        <div class="emp-copy-row">
-                                            <i class="bi bi-envelope emp-inline-icon"></i>
-                                            <span class="emp-copy-text" title="{{ $client->client_email }}">
-                                                {{ $client->client_email }}
-                                            </span>
-                                        </div>
+                                        @php
+                                            $clientMobile = trim((string) ($client->client_mobno ?? ''));
+                                            $clientEmail = trim((string) ($client->client_email ?? ''));
+                                        @endphp
+
+                                        @if ($clientMobile !== '')
+                                            <div class="emp-copy-row">
+                                                <i class="bi bi-telephone emp-inline-icon"></i>
+                                                <span class="emp-copy-text">{{ $clientMobile }}</span>
+                                            </div>
+                                        @endif
+
+                                        @if ($clientEmail !== '')
+                                            <div class="emp-copy-row">
+                                                <i class="bi bi-envelope emp-inline-icon"></i>
+                                                <span class="emp-copy-text" title="{{ $clientEmail }}">
+                                                    {{ $clientEmail }}
+                                                </span>
+                                            </div>
+                                        @endif
+
+                                        @if ($clientMobile === '' && $clientEmail === '')
+                                            <span>—</span>
+                                        @endif
                                     </td>
 
                                     <td class="status-class" id="status-{{ $client->id }}">

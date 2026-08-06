@@ -11,7 +11,7 @@
     </div>
 
     @if (session('success'))
-        <div class="alert alert-success mt-3">{{ session('success') }}</div>
+        <div class="alert alert-success mt-3" data-auto-dismiss="success">{{ session('success') }}</div>
     @endif
 
     @if ($errors->any())
@@ -29,7 +29,7 @@
         <label for="block1" class="main-label">Edit Probation Employee: {{ $user->fname }} {{ $user->lname }}</label>
 
         <div class="content">
-            <form action="{{ route('update-probation-user', ['id' => $user->id]) }}" method="POST" class="forms-block">
+            <form action="{{ route('update-probation-user', ['id' => $user->id]) }}" method="POST" class="forms-block" id="editProbationUserForm" novalidate>
                 @csrf
                 @method('PUT')
 
@@ -96,51 +96,27 @@
 
                     <div class="col-md-6">
                         <label for="mobno" class="forms-label">Mobile Number</label>
-                        <input type="number" name="mobno" id="mobno" class="form-control" min="0"
+                        <input type="tel" name="mobno" id="mobno" class="form-control" maxlength="10"
                             value="{{ old('mobno', $user->mobno) }}" required>
                     </div>
 
                     <div class="col-md-6">
                         <label for="employee_status" class="forms-label">Employee Status</label>
-                        <select name="employee_status" id="employee_status" class="form-control">
-                            <option value="">Select Status</option>
-                            <option value="Probation Period" {{ old('employee_status', $user->employee_status) == 'Probation Period' ? 'selected' : '' }}>
-                                Probation Period
-                            </option>
-                            <option value="Employee" {{ old('employee_status', $user->employee_status) == 'Employee' ? 'selected' : '' }}>
-                                Employee
-                            </option>
-                        </select>
+                        <input type="text" id="employee_status" class="form-control"
+                            value="{{ old('employee_status', $user->employee_status) }}" readonly>
+                        <input type="hidden" name="employee_status" id="employee_status_hidden"
+                            value="{{ old('employee_status', $user->employee_status) }}">
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-3">Update Probation Employee</button>
+                <button type="submit" class="btn btn-primary mt-3" id="saveBtn">Update Probation Employee</button>
             </form>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const joiningDateInput = document.getElementById('dob');
-            const probationDateInput = document.getElementById('probation_date');
-
-            function setProbationDateFromJoiningDate() {
-                if (!joiningDateInput.value) {
-                    probationDateInput.value = '';
-                    return;
-                }
-
-                const probationDate = new Date(joiningDateInput.value);
-                probationDate.setMonth(probationDate.getMonth() + 6);
-
-                const year = probationDate.getFullYear();
-                const month = String(probationDate.getMonth() + 1).padStart(2, '0');
-                const day = String(probationDate.getDate()).padStart(2, '0');
-
-                probationDateInput.value = `${year}-${month}-${day}`;
-            }
-
-            joiningDateInput.addEventListener('change', setProbationDateFromJoiningDate);
-        });
-    </script>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('js/autoDismissAlerts.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/editProbationUser.js') }}?v={{ time() }}"></script>
+@endpush

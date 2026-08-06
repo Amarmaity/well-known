@@ -29,7 +29,7 @@
             </div>
 
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert alert-success" data-auto-dismiss="success">{{ session('success') }}</div>
             @endif
 
             <div class="emp-card">
@@ -170,6 +170,7 @@
     </div>
 
     @push('scripts')
+        <script src="{{ asset('js/autoDismissAlerts.js') }}?v={{ time() }}"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>

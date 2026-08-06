@@ -13,10 +13,10 @@
 
         <style>
             /* =====================================================
-            EMPLOYEE MANAGEMENT — SCOPED DESIGN SYSTEM
-            All rules are namespaced under .emp-page to avoid
-            leaking into / colliding with global layout styles.
-            ===================================================== */
+                    EMPLOYEE MANAGEMENT — SCOPED DESIGN SYSTEM
+                    All rules are namespaced under .emp-page to avoid
+                    leaking into / colliding with global layout styles.
+                    ===================================================== */
 
             .emp-page {
                 --emp-primary: #3b5bdb;
@@ -285,6 +285,10 @@
                 align-items: center;
                 gap: 4px;
                 white-space: nowrap;
+            }
+
+            .emp-copy-row i::before {
+                color: grey;
             }
 
             .emp-page .emp-copy-row+.emp-copy-row {
@@ -714,17 +718,17 @@
                                     }
 
                                     // Deterministic soft avatar color derived from the employee's name.
-$avatarPalette = [
-    '#6c8bf5',
-    '#5cb896',
-    '#e0995f',
-    '#c97fd1',
-    '#5fb0c9',
-    '#e08a8a',
-    '#8f8ff0',
-    '#7bbf6a',
-];
-$avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
+                                        $avatarPalette = [
+                                            '#6c8bf5',
+                                            '#5cb896',
+                                            '#e0995f',
+                                            '#c97fd1',
+                                            '#5fb0c9',
+                                            '#e08a8a',
+                                            '#8f8ff0',
+                                            '#7bbf6a',
+                                        ];
+                                    $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
                                 @endphp
 
                                 <tr class="emp-row" data-status="{{ $user->status ? '1' : '2' }}">
@@ -779,27 +783,37 @@ $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
 
                                     {{-- Contact (mobile + email combined) --}}
                                     <td>
-                                        <div class="emp-copy-row">
-                                            <i class="bi bi-telephone emp-inline-icon"></i>
-                                            <span class="emp-copy-text">{{ $user->mobno }}</span>
-                                            @if ($user->mobno)
-                                                <button class="emp-copy-btn" data-copy="{{ $user->mobno }}"
+                                        @php
+                                            $mobile = trim((string) ($user->mobno ?? ''));
+                                            $email = trim((string) ($user->email ?? ''));
+                                        @endphp
+
+                                        @if ($mobile !== '')
+                                            <div class="emp-copy-row">
+                                                <i class="bi bi-telephone emp-inline-icon"></i>
+                                                <span class="emp-copy-text">{{ $mobile }}</span>
+                                                <button class="emp-copy-btn" data-copy="{{ $mobile }}"
                                                     title="Copy Mobile">
                                                     <i class="bi bi-copy"></i>
                                                 </button>
-                                            @endif
-                                        </div>
-                                        <div class="emp-copy-row">
-                                            <i class="bi bi-envelope emp-inline-icon"></i>
-                                            <span class="emp-copy-text"
-                                                title="{{ $user->email }}">{{ $user->email }}</span>
-                                            @if ($user->email)
-                                                <button class="emp-copy-btn" data-copy="{{ $user->email }}"
+                                            </div>
+                                        @endif
+
+                                        @if ($email !== '')
+                                            <div class="emp-copy-row">
+                                                <i class="bi bi-envelope emp-inline-icon"></i>
+                                                <span class="emp-copy-text"
+                                                    title="{{ $email }}">{{ $email }}</span>
+                                                <button class="emp-copy-btn" data-copy="{{ $email }}"
                                                     title="Copy Email">
                                                     <i class="bi bi-copy"></i>
                                                 </button>
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @endif
+
+                                        @if ($mobile === '' && $email === '')
+                                            <span>—</span>
+                                        @endif
                                     </td>
 
                                     {{-- Status --}}
@@ -820,8 +834,8 @@ $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
                                     {{-- Actions --}}
                                     <td class="text-end">
                                         <div class="dropdown">
-                                            <button class="emp-action-btn" type="button" data-bs-toggle="dropdown"
-                                                aria-expanded="false" title="More actions">
+                                            <button class="emp-action-btn" type="button" aria-expanded="false"
+                                                title="More actions">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
 
@@ -937,6 +951,90 @@ $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
                 let currentPage = 1;
                 let filteredRows = rows;
 
+                function closeEmployeeMenus() {
+                    document.querySelectorAll('.emp-page .dropdown.is-open').forEach(function(dropdown) {
+                        const button = dropdown.querySelector('.emp-action-btn');
+                        const menu = dropdown.querySelector('.emp-menu');
+
+                        dropdown.classList.remove('is-open');
+
+                        if (button) {
+                            button.setAttribute('aria-expanded', 'false');
+                        }
+
+                        if (menu) {
+                            menu.removeAttribute('style');
+                        }
+                    });
+                }
+
+                function openEmployeeMenu(dropdown) {
+                    const button = dropdown.querySelector('.emp-action-btn');
+                    const menu = dropdown.querySelector('.emp-menu');
+
+                    if (!button || !menu) {
+                        return;
+                    }
+
+                    closeEmployeeMenus();
+
+                    dropdown.classList.add('is-open');
+                    button.setAttribute('aria-expanded', 'true');
+                    menu.style.display = 'block';
+                    menu.style.position = 'fixed';
+                    menu.style.zIndex = '2000';
+
+                    const buttonRect = button.getBoundingClientRect();
+                    const menuRect = menu.getBoundingClientRect();
+                    const windowPadding = 12;
+                    const left = Math.max(
+                        windowPadding,
+                        Math.min(buttonRect.right - menuRect.width, window.innerWidth - menuRect.width -
+                            windowPadding)
+                    );
+                    let top = buttonRect.bottom + 6;
+
+                    if (top + menuRect.height > window.innerHeight - windowPadding) {
+                        top = Math.max(windowPadding, buttonRect.top - menuRect.height - 6);
+                    }
+
+                    menu.style.left = `${left}px`;
+                    menu.style.top = `${top}px`;
+                }
+
+                document.addEventListener('click', function(event) {
+                    const actionButton = event.target.closest('.emp-page .emp-action-btn');
+                    const openMenu = event.target.closest('.emp-page .emp-menu');
+
+                    if (actionButton) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const dropdown = actionButton.closest('.dropdown');
+
+                        if (dropdown && dropdown.classList.contains('is-open')) {
+                            closeEmployeeMenus();
+                        } else if (dropdown) {
+                            openEmployeeMenu(dropdown);
+                        }
+
+                        return;
+                    }
+
+                    if (!openMenu) {
+                        closeEmployeeMenus();
+                    }
+                });
+
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') {
+                        closeEmployeeMenus();
+                    }
+                });
+
+                window.addEventListener('resize', closeEmployeeMenus);
+                window.addEventListener('scroll', closeEmployeeMenus, true);
+
                 function getVisiblePages(totalPages) {
                     const pages = [];
                     const maxButtons = 5;
@@ -1028,7 +1126,8 @@ $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
                     if (paginationInfo) {
                         const from = totalRows === 0 ? 0 : startIndex + 1;
                         const to = Math.min(endIndex, totalRows);
-                        paginationInfo.innerHTML = `Showing <strong>${from}</strong> to <strong>${to}</strong> of <strong>${totalRows}</strong> employees`;
+                        paginationInfo.innerHTML =
+                            `Showing <strong>${from}</strong> to <strong>${to}</strong> of <strong>${totalRows}</strong> employees`;
                     }
 
                     renderPagination(totalPages);
@@ -1070,6 +1169,8 @@ $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
                             icon.className = originalClass;
                             this.classList.remove('is-copied');
                         }, 800);
+
+                        closeEmployeeMenus();
                     });
                 }
 
