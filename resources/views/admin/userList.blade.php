@@ -741,9 +741,6 @@
                                             </div>
                                             <div>
                                                 <div class="emp-person-name">{{ $fullName }}</div>
-                                                {{-- <div class="emp-person-meta">
-                                                    Joined {{ optional($user->created_at)->format('d M Y') }}
-                                                </div> --}}
                                                 <div class="emp-person-meta">
                                                     {{ $user->designation }}
                                                 </div>

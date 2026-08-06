@@ -97,6 +97,10 @@
                                             <div class="emp-copy-row">
                                                 <i class="bi bi-telephone emp-inline-icon"></i>
                                                 <span class="emp-copy-text">{{ $clientMobile }}</span>
+                                                <button class="emp-copy-btn" data-copy="{{ $clientMobile }}"
+                                                    title="Copy Mobile">
+                                                    <i class="bi bi-copy"></i>
+                                                </button>
                                             </div>
                                         @endif
 
@@ -106,6 +110,10 @@
                                                 <span class="emp-copy-text" title="{{ $clientEmail }}">
                                                     {{ $clientEmail }}
                                                 </span>
+                                                <button class="emp-copy-btn" data-copy="{{ $clientEmail }}"
+                                                    title="Copy Email">
+                                                    <i class="bi bi-copy"></i>
+                                                </button>
                                             </div>
                                         @endif
 
@@ -422,6 +430,29 @@
                 if (rows.length > 0) {
                     renderTable();
                 }
+
+                function bindCopyHandler(el) {
+                    el.addEventListener('click', function() {
+                        const value = this.dataset.copy;
+                        navigator.clipboard.writeText(value);
+
+                        const icon = this.querySelector('i');
+                        if (!icon) return;
+
+                        const originalClass = icon.className;
+                        icon.className = 'bi bi-check2';
+                        this.classList.add('is-copied');
+
+                        setTimeout(() => {
+                            icon.className = originalClass;
+                            this.classList.remove('is-copied');
+                        }, 800);
+
+                        closeClientMenus();
+                    });
+                }
+
+                document.querySelectorAll('.emp-copy-btn').forEach(bindCopyHandler);
             });
 
             $(document).on("change", ".status-switch", function() {

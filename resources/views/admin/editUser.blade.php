@@ -16,7 +16,7 @@
             <input type="checkbox" id="block1">
             <label for="block1" class="main-label">Edit Employee Details: {{ $user->fname }} {{ $user->lname }}</label>
             <div class="content">
-                <form action="{{ route('update-user', ['id' => $user->id]) }}" method="POST" class="forms-block">
+                <form action="{{ route('update-user', ['id' => $user->id]) }}" method="POST" class="forms-block" id="editUserForm" novalidate>
                     @csrf
                     @method('PUT')
                     <style>
@@ -35,6 +35,39 @@
                             display: flex;
                             flex-direction: column;
                         }
+
+                        #client-select-container .select2-container {
+                            width: 100% !important;
+                        }
+
+                        #client-select-container .select2-selection--multiple {
+                            min-height: 38px !important;
+                            max-height: 38px !important;
+                            overflow-y: auto;
+                            padding-block: 2px !important;
+                        }
+
+                        #client-select-container .select2-selection__choice {
+                            max-width: 180px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+
+                        #editUserForm .field-error {
+                            display: block;
+                            width: 100%;
+                            margin-top: 6px;
+                            margin-bottom: 12px;
+                            color: #dc3545;
+                            font-size: 13px;
+                            font-weight: 500;
+                            line-height: 1.4;
+                        }
+
+                        #editUserForm .is-invalid {
+                            border-color: #dc3545 !important;
+                        }
                     </style>
                     <div class="row form-section">
                         <div class="col-md-6">
@@ -52,8 +85,8 @@
 
                         <div class="col-md-6">
                             <label for="mobno" class="forms-label">Mobile Number</label>
-                            <input type="number" name="mobno" id="mobno" class="form-control"
-                                value="{{ $user->mobno }}" maxlength="10" min="0" required>
+                            <input type="tel" name="mobno" id="mobno" class="form-control"
+                                value="{{ $user->mobno }}" maxlength="10" required>
                         </div>
 
                         <div class="col-md-6">
@@ -284,22 +317,20 @@
 
                         <div class="col-md-6">
                             <label for="cnf-password" class="forms-label">Confirm Password</label>
-                            {{-- <input type="password" class="form-control" id="cnf-password" name="password_confirmation"
-                            placeholder="Enter password" value="{{ $user->password }}" required> --}}
                             <input type="password" class="form-control" id="cnf-password" name="password_confirmation"
                                 placeholder="Confirm new password">
                         </div>
 
+                        <div class="client-hide col-md-6 search-wrap" id="client-select-container">
+                            <label for="client_id" class="forms-label">Select Client</label>
+                            <select class="form-control" id="client_id" name="client_id[]" multiple="multiple"
+                                style="width: 100%">
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}" selected>{{ $client->client_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    </div>
-                    <div class="client-hide mt-3" id="client-select-container">
-                        <label for="client_id" class="forms-label">Select Client</label>
-                        <select class="form-control" id="client_id" name="client_id[]" multiple="multiple"
-                            style="width: 100%">
-                            @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" selected>{{ $client->client_name }}</option>
-                            @endforeach
-                        </select>
                     </div>
                     <div class="d-flex gap-3 mt-3">
                         <button type="submit" class="btn btn-secondary">Update</button>
@@ -371,6 +402,8 @@
             theme: 'bootstrap-5',
             placeholder: "Select Client",
             allowClear: true,
+            width: '100%',
+            closeOnSelect: false,
             maximumSelectionLength: 10,
             ajax: {
                 url: "{{ route('get.clients') }}",
@@ -410,7 +443,7 @@
                 icon: 'success',
                 title: 'Success!',
                 text: '{{ session('
-                                                                success ') }}',
+                                                                                                success ') }}',
                 timer: 2500,
                 showConfirmButton: false
             });
@@ -438,14 +471,7 @@
                 toggleClientSelect();
             });
         });
-        //      function toggleManagerField() {
-        //     const isManagerChecked = $('#manager').is(':checked');
-        //     if (isManagerChecked) {
-        //         $('#manager-name-field').show();
-        //     } else {
-        //         $('#manager-name-field').hide();
-        //     }
-        // }
+
         function normalizeDesignation(value) {
             return (value || '').toString().trim().toLowerCase();
         }
@@ -519,6 +545,57 @@
             $('#designation_dropdown').on('change', syncEditFields);
             $('#salary').on('input', syncSalaryGrade);
             syncSalaryGrade();
+        });
+
+        function clearFieldError($field) {
+            $field.removeClass('is-invalid');
+            const $next = $field.next('.field-error');
+
+            if ($next.length) {
+                $next.remove();
+            }
+        }
+
+        function setFieldError($field, message) {
+            clearFieldError($field);
+            $field.addClass('is-invalid');
+            $('<div class="field-error"></div>').text(message).insertAfter($field);
+        }
+
+        function validateMobileField(showError = true) {
+            const $mobile = $('#mobno');
+            const mobile = $.trim($mobile.val() || '');
+
+            if (!mobile) {
+                if (showError) {
+                    setFieldError($mobile, 'Mobile number is required.');
+                }
+                return false;
+            }
+
+            if (!/^[6-9]\d{9}$/.test(mobile)) {
+                if (showError) {
+                    setFieldError($mobile, 'Enter a valid Indian mobile number.');
+                }
+                return false;
+            }
+
+            if (showError) {
+                clearFieldError($mobile);
+            }
+            return true;
+        }
+
+        $('#mobno').on('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            validateMobileField(true);
+        });
+
+        $('#editUserForm').on('submit', function(e) {
+            if (!validateMobileField(true)) {
+                e.preventDefault();
+                $('#mobno').trigger('focus');
+            }
         });
 
         $('#employee_id').on('input', function() {

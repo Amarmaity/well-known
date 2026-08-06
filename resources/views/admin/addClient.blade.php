@@ -14,6 +14,21 @@
   -moz-appearance: none;      
   background-image: none;     
 }
+
+#userForm .field-error {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  color: #dc3545;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+#userForm .is-invalid {
+  border-color: #dc3545 !important;
+}
 </style>
 
     <div class="super-add-user-page">
@@ -81,7 +96,7 @@
                         </div>
 
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary primary-btn" id="saveBtn">Save</button>
+                            <button type="submit" class="btn btn-primary primary-btn" id="saveBtn" disabled>Save</button>
                         </div>
                 </form>
             </div>
@@ -98,6 +113,122 @@
     <!-- AJAX Script -->
     <script>
         $(document).ready(function () {
+            const $saveBtn = $('#saveBtn');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const mobileRegex = /^\+?[1-9]\d{6,14}$/;
+
+            function clearFieldError($field) {
+                $field.removeClass('is-invalid');
+                const $next = $field.next('.field-error');
+
+                if ($next.length) {
+                    $next.remove();
+                }
+            }
+
+            function setFieldError($field, message) {
+                clearFieldError($field);
+                $field.addClass('is-invalid');
+                $('<div class="field-error"></div>').text(message).insertAfter($field);
+            }
+
+            function validateClientField($field, showError = true) {
+                const id = $field.attr('id');
+                const value = $.trim($field.val() || '');
+
+                if (id === 'client-name') {
+                    if (!value) {
+                        if (showError) setFieldError($field, 'Client Name is required.');
+                        return false;
+                    }
+
+                    if (!/^[A-Za-z ]+$/.test(value)) {
+                        if (showError) setFieldError($field, 'Client Name should contain letters only.');
+                        return false;
+                    }
+                }
+
+                if (id === 'company-name') {
+                    if (!value) {
+                        if (showError) setFieldError($field, 'Company Name is required.');
+                        return false;
+                    }
+
+                    if (!/^[A-Za-z ]+$/.test(value)) {
+                        if (showError) setFieldError($field, 'Company Name should contain letters only.');
+                        return false;
+                    }
+                }
+
+                if (id === 'client-email') {
+                    if (!value) {
+                        if (showError) setFieldError($field, 'Email is required.');
+                        return false;
+                    }
+
+                    if (!emailRegex.test(value)) {
+                        if (showError) setFieldError($field, 'Please enter a valid email address.');
+                        return false;
+                    }
+                }
+
+                if (id === 'mobno' && value !== '' && !mobileRegex.test(value)) {
+                    if (showError) setFieldError($field, 'Please enter a valid mobile number.');
+                    return false;
+                }
+
+                if (id === 'password') {
+                    if (!value) {
+                        if (showError) setFieldError($field, 'Password is required.');
+                        return false;
+                    }
+
+                    if (value.length < 6) {
+                        if (showError) setFieldError($field, 'Password must be at least 6 characters.');
+                        return false;
+                    }
+                }
+
+                if (id === 'cnf-password') {
+                    if (!value) {
+                        if (showError) setFieldError($field, 'Confirm Password is required.');
+                        return false;
+                    }
+
+                    if (value !== $('#password').val()) {
+                        if (showError) setFieldError($field, 'Passwords do not match.');
+                        return false;
+                    }
+                }
+
+                if (showError) {
+                    clearFieldError($field);
+                }
+                return true;
+            }
+
+            function canSubmitClientForm() {
+                const fields = ['#client-name', '#company-name', '#mobno', '#client-email', '#password', '#cnf-password'];
+                return fields.every(function(selector) {
+                    return validateClientField($(selector), false);
+                });
+            }
+
+            function updateSaveButtonState() {
+                $saveBtn.prop('disabled', !canSubmitClientForm());
+            }
+
+            $('#client-name, #company-name, #mobno, #client-email, #password, #cnf-password').on('input change', function() {
+                validateClientField($(this), true);
+
+                if (this.id === 'password' || this.id === 'cnf-password') {
+                    validateClientField($('#cnf-password'), true);
+                }
+
+                updateSaveButtonState();
+            });
+            updateSaveButtonState();
+
             $('#userForm').on('submit', function (e) {
                 e.preventDefault();
                 
@@ -115,6 +246,12 @@
                     return;
                 }
 
+                if (!/^[A-Za-z ]+$/.test(clientName)) {
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Client Name should contain letters only.' });
+                    $('#client-name').focus();
+                    return;
+                }
+
                 // Company Name
                 if (companyName === '') {
                     Swal.fire({ icon: 'error', title: 'Validation error', text: 'Company Name is required.' });
@@ -122,9 +259,13 @@
                     return;
                 }
 
-                // Email
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!/^[A-Za-z ]+$/.test(companyName)) {
+                    Swal.fire({ icon: 'error', title: 'Validation error', text: 'Company Name should contain letters only.' });
+                    $('#company-name').focus();
+                    return;
+                }
 
+                // Email
                 if (email === '') {
                     Swal.fire({ icon: 'error', title: 'Validation error', text: 'Email is required.' });
                     $('#client-email').focus();
@@ -139,8 +280,6 @@
 
                 // Mobile (Optional)
                 if (mobile !== '') {
-                    const mobileRegex = /^\+?[1-9]\d{6,14}$/;
-
                     if (!mobileRegex.test(mobile)) {
                         Swal.fire({ icon: 'error', title: 'Validation error', text: 'Please enter a valid mobile number.' });
                         $('#mobno').focus();
@@ -163,7 +302,7 @@
                 }
                 
                 
-                $('#saveBtn').prop('disabled', true).text('Saving...');
+                $saveBtn.prop('disabled', true).text('Saving...');
 
                 $.ajax({
                     url: "{{ route('new-client') }}",
@@ -180,7 +319,8 @@
                                 text: response.message || 'Client added successfully.'
                             }).then(function () {
                                 $('#userForm')[0].reset();
-                                $('#saveBtn').prop('disabled', false).text('Save');
+                                $saveBtn.text('Save');
+                                updateSaveButtonState();
                                 location.reload();
                             });
                         } else {
@@ -189,7 +329,8 @@
                                 title: 'Save failed',
                                 text: response.message || 'Submission failed. Try again.'
                             });
-                            $('#saveBtn').prop('disabled', false).text('Save');
+                            $saveBtn.text('Save');
+                            updateSaveButtonState();
                         }
                     },
                     error: function (xhr) {
@@ -216,7 +357,8 @@
                             });
                         }
 
-                        $('#saveBtn').prop('disabled', false).text('Save');
+                        $saveBtn.text('Save');
+                        updateSaveButtonState();
                     }
                 });
             });
