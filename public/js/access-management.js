@@ -174,9 +174,11 @@ $(document).ready(function () {
             },
             success: function (res) {
                 showNotice(res.message || 'Permissions saved successfully.', 'success');
-                if (users.length == 1) {
-                    loadPermission(users[0]);
-                }
+                clearSelectionAfterSave();
+
+                window.setTimeout(function () {
+                    window.location.reload();
+                }, 1000);
             },
             error: function () {
                 showNotice('Something went wrong while saving permissions.', 'error');
@@ -265,6 +267,12 @@ $(document).ready(function () {
         );
     }
 
+    function clearSelectionAfterSave() {
+        $('#role').val('');
+        $('#selected_users').val(null).trigger('change.select2');
+        resetPermissionUI();
+    }
+
     function showNotice(message, type) {
         const notice = $('#permissionNotice');
 
@@ -277,9 +285,10 @@ $(document).ready(function () {
             .addClass('is-visible is-' + type)
             .text(message);
 
+        clearTimeout(window.noticeTimer);
         window.noticeTimer = setTimeout(function () {
             notice.removeClass('is-visible');
-        }, 2000);
+        }, 3000);
     }
 });
 

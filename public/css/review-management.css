@@ -245,6 +245,11 @@
     white-space: nowrap;
 }
 
+.emp-copy-row i::before {
+    color: grey;
+    padding-top: 5px;
+}
+
 .emp-page .emp-copy-row+.emp-copy-row {
     margin-top: 3px;
 }

@@ -208,7 +208,10 @@ class SuperAdminController extends Controller
     //View details of view all reviews
     public function showEvaluationReview($id)
     {
-        $employee = evaluationTable::where('emp_id', $id)->first(); // Fetch employee details
+        $employee = evaluationTable::where('emp_id', $id)
+            ->latest('created_at')
+            ->latest('id')
+            ->first(); // Fetch latest submitted employee evaluation details
 
         if (!$employee) {
             return redirect()->back()->with('error', 'Employee not found.');
@@ -752,12 +755,8 @@ class SuperAdminController extends Controller
                 $query->where('probation_date', '<=', $currentDate)
                     ->orWhere('designation', 'Client');
             })
-            ->orderByRaw(
-                "CASE WHEN probation_date = ? THEN 0 ELSE 1 END",
-                [$currentDate]
-            )
-            ->orderBy('probation_date', 'desc')
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw("LOWER(TRIM(CONCAT(COALESCE(fname, ''), ' ', COALESCE(lname, '')))) ASC")
+            ->orderBy('employee_id')
             ->paginate(15)
             ->withQueryString();
 
@@ -776,10 +775,10 @@ class SuperAdminController extends Controller
 
 
         $users = [
-            'evaluation' => DB::table('evaluation_tables')->where('emp_id', $emp_id)->first(),
-            'managerReview' => DB::table('manager_review_tables')->where('emp_id', $emp_id)->first(),
-            'adminReview' => DB::table('admin_review_tables')->where('emp_id', $emp_id)->first(),
-            'hrReview' => DB::table('hr_review_tables')->where('emp_id', $emp_id)->first(),
+            'evaluation' => DB::table('evaluation_tables')->where('emp_id', $emp_id)->latest('created_at')->latest('id')->first(),
+            'managerReview' => DB::table('manager_review_tables')->where('emp_id', $emp_id)->latest('created_at')->latest('id')->first(),
+            'adminReview' => DB::table('admin_review_tables')->where('emp_id', $emp_id)->latest('created_at')->latest('id')->first(),
+            'hrReview' => DB::table('hr_review_tables')->where('emp_id', $emp_id)->latest('created_at')->latest('id')->first(),
             // 'clientReview' => DB::table('client_review_tables')->where('emp_id', $emp_id)->first(),
             'clientReview' => DB::table('client_review_tables')->where('emp_id', $emp_id)->get(),
             'superAddUser' => DB::table('super_add_users')->where('employee_id', $emp_id)->first(),
@@ -801,6 +800,8 @@ class SuperAdminController extends Controller
 
         $user = evaluationTable::where('emp_id', $emp_id)
             ->where('financial_year', $financialYear)
+            ->latest('created_at')
+            ->latest('id')
             ->firstOrFail();
 
         return view('reports.evaluationReport', compact('user'));
@@ -858,11 +859,11 @@ class SuperAdminController extends Controller
     {
         $currentDate = Carbon::now()->toDateString();
         $user = SuperAddUser::where('designation', '!=', 'Client')
+            ->whereNotNull('probation_date')
             ->whereDate('probation_date', '>=', $currentDate)
-            ->orderByRaw("CASE WHEN probation_date = ? THEN 0 ELSE 1 END", [$currentDate])
-            ->orderBy('probation_date', 'asc')
-            ->orderBy('fname', 'asc')
-            ->orderBy('lname', 'asc')
+            ->orderByRaw('DATEDIFF(probation_date, ?) ASC', [$currentDate])
+            ->orderByRaw("LOWER(TRIM(CONCAT(COALESCE(fname, ''), ' ', COALESCE(lname, '')))) ASC")
+            ->orderBy('employee_id')
             ->get();
 
         return view('admin.probation', compact('user'));
@@ -1394,7 +1395,9 @@ class SuperAdminController extends Controller
     public function viewClints(Request $request)
     {
 
-        $allClients = AllClient::query() ->orderBy('created_at', 'desc')
+        $allClients = AllClient::query()
+            ->orderByRaw("LOWER(TRIM(COALESCE(client_name, ''))) ASC")
+            ->orderBy('id')
             ->paginate(15)
             ->withQueryString();
 

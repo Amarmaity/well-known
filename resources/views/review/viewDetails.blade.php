@@ -48,12 +48,21 @@
                 $currentFYStart = $currentYear;
             }
 
+            $latestEvaluationFinancialYear = $users['evaluation']->financial_year ?? null;
+            $selectedFinancialYear = $latestEvaluationFinancialYear ?: ($currentFYStart . '-' . ($currentFYStart + 1));
+
             $years = [
                 $currentFYStart - 1, // Previous FY
                 $currentFYStart, // Current FY
                 $currentFYStart + 1, // Next FY
                 $currentFYStart + 2, // Next +1 FY
             ];
+
+            if ($latestEvaluationFinancialYear && preg_match('/^(\d{4})-\d{4}$/', $latestEvaluationFinancialYear, $matches)) {
+                $years[] = (int) $matches[1];
+                $years = array_values(array_unique($years));
+                sort($years);
+            }
         @endphp
 
                 <select id="employeeDetails" class="form-select review-year-select" name="financial_year" required>
@@ -65,7 +74,7 @@
                             $fy = $year . '-' . $end;
                         @endphp
 
-                        <option value="{{ $fy }}" {{ $year == $currentFYStart ? 'selected' : '' }}>
+                        <option value="{{ $fy }}" {{ $fy === $selectedFinancialYear ? 'selected' : '' }}>
                             {{ $fy }}
                         </option>
                     @endforeach
