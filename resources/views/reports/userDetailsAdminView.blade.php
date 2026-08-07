@@ -9,23 +9,27 @@
 @section('content')
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-        <link href="{{ asset('css/review-detail-readonly.css') }}?v={{ filemtime(public_path('css/review-detail-readonly.css')) }}" rel="stylesheet">
+        <link
+            href="{{ asset('css/review-detail-readonly.css') }}?v={{ filemtime(public_path('css/review-detail-readonly.css')) }}"
+            rel="stylesheet">
     @endpush
 
     <div class="review-read-page">
         <div class="review-read-header">
-            <div class="review-read-title">
-                <i class="bi bi-person-check"></i>
-                <div>
-                    <h1>Admin Review Details</h1>
-                    <p>Employee ID: {{ $employee_id }}@if(!empty($financial_year)) · {{ $financial_year }}@endif</p>
-                </div>
-            </div>
-
             <a href="{{ url()->previous() }}" class="review-read-back">
                 <i class="bi bi-arrow-left"></i>
                 Back
             </a>
+            <div class="review-read-title">
+                <i class="bi bi-person-check"></i>
+                <div>
+                    <h1>Admin Review Details</h1>
+                    <p>Employee ID: {{ $employee_id }}@if (!empty($financial_year))
+                            · {{ $financial_year }}
+                        @endif
+                    </p>
+                </div>
+            </div>
         </div>
 
         <div class="review-read-card span-tage">
@@ -43,7 +47,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($reviews as $review)
+                        @foreach ($reviews as $review)
                             <tr>
                                 <td>1. Has the employee demonstrated regular attendance and punctuality?</td>
                                 <td><span class="review-rating">{{ $review->demonstrated_attendance }}/5</span></td>
@@ -55,18 +59,21 @@
                                 <td>{{ $review->comments_employee_manage_shift }}</td>
                             </tr>
                             <tr>
-                                <td>3. How would you rate the employee’s accuracy and neatness in reports and documentation?</td>
+                                <td>3. How would you rate the employee’s accuracy and neatness in reports and documentation?
+                                </td>
                                 <td><span class="review-rating">{{ $review->documentation_neatness }}/5</span></td>
                                 <td>{{ $review->comments_documentation_neatness }}
                                 </td>
                             </tr>
                             <tr>
-                                <td>4. Has the employee followed administrative procedures and job instructions properly?</td>
+                                <td>4. Has the employee followed administrative procedures and job instructions properly?
+                                </td>
                                 <td><span class="review-rating">{{ $review->followed_instructions }}/5</span></td>
                                 <td>{{ $review->comments_followed_instructions }}</td>
                             </tr>
                             <tr>
-                                <td>5. Does the employee effectively manage time and stay productive during working hours?</td>
+                                <td>5. Does the employee effectively manage time and stay productive during working hours?
+                                </td>
                                 <td><span class="review-rating">{{ $review->productive }}/5</span></td>
                                 <td>{{ $review->comments_productive }}</td>
                             </tr>
@@ -114,15 +121,17 @@
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#reviewHistoryTable').DataTable({
                 "paging": true,
                 "searching": true,
-                "ordering": false,  // Disable ordering
+                "ordering": false, // Disable ordering
                 "info": true,
-                "lengthMenu": [5, 10, 25, 50],  // Allow different page lengths
-                "columnDefs": [
-                    { "targets": [0, 1], "searchable": true }  // Enable search on the first two columns
+                "lengthMenu": [5, 10, 25, 50], // Allow different page lengths
+                "columnDefs": [{
+                        "targets": [0, 1],
+                        "searchable": true
+                    } // Enable search on the first two columns
                 ]
             });
         });

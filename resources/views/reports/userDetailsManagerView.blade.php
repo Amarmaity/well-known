@@ -14,7 +14,12 @@
 
 @section('content')
     <div class="review-read-page">
-        <div class="review-read-header">
+        <div class="review-read-header review-read-header--back-top">
+            <a href="{{ url()->previous() }}" class="review-read-back">
+                <i class="bi bi-arrow-left"></i>
+                Back
+            </a>
+
             <div class="review-read-title">
                 <i class="bi bi-diagram-3"></i>
                 <div>
@@ -22,11 +27,6 @@
                     <p>Employee ID: {{ $employee_id }}@if(!empty($financial_year)) · {{ $financial_year }}@endif</p>
                 </div>
             </div>
-
-            <a href="{{ url()->previous() }}" class="review-read-back">
-                <i class="bi bi-arrow-left"></i>
-                Back
-            </a>
         </div>
 
     <div class="review-read-card">
