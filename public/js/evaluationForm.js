@@ -17,6 +17,7 @@ $(function () {
 
     const $form = $("#evaluationForm");
     const $submitBtn = $("#evaluationSubmitBtn");
+    let duplicateSubmissionLocked = false;
 
     function errorAlert(message, fieldSelector = null) {
         Swal.fire({ icon: 'error', title: 'Validation Error', text: message }).then(() => {
@@ -195,6 +196,57 @@ $(function () {
         }
     }
 
+    function isFormComplete() {
+        let complete = true;
+        const checkedRadioGroups = new Set();
+
+        $form.find('input, select, textarea').each(function () {
+            if (!complete) {
+                return;
+            }
+
+            const field = this;
+            const $field = $(field);
+            const type = ($field.attr('type') || '').toLowerCase();
+
+            if ($field.is('[disabled]') || $field.is('[readonly]') || type === 'hidden') {
+                return;
+            }
+
+            if (type === 'radio') {
+                const name = $field.attr('name');
+                if (!name || checkedRadioGroups.has(name)) {
+                    return;
+                }
+
+                checkedRadioGroups.add(name);
+                const selectedRadio = $form.find('input[type="radio"]').filter(function () {
+                    return this.name === name && this.checked;
+                });
+
+                if (selectedRadio.length === 0) {
+                    complete = false;
+                }
+                return;
+            }
+
+            if (!field.checkValidity()) {
+                complete = false;
+            }
+        });
+
+        return complete;
+    }
+
+    function updateSubmitAvailability() {
+        if (duplicateSubmissionLocked) {
+            setSubmitDisabled(true, 'Already Submitted');
+            return;
+        }
+
+        setSubmitDisabled(!isFormComplete(), 'Submit');
+    }
+
     function checkExistingEvaluation() {
         const empId = $('#emp_id').val();
         const financialYear = $('#financialYear').val();
@@ -214,17 +266,20 @@ $(function () {
                 financial_year: financialYear
             },
             success: function (res) {
-                if (res.exists) {
+                duplicateSubmissionLocked = !!res.exists;
+
+                if (duplicateSubmissionLocked) {
                     setSubmitDisabled(true, 'Already Submitted');
                     $submitBtn.attr('title', res.message || 'Evaluation already submitted for this financial year.');
                 } else {
-                    setSubmitDisabled(false, 'Submit');
                     $submitBtn.removeAttr('title');
+                    updateSubmitAvailability();
                 }
             },
             error: function () {
-                setSubmitDisabled(false, 'Submit');
+                duplicateSubmissionLocked = false;
                 $submitBtn.removeAttr('title');
+                updateSubmitAvailability();
             }
         });
     }
@@ -247,6 +302,7 @@ $(function () {
                 if (res.exists) {
                     $("#loaderOverlay").hide();
                     Swal.fire({ icon: 'warning', title: 'Duplicate Submission', text: res.message });
+                    duplicateSubmissionLocked = true;
                     setSubmitDisabled(true, 'Already Submitted');
                     return;
                 }
@@ -328,12 +384,12 @@ $(function () {
                     showOtpModal();
                 } else {
                     errorAlert(response.message || 'Failed to send OTP!');
-                    $btn.prop('disabled', false).text('Submit');
+                    updateSubmitAvailability();
                 }
             },
             error: function () {
                 errorAlert('Something went wrong! Please try again.');
-                $btn.prop('disabled', false).text('Submit');
+                updateSubmitAvailability();
             }
         });
     });
@@ -370,7 +426,7 @@ $(function () {
 
     $("#otpModal").on("hidden.bs.modal", function () {
         $("input[name='otp']").val("");
-        $submitBtn.prop("disabled", false).text("Submit");
+        updateSubmitAvailability();
     });
 
     function bindRatingListeners() {
@@ -382,11 +438,13 @@ $(function () {
             });
         });
         updateTotals();
+        updateSubmitAvailability();
     }
 
     function bindValidationStyles() {
         $form.on('input change blur', 'input, select, textarea', function () {
             clearFieldInvalid(this);
+            updateSubmitAvailability();
         });
 
         $form.on('invalid', 'input, select, textarea', function () {
@@ -399,5 +457,6 @@ $(function () {
     applyMandatoryFields();
     bindValidationStyles();
     bindRatingListeners();
+    updateSubmitAvailability();
     checkExistingEvaluation();
 });

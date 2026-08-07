@@ -15,6 +15,29 @@
     margin: 0;
 }
 
+.review-read-page.review-read-page--embedded .evaluation-report-score-table {
+    min-width: 0;
+    table-layout: fixed;
+}
+
+.review-read-page.review-read-page--embedded .evaluation-report-score-table th:first-child,
+.review-read-page.review-read-page--embedded .evaluation-report-score-table td:first-child {
+    width: 34%;
+}
+
+.review-read-page.review-read-page--embedded .evaluation-report-score-table th:nth-child(2),
+.review-read-page.review-read-page--embedded .evaluation-report-score-table td:nth-child(2) {
+    width: 110px;
+}
+
+.review-read-page.review-read-page--embedded .evaluation-report-score-table th:nth-child(3),
+.review-read-page.review-read-page--embedded .evaluation-report-score-table td:nth-child(3) {
+    width: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
 .review-read-page .review-read-header {
     align-items: center;
     justify-content: space-between;

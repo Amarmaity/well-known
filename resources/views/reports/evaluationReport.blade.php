@@ -64,7 +64,7 @@
             Evaluation Scores and Comments
         </div>
         <div class="table-wrapper">
-            <table class="table table-bordered table-hover main-table">
+            <table class="table table-bordered table-hover main-table evaluation-report-score-table">
                 <thead>
                     <tr>
                         <th>Field</th>
