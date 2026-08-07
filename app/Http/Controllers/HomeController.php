@@ -371,8 +371,8 @@ class HomeController extends Controller
     public function checkDuplicateSubmission(Request $request)
     {
         try {
-            $empId = $request->emp_id;
-            $empFinancialYear = $request->emp_financial_year;
+            $empId = $request->input('emp_id');
+            $empFinancialYear = $request->input('financial_year') ?? $request->input('emp_financial_year');
 
 
             // Extract starting year from financial year string like "2023-2024"

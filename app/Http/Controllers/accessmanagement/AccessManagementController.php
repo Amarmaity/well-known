@@ -72,6 +72,8 @@ class AccessManagementController extends Controller
             ->where('access_permissions.user_id', $userId)
             ->whereRaw('LOWER(access_modules.module_key) != ?', ['dashboard'])
             ->whereRaw('LOWER(access_modules.module_name) != ?', ['dashboard'])
+            ->whereRaw('LOWER(access_modules.module_name) != ?', ['view all review'])
+            ->whereNotIn(DB::raw('LOWER(access_modules.module_key)'), ['view_all_review', 'view-all-review', 'super-admin-view'])
             ->select(
                 'access_modules.id',
                 'access_modules.module_name as name'
@@ -153,11 +155,23 @@ class AccessManagementController extends Controller
                 AccessPermission::where('user_id', $userId)->delete();
 
                 // If no modules selected, permission is revoked
-                if (!empty($request->modules)) {
+                $modules = collect($request->modules ?? [])
+                    ->filter()
+                    ->reject(function ($moduleId) {
+                        return AccessModule::where('id', $moduleId)
+                            ->where(function ($query) {
+                                $query->whereRaw('LOWER(module_name) = ?', ['view all review'])
+                                    ->orWhereIn(DB::raw('LOWER(module_key)'), ['view_all_review', 'view-all-review', 'super-admin-view']);
+                            })
+                            ->exists();
+                    })
+                    ->values();
+
+                if ($modules->isNotEmpty()) {
 
                     $insertData = [];
 
-                    foreach ($request->modules as $moduleId) {
+                    foreach ($modules as $moduleId) {
 
                         $insertData[] = [
                             'user_id' => $userId,

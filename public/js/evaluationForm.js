@@ -188,6 +188,47 @@ $(function () {
         }
     }
 
+    function setSubmitDisabled(disabled, text) {
+        $submitBtn.prop('disabled', disabled);
+        if (text) {
+            $submitBtn.text(text);
+        }
+    }
+
+    function checkExistingEvaluation() {
+        const empId = $('#emp_id').val();
+        const financialYear = $('#financialYear').val();
+
+        if (!empId || !financialYear) {
+            setSubmitDisabled(true, 'Submit');
+            return;
+        }
+
+        setSubmitDisabled(true, 'Checking...');
+
+        $.ajax({
+            url: duplicateCheckUrl,
+            type: 'POST',
+            data: {
+                emp_id: empId,
+                financial_year: financialYear
+            },
+            success: function (res) {
+                if (res.exists) {
+                    setSubmitDisabled(true, 'Already Submitted');
+                    $submitBtn.attr('title', res.message || 'Evaluation already submitted for this financial year.');
+                } else {
+                    setSubmitDisabled(false, 'Submit');
+                    $submitBtn.removeAttr('title');
+                }
+            },
+            error: function () {
+                setSubmitDisabled(false, 'Submit');
+                $submitBtn.removeAttr('title');
+            }
+        });
+    }
+
     function submitEvaluationForm() {
         const formData = new FormData($form[0]);
         formData.append("email", sessionEmail);
@@ -206,6 +247,7 @@ $(function () {
                 if (res.exists) {
                     $("#loaderOverlay").hide();
                     Swal.fire({ icon: 'warning', title: 'Duplicate Submission', text: res.message });
+                    setSubmitDisabled(true, 'Already Submitted');
                     return;
                 }
 
@@ -261,6 +303,10 @@ $(function () {
 
         if (isProbationUser()) {
             showProbationAlert();
+            return;
+        }
+
+        if ($submitBtn.prop('disabled')) {
             return;
         }
 
@@ -348,7 +394,10 @@ $(function () {
         });
     }
 
+    $('#financialYear').on('change', checkExistingEvaluation);
+
     applyMandatoryFields();
     bindValidationStyles();
     bindRatingListeners();
+    checkExistingEvaluation();
 });

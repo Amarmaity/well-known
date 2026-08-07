@@ -195,6 +195,27 @@
     font-weight: 600;
 }
 
+.permission-module--locked .permission-module-header {
+    background: #f1f5f9;
+}
+
+.permission-module--locked .permission-module-meta {
+    color: #9a3412;
+}
+
+.permission-lock-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #ffedd5;
+    color: #9a3412;
+    font-size: 14px;
+}
+
+
 .permission-toggle {
     border: 0;
     background: transparent;

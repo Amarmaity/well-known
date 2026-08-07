@@ -11,8 +11,22 @@
     <link href="{{ asset('css/access-management.css') }}?v={{ filemtime(public_path('css/access-management.css')) }}" rel="stylesheet">
 
     @php
-        $permissionCount = $modules->sum(function ($module) {
-            return $module->children->count() ?: 1;
+        $isSuperAdminOnlyModule = function ($module) {
+            $name = strtolower(trim($module->module_name ?? ''));
+            $key = strtolower(trim($module->module_key ?? ''));
+
+            return $name === 'view all review'
+                || in_array($key, ['view_all_review', 'view-all-review', 'super-admin-view'], true);
+        };
+
+        $permissionCount = $modules->sum(function ($module) use ($isSuperAdminOnlyModule) {
+            if ($isSuperAdminOnlyModule($module)) {
+                return 0;
+            }
+
+            $children = $module->children->reject(fn ($child) => $isSuperAdminOnlyModule($child));
+
+            return $children->count() ?: 1;
         });
     @endphp
 
@@ -79,13 +93,17 @@
                     <div class="permission-list" id="permissionAccordion">
                         @foreach ($modules as $parent)
                             @php
-                                $hasChildren = $parent->children->count() > 0;
-                                $itemCount = $hasChildren ? $parent->children->count() : 1;
+                                $isSuperAdminOnly = $isSuperAdminOnlyModule($parent);
+                                $assignableChildren = $parent->children->reject(fn ($child) => $isSuperAdminOnlyModule($child));
+                                $hasChildren = $assignableChildren->count() > 0;
+                                $itemCount = $isSuperAdminOnly ? 0 : ($hasChildren ? $assignableChildren->count() : 1);
                             @endphp
 
-                            <div class="permission-module">
+                            <div class="permission-module {{ $isSuperAdminOnly ? 'permission-module--locked' : '' }}">
                                 <div class="permission-module-header">
-                                    @if ($hasChildren)
+                                    @if ($isSuperAdminOnly)
+                                        <span class="permission-lock-icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span>
+                                    @elseif ($hasChildren)
                                         <input type="checkbox" class="form-check-input parent-checkbox" data-parent="{{ $parent->id }}" aria-label="Select {{ $parent->module_name }} permissions">
                                     @else
                                         <input class="form-check-input single-checkbox" value="{{ $parent->id }}" id="module_{{ $parent->id }}" type="checkbox" aria-label="Select {{ $parent->module_name }}">
@@ -93,7 +111,13 @@
 
                                     <div>
                                         <div class="permission-module-name">{{ $parent->module_name }}</div>
-                                        <div class="permission-module-meta">{{ $itemCount }} permission{{ $itemCount === 1 ? '' : 's' }}</div>
+                                        <div class="permission-module-meta">
+                                            @if ($isSuperAdminOnly)
+                                                Super Admin use only
+                                            @else
+                                                {{ $itemCount }} permission{{ $itemCount === 1 ? '' : 's' }}
+                                            @endif
+                                        </div>
                                     </div>
 
                                     @if ($hasChildren)
@@ -107,7 +131,7 @@
                                     <div id="module{{ $parent->id }}" class="collapse">
                                         <div class="permission-module-body">
                                             <div class="permission-options-grid">
-                                                @foreach ($parent->children as $child)
+                                                @foreach ($assignableChildren as $child)
                                                     <div class="permission-option form-check">
                                                         <input class="form-check-input child-checkbox" type="checkbox" value="{{ $child->id }}" id="module_{{ $child->id }}" data-parent="{{ $parent->id }}">
                                                         <label class="form-check-label" for="module_{{ $child->id }}">{{ $child->module_name }}</label>
