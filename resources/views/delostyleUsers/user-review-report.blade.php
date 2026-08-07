@@ -13,22 +13,23 @@
 
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-        <link href="{{ asset('css/review-management.css') }}?v={{ filemtime(public_path('css/review-management.css')) }}" rel="stylesheet">
-        <link href="{{ asset('css/review-details.css') }}?v={{ filemtime(public_path('css/review-details.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/review-management.css') }}?v={{ filemtime(public_path('css/review-management.css')) }}"
+            rel="stylesheet">
+        <link href="{{ asset('css/review-details.css') }}?v={{ filemtime(public_path('css/review-details.css')) }}"
+            rel="stylesheet">
     @endpush
 
     <div class="emp-page review-detail-page">
         <div class="emp-shell">
             <div class="review-detail-header">
                 <div class="emp-header-text">
+                    <button type="button" onclick="history.back()" class="review-back-btn">
+                        <i class="bi bi-arrow-left"></i>
+                        Back
+                    </button>
                     <h1>User Review Report</h1>
                     <p>Employee ID: <strong>{{ $emp_id }}</strong></p>
                 </div>
-
-                <button type="button" onclick="history.back()" class="review-back-btn">
-                    <i class="bi bi-arrow-left"></i>
-                    Back
-                </button>
             </div>
 
             <div class="review-control-card">
@@ -36,24 +37,24 @@
                     <div class="review-control-label">Financial Year</div>
                     <div class="review-control-help">Choose a year to load available review scores and reports.</div>
                 </div>
-            @php
-                $currentMonth = date('m');
-                $currentYear = date('Y');
+                @php
+                    $currentMonth = date('m');
+                    $currentYear = date('Y');
 
-                // Indian FY logic (April start)
-                if ($currentMonth < 4) {
-                    $currentFYStart = $currentYear - 1;
-                } else {
-                    $currentFYStart = $currentYear;
-                }
+                    // Indian FY logic (April start)
+                    if ($currentMonth < 4) {
+                        $currentFYStart = $currentYear - 1;
+                    } else {
+                        $currentFYStart = $currentYear;
+                    }
 
-                $years = [
-                    $currentFYStart - 1, // Previous FY
-                    $currentFYStart, // Current FY
-                    $currentFYStart + 1, // Next FY
-                    $currentFYStart + 2, // Next +1 FY
-                ];
-            @endphp
+                    $years = [
+                        $currentFYStart - 1, // Previous FY
+                        $currentFYStart, // Current FY
+                        $currentFYStart + 1, // Next FY
+                        $currentFYStart + 2, // Next +1 FY
+                    ];
+                @endphp
 
                 <select id="employeeDetails" class="form-select review-year-select" name="financial_year" required>
                     <option value="" selected disabled>Financial Year</option>
@@ -154,8 +155,8 @@
                 </div>
                 @endif --}}
 
-                @if($clientReviews->isNotEmpty())
-                    @foreach($clientReviews as $clientReview)
+                @if ($clientReviews->isNotEmpty())
+                    @foreach ($clientReviews as $clientReview)
                         <button class="review-action-btn"
                             onclick="loadClientReport('{{ $clientReview->emp_id }}', '{{ $clientReview->client_id }}')">
                             <i class="bi bi-briefcase"></i>
@@ -187,12 +188,24 @@
 
             let url = '';
             switch (reportType) {
-                case 'evaluation': url = `/evaluation/details/${empId}`; break;
-                case 'managerReport': url = `/manager/report/${empId}`; break;
-                case 'adminReport': url = `/admin/report/${empId}`; break;
-                case 'hrReport': url = `/hr/report/${empId}`; break;
-                case 'clientReport': url = `/client/report/${empId}`; break;
-                default: console.error('Unknown report type'); return;
+                case 'evaluation':
+                    url = `/evaluation/details/${empId}`;
+                    break;
+                case 'managerReport':
+                    url = `/manager/report/${empId}`;
+                    break;
+                case 'adminReport':
+                    url = `/admin/report/${empId}`;
+                    break;
+                case 'hrReport':
+                    url = `/hr/report/${empId}`;
+                    break;
+                case 'clientReport':
+                    url = `/client/report/${empId}`;
+                    break;
+                default:
+                    console.error('Unknown report type');
+                    return;
             }
 
             $.ajax({
@@ -203,21 +216,27 @@
                     emp_id: empId,
                     employee_id: empId
                 },
-                success: function (response) {
+                success: function(response) {
                     $('#reportDetails').html(response).addClass('table-container');
                 },
-                error: function (xhr) {
-                    const message = xhr.status === 404
-                        ? 'No data found for this financial year.'
-                        : 'Sorry, there was an error loading the report.';
+                error: function(xhr) {
+                    const message = xhr.status === 404 ?
+                        'No data found for this financial year.' :
+                        'Sorry, there was an error loading the report.';
                     $('#reportDetails').html('<p>' + message + '</p>');
                 }
             });
         }
 
         function escapeHtml(value) {
-            return String(value ?? '').replace(/[&<>"']/g, function (char) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char];
+            return String(value ?? '').replace(/[&<>"']/g, function(char) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                } [char];
             });
         }
 
@@ -226,46 +245,55 @@
             let html = '';
 
             if (data.hasAnyData === false) {
-                actions.innerHTML = '<div class="review-section-title"><i class="bi bi-folder2-open"></i>Available Reports</div><p class="review-pending">' + escapeHtml(data.message || "No data found for this financial year.") + "</p>";
+                actions.innerHTML =
+                    '<div class="review-section-title"><i class="bi bi-folder2-open"></i>Available Reports</div><p class="review-pending">' +
+                    escapeHtml(data.message || "No data found for this financial year.") + "</p>";
                 return;
             }
 
             if (data.reports?.evaluation) {
-                html += `<button class="review-action-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')"><i class="bi bi-clipboard-check"></i>Evaluation Details</button>`;
+                html +=
+                    `<button class="review-action-btn" onclick="loadReport('evaluation', '{{ $emp_id }}')"><i class="bi bi-clipboard-check"></i>Evaluation Details</button>`;
             } else if (data.pendingReviews?.evaluation) {
                 html += '<p class="review-pending">Review your self first.</p>';
             }
 
             if (data.reports?.adminReview) {
-                html += `<button class="review-action-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')"><i class="bi bi-person-check"></i>Admin Report</button>`;
+                html +=
+                    `<button class="review-action-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')"><i class="bi bi-person-check"></i>Admin Report</button>`;
             } else if (data.pendingReviews?.adminReview) {
                 html += '<p class="review-pending">Admin review is pending.</p>';
             }
 
             if (data.reports?.hrReview) {
-                html += `<button class="review-action-btn" onclick="loadReport('hrReport', '{{ $emp_id }}')"><i class="bi bi-people"></i>HR Report</button>`;
+                html +=
+                    `<button class="review-action-btn" onclick="loadReport('hrReport', '{{ $emp_id }}')"><i class="bi bi-people"></i>HR Report</button>`;
             } else if (data.pendingReviews?.hrReview) {
                 html += '<p class="review-pending">HR review is pending.</p>';
             }
 
             if (data.reports?.managerReview) {
-                html += `<button class="review-action-btn" onclick="loadReport('managerReport', '{{ $emp_id }}')"><i class="bi bi-diagram-3"></i>Manager Report</button>`;
+                html +=
+                    `<button class="review-action-btn" onclick="loadReport('managerReport', '{{ $emp_id }}')"><i class="bi bi-diagram-3"></i>Manager Report</button>`;
             } else if (data.pendingReviews?.managerReview) {
                 html += '<p class="review-pending">Manager review is pending.</p>';
             }
 
             if (Array.isArray(data.clientReviews) && data.clientReviews.length > 0) {
-                data.clientReviews.forEach(function (clientReview) {
-                    html += `<button class="review-action-btn" onclick="loadClientReport('${clientReview.emp_id}', '${clientReview.client_id}')"><i class="bi bi-briefcase"></i>View Client Review for: ${escapeHtml(clientReview.client_name || 'Unknown Client')}</button>`;
+                data.clientReviews.forEach(function(clientReview) {
+                    html +=
+                        `<button class="review-action-btn" onclick="loadClientReport('${clientReview.emp_id}', '${clientReview.client_id}')"><i class="bi bi-briefcase"></i>View Client Review for: ${escapeHtml(clientReview.client_name || 'Unknown Client')}</button>`;
                 });
             } else if (data.pendingReviews?.clientReview) {
                 html += '<p class="review-pending">Client review is pending.</p>';
             }
 
-            actions.innerHTML = '<div class="review-section-title"><i class="bi bi-folder2-open"></i>Available Reports</div>' + (html || '<p class="review-pending">No review data found for this financial year.</p>');
+            actions.innerHTML =
+                '<div class="review-section-title"><i class="bi bi-folder2-open"></i>Available Reports</div>' + (html ||
+                    '<p class="review-pending">No review data found for this financial year.</p>');
         }
 
-        document.getElementById('employeeDetails').addEventListener('change', function () {
+        document.getElementById('employeeDetails').addEventListener('change', function() {
             const selectedYear = this.value;
             const table = document.getElementById('reviewTableContainer');
             const empId = "{{ $emp_id }}";
@@ -348,7 +376,7 @@
                 });
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('employeeDetails').dispatchEvent(new Event('change'));
         });
 
@@ -367,19 +395,18 @@
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function (response) {
+                success: function(response) {
                     $('#reportDetails').html(response);
                     $('#reportDetails').addClass('table-container');
                 },
-                error: function (xhr) {
-                    const message = xhr.status === 404
-                        ? 'No data found for this financial year.'
-                        : 'Sorry, there was an error loading the client review.';
+                error: function(xhr) {
+                    const message = xhr.status === 404 ?
+                        'No data found for this financial year.' :
+                        'Sorry, there was an error loading the client review.';
                     $('#reportDetails').html('<p>' + message + '</p>');
                 }
             });
         }
-
     </script>
 
 @endsection

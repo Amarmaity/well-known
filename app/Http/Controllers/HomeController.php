@@ -52,24 +52,27 @@ class HomeController extends Controller
         $employee_id = $employee_id ?? $sessionEmployeeId;
     }
 
-    $employee = SuperAddUser::where('employee_id', $employee_id)->firstOrFail();
-    $sessionUser = SuperAddUser::where('email', session('user_email'))->first();
+    $employee = SuperAddUser::with(["admin", "hr"])->where("employee_id", $employee_id)->firstOrFail();
+    $sessionUser = SuperAddUser::where("email", session("user_email"))->first();
     $evaluatorName = $sessionUser
-        ? trim($sessionUser->fname . ' ' . $sessionUser->lname)
-        : $employee->fname . ' ' . $employee->lname;
+        ? trim($sessionUser->fname . " " . $sessionUser->lname)
+        : $employee->fname . " " . $employee->lname;
+    $assignedUserName = fn ($user) => $user ? trim($user->fname . " " . $user->lname) : null;
 
-    return view('evaluationForm.evaluationForm', [
-        'employee_id'        => $employee->employee_id,
-        'employee_name'      => $employee->fname.' '.$employee->lname,
-        'evaluator_name'     => $evaluatorName,
-        'designation'        => $employee->designation,
-        'salary_grade'       => $employee->salary_grade,
-        'evaluation_purpose' => $employee->evaluation_purpose,
-        'manager_name'       => $employee->manager_name,
-        'division'           => $employee->division,
-        'dob'                => $employee->dob,
-        'financial_year'     => $employee->financial_year,
-        'employee_status' => $employee->employee_status,
+    return view("evaluationForm.evaluationForm", [
+        "employee_id"        => $employee->employee_id,
+        "employee_name"      => $employee->fname . " " . $employee->lname,
+        "evaluator_name"     => $evaluatorName,
+        "designation"        => $employee->designation,
+        "salary_grade"       => $employee->salary_grade,
+        "evaluation_purpose" => $employee->evaluation_purpose,
+        "manager_name"       => $employee->manager_name,
+        "admin_name"         => $assignedUserName($employee->admin),
+        "hr_name"            => $assignedUserName($employee->hr),
+        "division"           => $employee->division,
+        "dob"                => $employee->dob,
+        "financial_year"     => $employee->financial_year,
+        "employee_status" => $employee->employee_status,
     ]);
 }
 
