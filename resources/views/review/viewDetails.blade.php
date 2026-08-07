@@ -21,14 +21,13 @@
         <div class="emp-shell">
             <div class="review-detail-header">
                 <div class="emp-header-text">
-                    <h1>Employee Review Details</h1>
-                    <p>Employee ID: <strong>{{ $emp_id }}</strong></p>
-                </div>
-
-                <button type="button" onclick="history.back()" class="review-back-btn">
+                    <button type="button" onclick="history.back()" class="review-back-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back
                 </button>
+                    <h1>Employee Review Details</h1>
+                    <p>Employee ID: <strong>{{ $emp_id }}</strong></p>
+                </div>
             </div>
 
             <div class="review-control-card">
@@ -312,6 +311,10 @@
             actions.innerHTML = "<div class=\"review-section-title\"><i class=\"bi bi-folder2-open\"></i>Available Reports</div>" + (html || "<p class=\"review-pending\">No data found for this financial year.</p>");
         }
 
+        function hasPendingReview(data) {
+            return Object.values(data.pendingReviews || {}).some(Boolean);
+        }
+
         // Get employee ID and optionally default year from Blade variables
         const empId = {!! json_encode($users['evaluation']->emp_id ?? ($users['superAddUser']->employee_id ?? null)) !!};
         const defaultYear = {!! json_encode($users['evaluation']->financial_year ?? ($users['superAddUser']->financial_year ?? '')) !!};
@@ -365,6 +368,11 @@
                         renderReportActions(data);
 
                         if (data.hasAnyData === false) {
+                            table.style.display = 'none';
+                            return;
+                        }
+
+                        if (hasPendingReview(data)) {
                             table.style.display = 'none';
                             return;
                         }

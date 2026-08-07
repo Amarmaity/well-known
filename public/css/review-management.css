@@ -349,6 +349,11 @@
     font-size: .8125rem;
 }
 
+.bi-eye::before {
+    content: "\f341";
+    color: gray;
+}
+
 .emp-page .emp-menu .dropdown-item {
     border-radius: var(--emp-radius-sm);
     padding: 8px 10px;

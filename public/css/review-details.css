@@ -28,6 +28,7 @@
     font-weight: 600;
     text-decoration: none;
     transition: background .15s ease, border-color .15s ease, color .15s ease, transform .05s ease;
+    margin-bottom: 10px;
 }
 
 .review-detail-page .review-back-btn:hover,
