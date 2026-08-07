@@ -63,7 +63,7 @@
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
                         placeholder="search employee" aria-label="Search">
 
-                    <button class="client__btn" type="submit">
+                    <button class="client__btn" type="button">
                         <img src="{{ asset('images/search.png') }}" alt="Search">
                     </button>
                 </div>
@@ -119,7 +119,7 @@
                                     punctuality?:</label>
                                 <select class="form-select" aria-label="multiple select example"
                                     name="demonstrated_attendance" id="adr1" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -131,7 +131,7 @@
                                     <label for="comments_demonstrated_attendance" class="third-label">Tell us more about
                                         your experience:</label>
                                     <textarea name="comments_demonstrated_attendance" id="comments" class="form-control"
-                                        rows="1" cols="50" maxlength="255"
+                                        rows="1" cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -142,7 +142,7 @@
                                         shift?:</label>
                                     <select class="form-select" aria-label="multiple select example"
                                         name="employee_manage_shift" id="adr1" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -154,7 +154,7 @@
                                         <label for="comments_employee_manage_shift" class="third-label">Tell us more about
                                             your experience:</label>
                                         <textarea name="comments_employee_manage_shift" id="comments" class="form-control"
-                                            rows="1" cols="50" maxlength="255"
+                                            rows="1" cols="50" maxlength="1500"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@
                                         neatness in reports and documentation?:</label>
                                     <select class="form-select" aria-label="multiple select example" id="adr1"
                                         name="documentation_neatness" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -176,7 +176,7 @@
                                     <label for="comments_documentation_neatness" class="third-label">Tell us more about your
                                         experience:</label>
                                     <textarea name="comments_documentation_neatness" id="comments" class="form-control"
-                                        rows="1" cols="50" maxlength="255"
+                                        rows="1" cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@
                                     and job instructions properly?:</label>
                                 <select class="form-select" aria-label="multiple select example"
                                     name="followed_instructions" id="adr1" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -202,7 +202,7 @@
                                     <label for="comments_followed_instructions" class="third-label">Tell us more about your
                                         experience:</label>
                                     <textarea name="comments_followed_instructions" id="comments" class="form-control"
-                                        rows="1" cols="50" maxlength="255"
+                                        rows="1" cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -213,7 +213,7 @@
                                         during working hours?:</label>
                                     <select class="form-select" aria-label="multiple select example" name="productive"
                                         id="adr1" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -225,7 +225,7 @@
                                         <label for="comments_productive" class="third-label">Tell us more about your
                                             experience:</label>
                                         <textarea name="comments_productive" id="comments" class="form-control" rows="1"
-                                            cols="50" maxlength="255"
+                                            cols="50" maxlength="1500"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -235,7 +235,7 @@
                                         assignments?:</label>
                                     <select class="form-select" aria-label="multiple select example" id="adr1"
                                         name="changes_schedules" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -247,7 +247,7 @@
                                     <label for="comments_changes_schedules" class="third-label">Tell us more about your
                                         experience:</label>
                                     <textarea name="comments_changes_schedules" id="comments" class="form-control" rows="1"
-                                        cols="50" maxlength="255"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -261,7 +261,7 @@
                                     policy?:</label>
                                 <select class="form-select" aria-label="multiple select example" name="leave_policy"
                                     id="adr1" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -273,7 +273,7 @@
                                     <label for="comments_leave_policy" class="third-label">Tell us more about your
                                         experience:</label>
                                     <textarea name="comments_leave_policy" id="comments" class="form-control" rows="1"
-                                        cols="50" maxlength="255"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -284,7 +284,7 @@
                                         leave?:</label>
                                     <select class="form-select" aria-label="multiple select example" name="salary_deduction"
                                         id="adr1" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -296,7 +296,7 @@
                                         <label for="comments_salary_deduction" class="third-label">Tell us more about your
                                             experience:</label>
                                         <textarea name="comments_salary_deduction" id="comments" class="form-control"
-                                            rows="1" cols="50" maxlength="255"
+                                            rows="1" cols="50" maxlength="1500"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -306,7 +306,7 @@
                                         housekeeping staff?:</label>
                                     <select class="form-select" aria-label="multiple select example" id="adr1"
                                         name="interact_housekeeping" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -318,7 +318,7 @@
                                     <label for="comments_interact_housekeeping" class="third-label">Tell us more about your
                                         experience:</label>
                                     <textarea name="comments_interact_housekeeping" id="comments" class="form-control"
-                                        rows="1" maxlength="255" cols="50"
+                                        rows="1" maxlength="1500" cols="50"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -539,7 +539,11 @@
         }, 1000);
     }
 
-    $('#employee_search').on('keyup', searchUser);
+    $('#employee_search').on('keyup', function () {
+        $('#emp_id_input').val('').removeData('admin-reviewed-years');
+        syncAdminReviewFormState();
+        searchUser();
+    });
 
     $(document).on('click', '.selectable-row', function () {
         var empId = $(this).data('emp-id');
@@ -555,6 +559,79 @@
     });
 
     $('#financialYear').on('change', syncAdminReviewFormState);
+    $('#AdminReviewSubmit').on('input change', 'input, select, textarea', syncAdminReviewFormState);
+    $('#AdminReviewSubmit').on('input', 'textarea', function () {
+        updateAdminCommentCounter(this);
+    });
+
+    const adminRequiredFieldNames = [
+        'financial_year',
+        'emp_id',
+        'demonstrated_attendance',
+        'employee_manage_shift',
+        'documentation_neatness',
+        'followed_instructions',
+        'productive',
+        'changes_schedules',
+        'leave_policy',
+        'salary_deduction',
+        'interact_housekeeping',
+        'comments_demonstrated_attendance',
+        'comments_employee_manage_shift',
+        'comments_documentation_neatness',
+        'comments_followed_instructions',
+        'comments_productive',
+        'comments_changes_schedules',
+        'comments_leave_policy',
+        'comments_salary_deduction',
+        'comments_interact_housekeeping'
+    ];
+
+    function updateAdminCommentCounter(textarea) {
+        const limit = parseInt(textarea.getAttribute('maxlength'), 10) || 1500;
+        const count = textarea.value.length;
+        const counter = textarea.parentElement.querySelector('.admin-char-counter');
+
+        if (counter) {
+            counter.textContent = `${count}/${limit}`;
+            counter.classList.toggle('is-limit', count >= limit);
+        }
+    }
+
+    function initAdminCommentCounters() {
+        $('#AdminReviewSubmit textarea').each(function () {
+            this.setAttribute('maxlength', '1500');
+
+            if (!this.parentElement.querySelector('.admin-char-counter')) {
+                $(this).after('<div class="admin-char-counter" aria-live="polite">0/1500</div>');
+            }
+
+            updateAdminCommentCounter(this);
+        });
+    }
+
+    function isAdminReviewFormComplete() {
+        for (const name of adminRequiredFieldNames) {
+            const field = document.querySelector(`#AdminReviewSubmit [name="${name}"]`);
+            if (!field || field.disabled) {
+                continue;
+            }
+
+            if (field.tagName === 'SELECT') {
+                const selectedOption = field.options[field.selectedIndex];
+                if (!field.value || (selectedOption && selectedOption.disabled)) {
+                    return false;
+                }
+                continue;
+            }
+
+            if (!field.value || !field.value.trim()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     function getAdminReviewedYears() {
         const reviewedYears = $('#emp_id_input').data('admin-reviewed-years') || [];
@@ -580,15 +657,18 @@
         const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
 
         $('#reviewExistsError').toggle(reviewExists);
-        $('#submitBtn').prop('disabled', reviewExists);
         $('#AdminReviewSubmit')
             .find('select:not(#financialYear), textarea')
             .prop('disabled', reviewExists);
+        $('#submitBtn').prop('disabled', reviewExists || !isAdminReviewFormComplete());
     }
 
     window.isAdminReviewAlreadyDone = function () {
         return $('#reviewExistsError').is(':visible');
     };
+
+    initAdminCommentCounters();
+    syncAdminReviewFormState();
 });
 
 
@@ -670,8 +750,9 @@
                                 select.selectedIndex = 0;
                             });
 
-                            document.querySelectorAll("textarea").forEach(textarea => {
+                            document.querySelectorAll("#AdminReviewSubmit textarea").forEach(textarea => {
                                 textarea.value = "";
+                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
                             });
                             location.reload();
                         },

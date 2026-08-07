@@ -248,6 +248,13 @@
     line-height: 1.35;
 }
 
+.admin-review-page .second-label::after,
+.admin-review-page .third-label::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: 700;
+}
+
 .admin-review-page .content-block .content > .second-label {
     margin-top: 2px;
 }
@@ -281,6 +288,18 @@
     border-radius: 9px !important;
     border: 1px solid var(--admin-line) !important;
     font-size: .84rem;
+}
+
+.admin-review-page .admin-char-counter {
+    justify-self: end;
+    color: var(--admin-muted);
+    font-size: .74rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.admin-review-page .admin-char-counter.is-limit {
+    color: #dc3545;
 }
 
 .admin-review-page .total-block {
@@ -327,6 +346,11 @@
     background: var(--admin-primary) !important;
     font-size: .88rem;
     font-weight: 650;
+}
+
+.admin-review-page #submitBtn:disabled {
+    cursor: not-allowed;
+    opacity: .55;
 }
 
 .admin-review-page .loading {

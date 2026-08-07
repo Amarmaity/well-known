@@ -65,7 +65,7 @@
                 <div class="client___item">
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
                         placeholder="search employee" aria-label="Search">
-                    <button class="client__btn" type="submit">
+                    <button class="client__btn" type="button">
                         <img src="{{ asset('images/search.png') }}" alt="Search">
                     </button>
                 </div>
@@ -115,7 +115,7 @@
                                     procedures?:</label>
                                 <select class="form-select" aria-label="multiple select example" name="adherence_hr"
                                     id="hr1" required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -126,7 +126,7 @@
                                 <div class="review-block">
                                     <label for="comments_adherence" class="third-label">Justify Your Review:</label>
                                     <textarea name="comments_adherence_hr" id="comments" class="form-control" rows="1" required
-                                        cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
+                                        cols="50" maxlength="1500" placeholder="Write your justification here..."></textarea>
                                 </div>
 
 
@@ -136,7 +136,7 @@
                                         attitude in the workplace?:</label>
                                     <select class="form-select" aria-label="multiple select example"
                                         name="professionalism_positive" id="hr1" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -148,7 +148,7 @@
                                         <label for="comments_professionalism_positive" class="third-label">Justify Your
                                             Review:</label>
                                     <textarea name="comments_professionalism" id="comments" class="form-control" required
-                                        rows="1" cols="50" maxlength="255"
+                                        rows="1" cols="50" maxlength="1500"
                                         placeholder="Write your justification here..."></textarea>
                                 </div>
                                 </div>
@@ -158,7 +158,7 @@
                                         suggestions for improvement from colleagues?:</label>
                                     <select class="form-select" aria-label="multiple select example" id="hr1"
                                         name="respond_feedback" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -169,7 +169,7 @@
                                 <div class="review-block">
                                     <label for="comments_respond_feedback" class="third-label">Justify Your Review:</label>
                                 <textarea name="comments_respond_feedback" id="comments" class="form-control" rows="1" required
-                                        cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
+                                        cols="50" maxlength="1500" placeholder="Write your justification here..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +185,7 @@
                                     on it?:</label>
                                 <select class="form-select" aria-label="multiple select example" id="hr1" name="initiative"
                                     required>
-                                    <option selected disabled>Rate</option>
+                                    <option value="" selected disabled>Rate</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -196,7 +196,7 @@
                                 <div class="review-block">
                                     <label for="comments_initiative" class="third-label">Justify Your Review:</label>
                                     <textarea name="comments_initiative" id="comments" class="form-control" rows="1" required
-                                        cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
+                                        cols="50" maxlength="1500" placeholder="Write your justification here..."></textarea>
                                 </div>
 
                                 <div>
@@ -206,7 +206,7 @@
                                         participating in training programs?</label>
                                     <select class="form-select" aria-label="multiple select example" id="hr1"
                                         name="interest_learning" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -217,7 +217,7 @@
                                 <div class="review-block">
                                     <label for="comments_interest_learning" class="third-label">Justify Your Review:</label>
                                     <textarea name="comments_interest_learning" id="comments" class="form-control" rows="1" required
-                                        cols="50" maxlength="255" placeholder="Write your justification here..."></textarea>
+                                        cols="50" maxlength="1500" placeholder="Write your justification here..."></textarea>
                                 </div>
 
 
@@ -228,7 +228,7 @@
                                         leave policy?</label>
                                     <select class="form-select" aria-label="multiple select example" id="hr1"
                                         name="company_leave_policy" required>
-                                        <option selected disabled>Rate</option>
+                                        <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -240,7 +240,7 @@
                                     <label for="comments_company_leave_policy" class="third-label">Justify Your
                                         Review:</label>
                                     <textarea name="comments_company_leave_policy" id="comments" class="form-control" required
-                                        rows="1" cols="50" maxlength="255"
+                                        rows="1" cols="50" maxlength="1500"
                                         placeholder="Write your justification here..."></textarea>
                                 </div>
                             </div>
@@ -298,7 +298,7 @@
                         $('#employeeTableBody').empty();
 
                         if (response.success && response.users.length > 0) {
-                            $('#selectLabel').show(); // ✅ Show label before user selects
+                            $('#selectLabel').show(); // Show label before user selects
 
                             response.users.forEach(function (user) {
                                 const reviewedYears = JSON.stringify(user.hr_reviewed_financial_years || []);
@@ -326,7 +326,11 @@
         }
 
         // Trigger search on keyup
-        $('#employee_search').on('keyup', searchUser);
+        $('#employee_search').on('keyup', function () {
+            $('#emp_id_input').val('').removeData('hr-reviewed-years');
+            syncHrReviewFormState();
+            searchUser();
+        });
 
         // Handle row selection
         $(document).on('click', '.selectable-row', function () {
@@ -338,11 +342,77 @@
             var selectedRow = $(this).clone().addClass('table-active');
             $('#employeeTableBody').empty().append(selectedRow);
 
-            $('#selectLabel').hide(); // ✅ HIDE label after user selects
+            $('#selectLabel').hide(); // Hide label after user selects
             syncHrReviewFormState();
         });
 
         $('#financialYear').on('change', syncHrReviewFormState);
+        $('#HrReviewSubmit').on('input change', 'input, select, textarea', syncHrReviewFormState);
+        $('#HrReviewSubmit').on('input', 'textarea', function () {
+            updateHrCommentCounter(this);
+        });
+
+        function updateHrCommentCounter(textarea) {
+            const limit = parseInt(textarea.getAttribute('maxlength'), 10) || 1500;
+            const count = textarea.value.length;
+            const counter = textarea.parentElement.querySelector('.hr-char-counter');
+
+            if (counter) {
+                counter.textContent = `${count}/${limit}`;
+                counter.classList.toggle('is-limit', count >= limit);
+            }
+        }
+
+        function initHrCommentCounters() {
+            $('#HrReviewSubmit textarea').each(function () {
+                this.setAttribute('maxlength', '1500');
+
+                if (!this.parentElement.querySelector('.hr-char-counter')) {
+                    $(this).after('<div class="hr-char-counter" aria-live="polite">0/1500</div>');
+                }
+
+                updateHrCommentCounter(this);
+            });
+        }
+
+        function isHrReviewFormComplete() {
+            if (!$('#financialYear').val()) {
+                return false;
+            }
+
+            if (!$('#employee_search').val().trim() || !$('#emp_id_input').val()) {
+                return false;
+            }
+
+            let complete = true;
+
+            $('#HrReviewSubmit').find('select[required], textarea[required], input[required]').each(function () {
+                if (!complete) {
+                    return;
+                }
+
+                const $field = $(this);
+                const type = ($field.attr('type') || '').toLowerCase();
+
+                if ($field.is(':disabled') || type === 'hidden') {
+                    return;
+                }
+
+                if ($field.is('select')) {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (!$field.val() || (selectedOption && selectedOption.disabled)) {
+                        complete = false;
+                    }
+                    return;
+                }
+
+                if (!$field.val() || !$field.val().trim()) {
+                    complete = false;
+                }
+            });
+
+            return complete;
+        }
 
         function syncHrReviewFormState() {
             const financialYear = $('#financialYear').val();
@@ -350,10 +420,10 @@
             const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
 
             $('#reviewExistsError').toggle(reviewExists);
-            $('#submitBtn').prop('disabled', reviewExists);
             $('#HrReviewSubmit')
                 .find('select:not(#financialYear), textarea')
                 .prop('disabled', reviewExists);
+            $('#submitBtn').prop('disabled', reviewExists || !isHrReviewFormComplete());
         }
 
         function getHrReviewedYears() {
@@ -373,6 +443,8 @@
 
             return [];
         }
+        initHrCommentCounters();
+        syncHrReviewFormState();
     });
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -498,9 +570,10 @@
                                     select.selectedIndex = 0;
                                 });
 
-                                document.querySelectorAll("textarea").forEach(textarea => {
+                                document.querySelectorAll("#HrReviewSubmit textarea").forEach(textarea => {
                                     textarea.value = "";
                                     textarea.classList.remove('is-invalid');
+                                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
                                 });
 
                                 setTimeout(() => {
