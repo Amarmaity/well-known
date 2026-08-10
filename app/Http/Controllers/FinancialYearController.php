@@ -123,16 +123,16 @@ class FinancialYearController extends Controller
         $selectedYear = $request->input('financial_year');
 
         if ($selectedYear) {
-            $financialData = FinancialData::where('financial_year', $selectedYear)->get();
+            $financialData = FinancialData::with('employee:employee_id,user_roles')->where('financial_year', $selectedYear)->get();
         } else {
-            $financialData = FinancialData::all();
+            $financialData = FinancialData::with('employee:employee_id,user_roles')->get();
         }
 
         // Get distinct years for the dropdown
         $availableYears = FinancialData::select('financial_year')->distinct()->pluck('financial_year');
 
 
-        // $financialData = FinancialData::all();
+        // $financialData = FinancialData::with('employee:employee_id,user_roles')->get();
 
         return view('admin.FinancialTable', compact('financialData', 'availableYears', 'selectedYear'));
 
@@ -145,10 +145,13 @@ class FinancialYearController extends Controller
 
         if (empty($query)) {
             // Return all records from financial_data if input is empty
-            $financialData = FinancialData::all();
+            $financialData = FinancialData::with('employee:employee_id,user_roles')->get();
         } else {
-            $financialData = FinancialData::where('emp_id', $query)
-                ->orWhere('employee_name', 'LIKE', '%' . $query . '%')
+            $financialData = FinancialData::with('employee:employee_id,user_roles')
+                ->where(function ($financialQuery) use ($query) {
+                    $financialQuery->where('emp_id', $query)
+                        ->orWhere('employee_name', 'LIKE', '%' . $query . '%');
+                })
                 ->get();
         }
         if ($financialData->isEmpty()) {

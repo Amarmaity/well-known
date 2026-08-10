@@ -19,7 +19,7 @@ class FinancialData extends Model
 
     public function employee()
     {
-        return $this->belongsTo(SuperAddUser::class, 'employee_id', 'emp_id');
+        return $this->belongsTo(SuperAddUser::class, 'emp_id', 'employee_id');
     }
 
 
