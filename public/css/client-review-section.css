@@ -282,6 +282,18 @@
     font-size: .84rem;
 }
 
+.client-review-page .client-char-counter {
+    justify-self: end;
+    color: var(--client-muted);
+    font-size: .74rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.client-review-page .client-char-counter.is-limit {
+    color: #dc3545;
+}
+
 .client-review-page .invalid-feedback {
     grid-column: 1 / -1;
     margin: 0;
@@ -332,6 +344,11 @@
     background: var(--client-primary) !important;
     font-size: .88rem;
     font-weight: 650;
+}
+
+.client-review-page #submitBtn:disabled {
+    cursor: not-allowed;
+    opacity: .55;
 }
 
 .client-review-page .loading {

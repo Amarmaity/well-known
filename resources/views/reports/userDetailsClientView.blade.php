@@ -8,6 +8,33 @@
 
 @section('content')
 
+@php
+    $clientQuestions = [
+        ['question' => '1. Did the developer(s) understand your project requirements clearly?', 'rating' => 'understand_requirements', 'comment' => 'comment_understand_requirements'],
+        ['question' => '2. Were your business goals and technical needs properly translated into the solution?', 'rating' => 'business_needs', 'comment' => 'comments_business_needs'],
+        ['question' => '3. Was there a clear and detailed project scope defined at the beginning?', 'rating' => 'detailed_project_scope', 'comment' => 'comments_detailed_project_scope'],
+        ['question' => '4. Was the developer(s) responsive and easy to reach during the project?', 'rating' => 'responsive_reach_project', 'comment' => 'comments_responsive_reach_project'],
+        ['question' => '5. Did you feel comfortable discussing changes or suggestions?', 'rating' => 'comfortable_discussing', 'comment' => 'comments_comfortable_discussing'],
+        ['question' => '6. Did the developer(s) provide regular updates on progress?', 'rating' => 'regular_updates', 'comment' => 'comments_regular_updates'],
+        ['question' => '7. Were your questions and concerns addressed promptly?', 'rating' => 'concerns_addressed', 'comment' => 'comments_concerns_addressed'],
+        ['question' => '8. How would you rate the technical expertise of the developer(s)?', 'rating' => 'technical_expertise', 'comment' => 'comments_technical_expertise'],
+        ['question' => '9. Were industry best practices followed during the development process?', 'rating' => 'best_practices', 'comment' => 'comments_best_practices'],
+        ['question' => '10. Did the developer(s) suggest innovative solutions or improvements?', 'rating' => 'suggest_innovative', 'comment' => 'comments_suggest_innovative'],
+        ['question' => '11. How would you rate the quality of the code delivered?', 'rating' => 'quality_code', 'comment' => 'comments_quality_code'],
+        ['question' => '12. Did you encounter any bugs or issues post-launch?', 'rating' => 'encounter_issues', 'comment' => 'comments_encounter_issues'],
+        ['question' => '13. Was the code scalable and well-structured for future updates?', 'rating' => 'code_scalable', 'comment' => 'comments_code_scalable'],
+        ['question' => '14. Did the solution perform well under expected load and conditions?', 'rating' => 'solution_perform', 'comment' => 'comments_solution_perform'],
+        ['question' => '15. Was the project delivered on time?', 'rating' => 'project_delivered', 'comment' => 'comments_project_delivered'],
+        ['question' => '16. If there were delays, were they communicated and handled effectively?', 'rating' => 'communicated_handled', 'comment' => 'comments_communicated_handled'],
+        ['question' => '17. Was the development process well-organized and structured?', 'rating' => 'development_process', 'comment' => 'comments_development_process'],
+        ['question' => '18. How well did the developer(s) handle unexpected challenges or changes?', 'rating' => 'unexpected_challenges', 'comment' => 'comments_unexpected_challenges'],
+        ['question' => '19. Did the developer(s) propose effective workarounds when issues arose?', 'rating' => 'effective_workarounds', 'comment' => 'comments_effective_workarounds'],
+        ['question' => '20. How quickly were bugs or issues resolved during the project?', 'rating' => 'bugs_issues', 'comment' => 'comments_bugs_issues'],
+    ];
+@endphp
+
+
+
     <style>
         .span-tage .span-data {
             display: flex;
@@ -68,110 +95,17 @@
                     </thead>
                     <tbody>
                         @foreach($reviews as $review)
-                            <tr>
-                                <td>1. Understanding Requirements</td>
-                                <td>({{ $review->understand_requirements }} /5)</td>
-                                <td>{{ $review->comment_understand_requirements }}</td>
-                            </tr>
-                            <tr>
-                                <td>2. Business Needs</td>
-                                <td>({{ $review->business_needs }}/5)</td>
-                                <td>{{ $review->comments_business_needs }}</td>
-                            </tr>
-                            <tr>
-                                <td>3. Detailed Project Scope</td>
-                                <td>({{ $review->detailed_project_scope }}/5)</td>
-                                <td>{{ $review->comments_detailed_project_scope }}</td>
-                            </tr>
-                            <tr>
-                                <td>4. Responsive to Project Needs</td>
-                                <td>({{ $review->responsive_reach_project }}/5)</td>
-                                <td>{{ $review->comments_responsive_reach_project }}</td>
-                            </tr>
-                            <tr>
-                                <td>5. Comfortable Discussing Issues</td>
-                                <td>({{ $review->comfortable_discussing }}/5)</td>
-                                <td>{{ $review->comments_comfortable_discussing }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>6. Regular Updates</td>
-                                <td>({{ $review->regular_updates }} /5)</td>
-                                <td>{{ $review->comments_regular_updates }}</td>
-                            </tr>
-                            <tr>
-                                <td>7. Concerns Addressed</td>
-                                <td>({{ $review->concerns_addressed }}/5)</td>
-                                <td>{{ $review->comments_concerns_addressed }}</td>
-                            </tr>
-                            <tr>
-                                <td>8. Technical Expertise</td>
-                                <td>({{ $review->technical_expertise }}/5)</td>
-                                <td>{{ $review->comments_technical_expertise }}</td>
-                            </tr>
-                            <tr>
-                                <td>9. Best Practices</td>
-                                <td>({{ $review->best_practices }}/5)</td>
-                                <td>{{ $review->comments_best_practices }}</td>
-                            </tr>
-                            <tr>
-                                <td>10. Innovation Suggestions</td>
-                                <td>({{ $review->suggest_innovative }}/5)</td>
-                                <td>{{ $review->comments_suggest_innovative }}</td>
-                            </tr>
-                            <tr>
-                                <td>11. Quality of Code</td>
-                                <td>({{ $review->quality_code }} /5)</td>
-                                <td>{{ $review->comments_quality_code }}</td>
-                            </tr>
-                            <tr>
-                                <td>12. Handling Issues</td>
-                                <td>({{ $review->encounter_issues }} /5)</td>
-                                <td>{{ $review->comments_encounter_issues }}</td>
-                            </tr>
-                            <tr>
-                                <td>13. Scalability of Code</td>
-                                <td>({{ $review->code_scalable }} /5)</td>
-                                <td>{{ $review->comments_code_scalable }}</td>
-                            </tr>
-                            <tr>
-                                <td>14. Performance of Solutions</td>
-                                <td>({{ $review->solution_perform }}/5)</td>
-                                <td>{{ $review->comments_solution_perform }}</td>
-                            </tr>
-                            <tr>
-                                <td>15. Project Delivery</td>
-                                <td>({{ $review->project_delivered }}/5)</td>
-                                <td>{{ $review->comments_project_delivered }}</td>
-                            </tr>
-                            <tr>
-                                <td>16. Communication & Handling</td>
-                                <td>({{ $review->communicated_handled }}/5)</td>
-                                <td>{{ $review->comments_communicated_handled }}</td>
-                            </tr>
-                            <tr>
-                                <td>17. Development Process</td>
-                                <td>({{ $review->development_process }}/5)</td>
-                                <td>{{ $review->comments_development_process }}</td>
-                            </tr>
-                            <tr>
-                                <td>18. Handling Unexpected Challenges</td>
-                                <td>({{ $review->unexpected_challenges }}/5)</td>
-                                <td>{{ $review->comments_unexpected_challenges }}</td>
-                            </tr>
-                            <tr>
-                                <td>19. Effective Workarounds</td>
-                                <td>({{ $review->effective_workarounds }}/5)</td>
-                                <td>{{ $review->comments_effective_workarounds }}</td>
-                            </tr>
-                            <tr>
-                                <td>20. Bug & Issue Resolution</td>
-                                <td>({{ $review->bugs_issues }}/5)</td>
-                                <td>{{ $review->comments_bugs_issues }}</td>
-                            </tr>
+                            @foreach ($clientQuestions as $item)
+                                <tr>
+                                    <td>{{ $item['question'] }}</td>
+                                    <td>({{ $review->{$item['rating']} ?? 'N/A' }}/5)</td>
+                                    <td>{{ $review->{$item['comment']} ?? 'N/A' }}</td>
+                                </tr>
+                            @endforeach
                             <tr>
                                 <td>Total Client Review Score</td>
-                                <td>{{ $review->ClientTotalReview }}</td>
+                                <td>{{ $review->ClientTotalReview ?? 'N/A' }}</td>
+                                <td></td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -68,7 +68,7 @@
                 <div class="client___item">
                     <input type="search" id="employee_search" name="search" class="form-control client__search"
                         placeholder="search employee" aria-label="Search">
-                    <button class="client__btn" type="submit">
+                    <button class="client__btn" type="button">
                         <img src="{{ asset('images/search.png') }}" alt="Search">
                     </button>
                 </div>
@@ -121,8 +121,8 @@
                                 <div class="review-block">
                                     <label for="comment_understand_requirements" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comment_understand_requirements" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comment_understand_requirements" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -144,8 +144,8 @@
                                     <div class="review-block">
                                         <label for="comments_business_needs" class="third-label">Tell us more about your
                                             experience:</label>
-                                        <textarea name="comments_business_needs" id="comments" class="form-control" rows="1" cols="50"
-                                            maxlength="255"
+                                        <textarea required name="comments_business_needs" id="comments" class="form-control" rows="1" cols="50"
+                                            maxlength="1500"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -168,8 +168,8 @@
                                     <label for="comments_detailed_project_scope" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea name="comments_detailed_project_scope" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_detailed_project_scope" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -197,8 +197,8 @@
                                     <label for="comments_responsive_reach_project" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea name="comments_responsive_reach_project" id="comments" class="form-control" rows="1"
-                                        cols="50" maxlength="255"
+                                    <textarea required name="comments_responsive_reach_project" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -222,8 +222,8 @@
                                     <label for="comments_comfortable_discussing" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea name="comments_comfortable_discussing" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_comfortable_discussing" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -248,8 +248,8 @@
                                 <div class="review-block">
                                     <label for="comments_regular_updates" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_regular_updates" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_regular_updates" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -273,8 +273,8 @@
                                 <div class="review-block">
                                     <label for="comments_concerns_addressed" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_concerns_addressed" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_concerns_addressed" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -301,8 +301,8 @@
                                 <div class="review-block">
                                     <label for="comments_technical_expertise" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_technical_expertise" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_technical_expertise" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -327,8 +327,8 @@
                                 <div class="review-block">
                                     <label for="comments_best_practices" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_best_practices" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_best_practices" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -351,8 +351,8 @@
                                 <div class="review-block">
                                     <label for="comments_suggest_innovative" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_suggest_innovative" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_suggest_innovative" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -380,8 +380,8 @@
                                 <div class="review-block">
                                     <label for="comments_quality_code" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_quality_code" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_quality_code" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -404,8 +404,8 @@
                                 <div class="review-block">
                                     <label for="comments_encounter_issues" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_encounter_issues" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_encounter_issues" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -428,8 +428,8 @@
                                 <div class="review-block">
                                     <label for="comments_code_scalable" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_code_scalable" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_code_scalable" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -453,8 +453,8 @@
                                 <div class="review-block">
                                     <label for="comments_solution_perform" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_solution_perform" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_solution_perform" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -480,8 +480,8 @@
                                 <div class="review-block">
                                     <label for="comments_project_delivered" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_project_delivered" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_project_delivered" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -505,8 +505,8 @@
                                 <div class="review-block">
                                     <label for="comments_communicated_handled" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_communicated_handled" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_communicated_handled" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -529,8 +529,8 @@
                                 <div class="review-block">
                                     <label for="comments_development_process" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_development_process" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_development_process" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -558,8 +558,8 @@
                                     <label for="comments_unexpected_challenges" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea name="comments_unexpected_challenges" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_unexpected_challenges" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -584,8 +584,8 @@
                                     <label for="comments_effective_workarounds" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea name="comments_effective_workarounds" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_effective_workarounds" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -609,8 +609,8 @@
                                 <div class="review-block">
                                     <label for="comments_bugs_issues" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_bugs_issues" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="255"
+                                    <textarea required name="comments_bugs_issues" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -697,7 +697,13 @@
                 }, 1000); 
             }
 
-            $('#employee_search').on('keyup', searchUser);
+            $('#employee_search').on('keyup', function() {
+                $('#emp_id_input').val('').removeData('client-reviewed-years');
+                syncClientReviewFormState();
+                searchUser();
+            });
+
+            $('.client__btn').on('click', searchUser);
 
             $(document).on('click', '.selectable-row', function() {
                 var empId = $(this).data('emp-id');
@@ -713,6 +719,34 @@
             });
 
             $('#financialYear').on('change', syncClientReviewFormState);
+            $('#ClientReviewSubmit').on('input change', 'input, select, textarea', syncClientReviewFormState);
+            $('#ClientReviewSubmit').on('input', 'textarea', function() {
+                updateClientCommentCounter(this);
+            });
+
+            function updateClientCommentCounter(textarea) {
+                const limit = parseInt(textarea.getAttribute('maxlength'), 10) || 1500;
+                const count = textarea.value.length;
+                const counter = textarea.parentElement.querySelector('.client-char-counter');
+
+                if (counter) {
+                    counter.textContent = `${count}/${limit}`;
+                    counter.classList.toggle('is-limit', count >= limit);
+                }
+            }
+
+            function initClientCommentCounters() {
+                $('#ClientReviewSubmit textarea').each(function() {
+                    this.setAttribute('maxlength', '1500');
+                    this.setAttribute('required', 'required');
+
+                    if (!this.parentElement.querySelector('.client-char-counter')) {
+                        $(this).after('<div class="client-char-counter" aria-live="polite">0/1500</div>');
+                    }
+
+                    updateClientCommentCounter(this);
+                });
+            }
 
             function getClientReviewedYears() {
                 const reviewedYears = $('#emp_id_input').data('client-reviewed-years') || [];
@@ -732,17 +766,59 @@
                 return [];
             }
 
+            function isClientReviewFormComplete() {
+                if (!$('#financialYear').val()) {
+                    return false;
+                }
+
+                if (!$('#employee_search').val().trim() || !$('#emp_id_input').val()) {
+                    return false;
+                }
+
+                let complete = true;
+
+                $('#ClientReviewSubmit').find('select[required], textarea[required], input[required]').each(function() {
+                    if (!complete) {
+                        return;
+                    }
+
+                    const $field = $(this);
+                    const type = ($field.attr('type') || '').toLowerCase();
+
+                    if ($field.is(':disabled') || type === 'hidden') {
+                        return;
+                    }
+
+                    if ($field.is('select')) {
+                        const selectedOption = this.options[this.selectedIndex];
+                        if (!$field.val() || (selectedOption && selectedOption.disabled)) {
+                            complete = false;
+                        }
+                        return;
+                    }
+
+                    if (!$field.val() || !$field.val().trim()) {
+                        complete = false;
+                    }
+                });
+
+                return complete;
+            }
+
             function syncClientReviewFormState() {
                 const financialYear = $('#financialYear').val();
                 const reviewedYears = getClientReviewedYears();
                 const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
 
                 $('#reviewExistsError').toggle(reviewExists);
-                $('#submitBtn').prop('disabled', reviewExists);
                 $('#ClientReviewSubmit')
                     .find('select:not(#financialYear), textarea')
                     .prop('disabled', reviewExists);
+                $('#submitBtn').prop('disabled', reviewExists || !isClientReviewFormComplete());
             }
+
+            initClientCommentCounters();
+            syncClientReviewFormState();
         });
         document.getElementById("ClientReviewSubmit").addEventListener("submit", function(event) {
             event.preventDefault();
@@ -751,7 +827,18 @@
             let formData = new FormData(form);
 
             if ($('#reviewExistsError').is(':visible')) {
-                alert("⚠️ Already done review for this financial year.");
+                alert("Already done review for this financial year.");
+                return;
+            }
+
+            if ($('#submitBtn').prop('disabled')) {
+                return;
+            }
+
+            const firstInvalid = form.querySelector('select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
+            if (firstInvalid) {
+                firstInvalid.classList.add('is-invalid');
+                firstInvalid.focus();
                 return;
             }
 
@@ -786,6 +873,7 @@
 
                     document.querySelectorAll("textarea").forEach(textarea => {
                         textarea.value = "";
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
                     });
                     location.reload();
                 },
