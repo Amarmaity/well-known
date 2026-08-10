@@ -1184,10 +1184,13 @@ class allUserController extends Controller
             ->unique()
             ->toArray();
 
-        // Step 2: Get active SuperAddUser records for these IDs
+        // Step 2: Get employees assigned to logged-in HR, including HR's own submitted evaluation.
         $superAddUser = SuperAddUser::where('status', 1)
-            ->where('hr_id', $hrId)
             ->whereIn('employee_id', $validEmployeeIds)
+            ->where(function ($query) use ($hrId) {
+                $query->where('hr_id', $hrId)
+                    ->orWhere('id', $hrId);
+            })
             ->get();
 
         // Step 3: Exclude employee_ids where user_type is 'admin'
@@ -1264,10 +1267,13 @@ class allUserController extends Controller
             ->unique()
             ->toArray();
 
-        // Step 2: Get active SuperAddUser records for these IDs
+        // Step 2: Get employees assigned to logged-in admin, including admin's own submitted evaluation.
         $superAddUser = SuperAddUser::where('status', 1)
-            ->where('admin_id', $adminId)
             ->whereIn('employee_id', $validEmployeeIds)
+            ->where(function ($query) use ($adminId) {
+                $query->where('admin_id', $adminId)
+                    ->orWhere('id', $adminId);
+            })
             ->get();
 
         // Step 3: Exclude users with user_type 'hr' or 'manager'
@@ -1323,10 +1329,13 @@ class allUserController extends Controller
             ->unique()
             ->toArray();
 
-        // Step 2: Get only employees assigned to logged-in manager
+        // Step 2: Get employees assigned to logged-in manager, including the manager's own submitted evaluation.
         $superAddUser = SuperAddUser::where('status', 1)
-            ->where('manager_id', $managerId)
             ->whereIn('employee_id', $validEmployeeIds)
+            ->where(function ($query) use ($managerId) {
+                $query->where('manager_id', $managerId)
+                    ->orWhere('id', $managerId);
+            })
             ->get();
 
         // Step 3: Exclude HR and Admin users

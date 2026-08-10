@@ -22,7 +22,6 @@
             <div class="review-detail-header">
                 <div class="emp-header-text">
                     <button type="button" onclick="history.back()" class="review-back-btn">
-                    <i class="bi bi-arrow-left"></i>
                     Back
                 </button>
                     <h1>Employee Review Details</h1>

@@ -23,10 +23,10 @@
         <div class="emp-shell">
             <div class="review-detail-header">
                 <div class="emp-header-text">
-                    <button type="button" onclick="history.back()" class="review-back-btn">
+                    {{-- <button type="button" onclick="history.back()" class="review-back-btn">
                         <i class="bi bi-arrow-left"></i>
                         Back
-                    </button>
+                    </button> --}}
                     <h1>User Review Report</h1>
                     <p>Employee ID: <strong>{{ $emp_id }}</strong></p>
                 </div>
