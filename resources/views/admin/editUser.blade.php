@@ -7,10 +7,13 @@
 @section('body-class', 'special-page')
 
 @section('content')
+    @push('styles')
+        <link href="{{ asset('css/review-management.css') }}?v={{ filemtime(public_path('css/review-management.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/review-details.css') }}?v={{ filemtime(public_path('css/review-details.css')) }}" rel="stylesheet">
+    @endpush
     <div class="">
-        <div class="">
-            {{-- <button onclick="history.back()" class="btn btn-secondary">Back</button> --}}
-            <a href="{{ route('userlist') }}" class="btn btn-secondary">Back</a>
+        <div class="review-detail-page">
+            <a href="{{ route('userlist') }}" class="review-back-btn">Back</a>
         </div>
         <div class="content-block">
             <input type="checkbox" id="block1">

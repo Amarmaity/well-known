@@ -260,6 +260,11 @@
     font-size: .88rem;
     font-weight: 650;
 }
+.form-section div{
+    display:flex;
+    align-items: center;
+    gap:15px;
+}
 
 .self-review-page .total-block {
     display: flex;

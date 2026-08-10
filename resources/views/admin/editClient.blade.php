@@ -6,8 +6,12 @@
 @section('body-class', 'special-page')
 
 @section('content')
-    <div class="mb-3">
-        <a href="{{ route('client-list') }}" class="btn btn-secondary">Back</a>
+    @push('styles')
+        <link href="{{ asset('css/review-management.css') }}?v={{ filemtime(public_path('css/review-management.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/review-details.css') }}?v={{ filemtime(public_path('css/review-details.css')) }}" rel="stylesheet">
+    @endpush
+    <div class="review-detail-page mb-3">
+        <a href="{{ route('client-list') }}" class="review-back-btn">Back</a>
     </div>
 
     <div class="super-add-user-page">

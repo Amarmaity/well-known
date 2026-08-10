@@ -19,9 +19,9 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
-    border-radius: var(--emp-radius-md);
-    border: 1px solid var(--emp-line);
-    background: var(--emp-surface);
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: white;
     color: var(--emp-ink-700);
     padding: 0 14px;
     font-size: .8125rem;
@@ -29,12 +29,13 @@
     text-decoration: none;
     transition: background .15s ease, border-color .15s ease, color .15s ease, transform .05s ease;
     margin-bottom: 10px;
+    
 }
 
 .review-detail-page .review-back-btn:hover,
 .review-detail-page .review-action-btn:hover {
-    background: #eef2ff;
-    border-color: #cbd5e1;
+    background: #4E6382;
+    border-color: #4E6382;
     color: var(--emp-ink-900);
 }
 
