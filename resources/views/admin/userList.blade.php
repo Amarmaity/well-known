@@ -770,11 +770,31 @@
                                     <td>
                                         @php
                                             $displaySalary = $user->latestFinancialData?->final_salary ?? $user->salary;
+                                            $annualCTC = (float) $displaySalary;
+                                            $displaySalaryGrade = null;
+
+                                            if ($displaySalary !== null && $displaySalary !== '') {
+                                                if ($annualCTC < 200000) {
+                                                    $displaySalaryGrade = 'F';
+                                                } elseif ($annualCTC <= 349999) {
+                                                    $displaySalaryGrade = 'E';
+                                                } elseif ($annualCTC <= 499999) {
+                                                    $displaySalaryGrade = 'D';
+                                                } elseif ($annualCTC <= 649999) {
+                                                    $displaySalaryGrade = 'C';
+                                                } elseif ($annualCTC <= 900000) {
+                                                    $displaySalaryGrade = 'B';
+                                                } else {
+                                                    $displaySalaryGrade = 'A';
+                                                }
+                                            }
+
+                                            $displaySalaryGrade = $displaySalaryGrade ?? $user->salary_grade;
                                         @endphp
                                         <div class="emp-salary">₹{{ number_format((float) $displaySalary) }}</div>
                                         <div class="emp-salary-grade">
-                                            @if ($user->salary_grade)
-                                                <span class="emp-grade-pill">{{ $user->salary_grade }}</span>
+                                            @if ($displaySalaryGrade)
+                                                <span class="emp-grade-pill">{{ $displaySalaryGrade }}</span>
                                             @else
                                                 <span>—</span>
                                             @endif

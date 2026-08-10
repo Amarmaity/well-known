@@ -52,7 +52,7 @@ class HomeController extends Controller
         $employee_id = $employee_id ?? $sessionEmployeeId;
     }
 
-    $employee = SuperAddUser::with(["admin", "hr"])->where("employee_id", $employee_id)->firstOrFail();
+    $employee = SuperAddUser::with(["admin", "hr", "latestFinancialData"])->where("employee_id", $employee_id)->firstOrFail();
     $sessionUser = SuperAddUser::where("email", session("user_email"))->first();
     $evaluatorName = $sessionUser
         ? trim($sessionUser->fname . " " . $sessionUser->lname)
@@ -60,13 +60,15 @@ class HomeController extends Controller
     $assignedUserName = fn ($user) => $user ? trim($user->fname . " " . $user->lname) : null;
 
     $isProbationLocked = $employee->probation_date && now()->lt(Carbon::parse($employee->probation_date));
+    $currentSalary = $employee->latestFinancialData?->final_salary ?? $employee->salary;
+    $salaryGrade = $this->salaryGradeFromSalary($currentSalary) ?? $employee->salary_grade;
 
     return view("evaluationForm.evaluationForm", [
         "employee_id"        => $employee->employee_id,
         "employee_name"      => $employee->fname . " " . $employee->lname,
         "evaluator_name"     => $evaluatorName,
         "designation"        => $employee->designation,
-        "salary_grade"       => $employee->salary_grade,
+        "salary_grade"       => $salaryGrade,
         "evaluation_purpose" => $employee->evaluation_purpose,
         "manager_name"       => $employee->manager_name,
         "admin_name"         => $assignedUserName($employee->admin),
@@ -79,6 +81,38 @@ class HomeController extends Controller
         "probation_date" => $employee->probation_date,
     ]);
 }
+
+
+    private function salaryGradeFromSalary($salary): ?string
+    {
+        if ($salary === null || $salary === '') {
+            return null;
+        }
+
+        $annualCTC = (float) $salary;
+
+        if ($annualCTC < 200000) {
+            return 'F';
+        }
+
+        if ($annualCTC <= 349999) {
+            return 'E';
+        }
+
+        if ($annualCTC <= 499999) {
+            return 'D';
+        }
+
+        if ($annualCTC <= 649999) {
+            return 'C';
+        }
+
+        if ($annualCTC <= 900000) {
+            return 'B';
+        }
+
+        return 'A';
+    }
 
     // Send OTP to user email
     public function sendOtp(Request $request)
