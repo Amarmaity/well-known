@@ -14,6 +14,8 @@ $(function () {
     const duplicateCheckUrl = window.evaluationConfig?.duplicateCheckUrl || '';
     const userType = (window.evaluationConfig?.userType || '').toString().toLowerCase();
     const employeeStatus = (window.evaluationConfig?.employeeStatus || '').toString().toLowerCase();
+    const probationDate = window.evaluationConfig?.probationDate || '';
+    const isProbationLocked = Boolean(window.evaluationConfig?.isProbationLocked) || employeeStatus.includes('probation');
 
     const $form = $("#evaluationForm");
     const $submitBtn = $("#evaluationSubmitBtn");
@@ -64,15 +66,19 @@ $(function () {
     }
 
     function showProbationAlert() {
+        const probationText = probationDate
+            ? `Evaluation cannot be submitted while the employee is under probation period. Probation date: ${probationDate}.`
+            : 'Evaluation cannot be submitted while the employee is under probation period.';
+
         Swal.fire({
             icon: 'warning',
             title: 'Under Probation',
-            text: 'You are under probation period.'
+            text: probationText
         });
     }
 
     function isProbationUser() {
-        return userType === 'user' && employeeStatus !== 'employee';
+        return isProbationLocked;
     }
 
     function getRatingValue(id) {
@@ -115,7 +121,44 @@ $(function () {
         });
     }
 
+    function updateEvaluationCommentCounter(textarea) {
+        const limit = parseInt(textarea.getAttribute('maxlength'), 10) || 1500;
+        const count = textarea.value.length;
+        const counter = textarea.parentElement.querySelector('.evaluation-char-counter');
+
+        if (counter) {
+            counter.textContent = `${count}/${limit}`;
+            counter.classList.toggle('is-limit', count >= limit);
+        }
+    }
+
+    function initEvaluationCommentCounters() {
+        $form.find('textarea').each(function () {
+            this.setAttribute('maxlength', '1500');
+
+            if (!this.parentElement.querySelector('.evaluation-char-counter')) {
+                $(this).after('<div class="evaluation-char-counter" aria-live="polite">0/1500</div>');
+            }
+
+            updateEvaluationCommentCounter(this);
+        });
+    }
+
     function validateForm() {
+        if (isProbationUser()) {
+            return {
+                message: 'Evaluation cannot be submitted while the employee is under probation period.',
+                field: null
+            };
+        }
+
+        if (duplicateSubmissionLocked) {
+            return {
+                message: 'You already submitted for this financial year.',
+                field: null
+            };
+        }
+
         if (!$form[0].checkValidity()) {
             $form[0].reportValidity();
             const firstInvalid = $form[0].querySelector(':invalid');
@@ -139,7 +182,7 @@ $(function () {
 
         const requiredRatings = ['qw1', 'qw2', 'qw3', 'wh1', 'wh2', 'wh3', 'wh4', 'jk1', 'jk2', 'jk3', 'ir1', 'ir2', 'ir3', 'ir4', 'ir5', 'ls1', 'ls2', 'ls3'];
         for (const id of requiredRatings) {
-            if (!$('#' + id).val()) {
+            if (getRatingValue(id) <= 0) {
                 markFieldInvalid('#' + id);
                 return {
                     message: 'Please complete all rating fields before sending OTP.',
@@ -213,6 +256,14 @@ $(function () {
                 return;
             }
 
+            if ($field.is('select')) {
+                const selectedOption = field.options[field.selectedIndex];
+                if (!$field.val() || (selectedOption && selectedOption.disabled)) {
+                    complete = false;
+                }
+                return;
+            }
+
             if (type === 'radio') {
                 const name = $field.attr('name');
                 if (!name || checkedRadioGroups.has(name)) {
@@ -239,15 +290,27 @@ $(function () {
     }
 
     function updateSubmitAvailability() {
+        if (isProbationUser()) {
+            setSubmitDisabled(true, 'Under Probation');
+            $submitBtn.attr('title', 'Evaluation cannot be submitted while the employee is under probation period.');
+            return;
+        }
+
         if (duplicateSubmissionLocked) {
             setSubmitDisabled(true, 'Already Submitted');
             return;
         }
 
+        $submitBtn.removeAttr('title');
         setSubmitDisabled(!isFormComplete(), 'Submit');
     }
 
     function checkExistingEvaluation() {
+        if (isProbationUser()) {
+            updateSubmitAvailability();
+            return;
+        }
+
         const empId = $('#emp_id').val();
         const financialYear = $('#financialYear').val();
 
@@ -444,6 +507,11 @@ $(function () {
     function bindValidationStyles() {
         $form.on('input change blur', 'input, select, textarea', function () {
             clearFieldInvalid(this);
+
+            if (this.tagName && this.tagName.toLowerCase() === 'textarea') {
+                updateEvaluationCommentCounter(this);
+            }
+
             updateSubmitAvailability();
         });
 
@@ -455,6 +523,7 @@ $(function () {
     $('#financialYear').on('change', checkExistingEvaluation);
 
     applyMandatoryFields();
+    initEvaluationCommentCounters();
     bindValidationStyles();
     bindRatingListeners();
     updateSubmitAvailability();

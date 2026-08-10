@@ -59,6 +59,8 @@ class HomeController extends Controller
         : $employee->fname . " " . $employee->lname;
     $assignedUserName = fn ($user) => $user ? trim($user->fname . " " . $user->lname) : null;
 
+    $isProbationLocked = $employee->probation_date && now()->lt(Carbon::parse($employee->probation_date));
+
     return view("evaluationForm.evaluationForm", [
         "employee_id"        => $employee->employee_id,
         "employee_name"      => $employee->fname . " " . $employee->lname,
@@ -73,6 +75,8 @@ class HomeController extends Controller
         "dob"                => $employee->dob,
         "financial_year"     => $employee->financial_year,
         "employee_status" => $employee->employee_status,
+        "is_probation_locked" => $isProbationLocked,
+        "probation_date" => $employee->probation_date,
     ]);
 }
 

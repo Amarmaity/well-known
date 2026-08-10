@@ -171,6 +171,18 @@
     resize: vertical;
 }
 
+.self-review-page .evaluation-char-counter {
+    justify-self: end;
+    color: var(--self-muted);
+    font-size: .74rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.self-review-page .evaluation-char-counter.is-limit {
+    color: #dc3545;
+}
+
 .self-review-page .content > .form-section {
     margin: 0;
 }
@@ -303,6 +315,11 @@
     background: var(--self-primary) !important;
     font-size: .88rem;
     font-weight: 650;
+}
+
+.self-review-page #evaluationSubmitBtn:disabled {
+    cursor: not-allowed;
+    opacity: .55;
 }
 
 button.info-button {

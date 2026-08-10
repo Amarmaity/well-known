@@ -815,7 +815,9 @@
     window.evaluationConfig = {
         sessionEmail: @json(session('user_email')),
         userType: @json(session('user_type')),
-        employeeStatus: @json(session('employee_status')),
+        employeeStatus: @json($employee_status ?? session('employee_status')),
+        isProbationLocked: @json((bool) ($is_probation_locked ?? false)),
+        probationDate: @json($probation_date ?? null),
         sendOtpUrl: @json(route('evaluation-send-otp')),
         verifyOtpUrl: @json(route('evaluation-verify-otp')),
         duplicateCheckUrl: @json(route('check-duplicate-evaluation')),
