@@ -124,7 +124,7 @@
                                 <label for="comments_employee_work_quality" class="third-label">Tell us more about your
                                     experience:</label>
                             <textarea name="comments_rate_employee_quality" id="comments" class="form-control" rows="1" required minlength="1"
-                                    cols="50" maxlength="255"
+                                    cols="50" maxlength="1500"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
                             <label for="organizational_goals" class="second-label">2. Does the employee align their work
@@ -146,7 +146,7 @@
                                 <label for="comments_organizational_goals" class="third-label">Tell us more about your
                                     experience:</label>
                             <textarea name="comments_organizational_goals" id="comments" class="form-control" rows="1" required minlength="1"
-                                    cols="50" maxlength="255"
+                                    cols="50" maxlength="1500"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -169,7 +169,7 @@
                                 <label for="comments_collaborate_colleagues" class="third-label">Tell us more about your
                                     experience:</label>
                                 <textarea name="comments_collaborate_colleagues" id="comments" class="form-control" rows="1" required minlength="1"
-                                    cols="50" maxlength="255"
+                                    cols="50" maxlength="1500"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -192,7 +192,7 @@
                                 <label for="comments_demonstrated" class="third-label">Tell us more about your
                                     experience:</label>
                                 <textarea name="comments_demonstrated" id="comments" class="form-control" rows="1" cols="50" required minlength="1"
-                                    maxlength="255"
+                                    maxlength="1500"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -216,7 +216,7 @@
                                     your
                                     experience:</label>
                                 <textarea name="comments_leadership_responsibilities" id="comments" class="form-control" required minlength="1"
-                                    rows="1" cols="50" maxlength="255"
+                                    rows="1" cols="50" maxlength="1500"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -239,7 +239,7 @@
                                 <label for="comments_thinking_contribution" class="third-label">Tell us more about your
                                     experience:</label>
                                 <textarea name="comments_thinking_contribution" id="comments" class="form-control" rows="1" required minlength="1"
-                                    cols="50" maxlength="255"
+                                    cols="50" maxlength="1500"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
 
@@ -263,7 +263,7 @@
                                 <label for="comments_informed_progress" class="third-label">Tell us more about your
                                     experience:</label>
                                 <textarea name="comments_comments_informed_progress" id="comments" class="form-control" required minlength="1"
-                                    rows="1" cols="50" maxlength="255"
+                                    rows="1" cols="50" maxlength="1500"
                                     placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                             </div>
                         </div>
@@ -347,7 +347,11 @@
             }
 
             // Handle input typing
-            $('#employee_search').on('keyup', searchUser);
+            $('#employee_search').on('keyup', function () {
+                $('#emp_id_input').val('').removeData('manager-reviewed-years');
+                syncManagerReviewFormState();
+                searchUser();
+            });
             $('#employeeSearchBtn').on('click', function () {
                 searchUser();
             });
@@ -367,6 +371,33 @@
             });
 
             $('#financialYear').on('change', syncManagerReviewFormState);
+            $('#ManagerReviewSubmit').on('input change', 'input, select, textarea', syncManagerReviewFormState);
+            $('#ManagerReviewSubmit').on('input', 'textarea', function () {
+                updateManagerCommentCounter(this);
+            });
+
+            function updateManagerCommentCounter(textarea) {
+                const limit = parseInt(textarea.getAttribute('maxlength'), 10) || 1500;
+                const count = textarea.value.length;
+                const counter = textarea.parentElement.querySelector('.manager-char-counter');
+
+                if (counter) {
+                    counter.textContent = `${count}/${limit}`;
+                    counter.classList.toggle('is-limit', count >= limit);
+                }
+            }
+
+            function initManagerCommentCounters() {
+                $('#ManagerReviewSubmit textarea').each(function () {
+                    this.setAttribute('maxlength', '1500');
+
+                    if (!this.parentElement.querySelector('.manager-char-counter')) {
+                        $(this).after('<div class="manager-char-counter" aria-live="polite">0/1500</div>');
+                    }
+
+                    updateManagerCommentCounter(this);
+                });
+            }
 
             function getManagerReviewedYears() {
                 const reviewedYears = $('#emp_id_input').data('manager-reviewed-years') || [];
@@ -386,17 +417,59 @@
                 return [];
             }
 
+            function isManagerReviewFormComplete() {
+                if (!$('#financialYear').val()) {
+                    return false;
+                }
+
+                if (!$('#employee_search').val().trim() || !$('#emp_id_input').val()) {
+                    return false;
+                }
+
+                let complete = true;
+
+                $('#ManagerReviewSubmit').find('select[required], textarea[required], input[required]').each(function () {
+                    if (!complete) {
+                        return;
+                    }
+
+                    const $field = $(this);
+                    const type = ($field.attr('type') || '').toLowerCase();
+
+                    if ($field.is(':disabled') || type === 'hidden') {
+                        return;
+                    }
+
+                    if ($field.is('select')) {
+                        const selectedOption = this.options[this.selectedIndex];
+                        if (!$field.val() || (selectedOption && selectedOption.disabled)) {
+                            complete = false;
+                        }
+                        return;
+                    }
+
+                    if (!$field.val() || !$field.val().trim()) {
+                        complete = false;
+                    }
+                });
+
+                return complete;
+            }
+
             function syncManagerReviewFormState() {
                 const financialYear = $('#financialYear').val();
                 const reviewedYears = getManagerReviewedYears();
                 const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
 
                 $('#reviewExistsError').toggle(reviewExists);
-                $('#submitBtn').prop('disabled', reviewExists);
                 $('#ManagerReviewSubmit')
                     .find('select:not(#financialYear), textarea')
                     .prop('disabled', reviewExists);
+                $('#submitBtn').prop('disabled', reviewExists || !isManagerReviewFormComplete());
             }
+
+            initManagerCommentCounters();
+            syncManagerReviewFormState();
         });
 
         document.getElementById("ManagerReviewSubmit").addEventListener("submit", function (event) {

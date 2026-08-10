@@ -19,7 +19,7 @@
     @endphp
 
     <div class="review-read-page">
-        
+
         <div class="review-read-header">
             <a href="{{ url()->previous() }}" class="review-read-back margin-bottom-15px">
                 <i class="bi bi-arrow-left"></i>
@@ -36,58 +36,58 @@
         </div>
 
         @unless ($hideEmployeeEvaluationDetails)
-        <!-- Employee Evaluation History Table -->
-        <div class="review-read-card">
-            <div class="review-read-section-title">
-                <i class="bi bi-person-vcard"></i>
-                Employee and Evaluation Details
-            </div>
-            <div class="table-wrapper">
-                <table id="employeeEvaluationTable" class="table table-bordered table-hover main-table">
-                    <tbody>
-                        @foreach ($eval as $evaluation)
-                            <tr>
-                                <td>Designation:</td>
-                                <td>{{ $evaluation->designation }}</td>
-                            </tr>
-                            <tr>
-                                <td>Salary Grade/Band:</td>
-                                <td>{{ $evaluation->salary_grade }}</td>
-                            </tr>
-                            <tr>
-                                <td>Name of Employee:</td>
-                                <td>{{ $evaluation->employee_name }}</td>
-                            </tr>
-                            <tr>
-                                <td>Employee Id:</td>
-                                <td>{{ $evaluation->emp_id }}</td>
-                            </tr>
+            <!-- Employee Evaluation History Table -->
+            <div class="review-read-card">
+                <div class="review-read-section-title">
+                    <i class="bi bi-person-vcard"></i>
+                    Employee and Evaluation Details
+                </div>
+                <div class="table-wrapper">
+                    <table id="employeeEvaluationTable" class="table table-bordered table-hover main-table">
+                        <tbody>
+                            @foreach ($eval as $evaluation)
+                                <tr>
+                                    <td>Designation:</td>
+                                    <td>{{ $evaluation->designation }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Salary Grade/Band:</td>
+                                    <td>{{ $evaluation->salary_grade }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Name of Employee:</td>
+                                    <td>{{ $evaluation->employee_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Employee Id:</td>
+                                    <td>{{ $evaluation->emp_id }}</td>
+                                </tr>
 
-                            <tr>
-                                <td>Division:</td>
-                                <td>{{ $evaluation->division }}</td>
-                            </tr>
-                            <tr>
-                                <td>Manager Name:</td>
-                                <td>{{ $evaluation->manager_name }}</td>
-                            </tr>
-                            <tr>
-                                <td>Joining Date:</td>
-                                <td>{{ $evaluation->joining_date }}</td>
-                            </tr>
-                            <tr>
-                                <td>Evaluation Purpose:</td>
-                                <td>{{ $evaluation->evaluation_purpose }}</td>
-                            </tr>
-                            <tr>
-                                <td>Review Period:</td>
-                                <td>{{ $evaluation->review_period }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                <tr>
+                                    <td>Division:</td>
+                                    <td>{{ $evaluation->division }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Manager Name:</td>
+                                    <td>{{ $evaluation->manager_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Joining Date:</td>
+                                    <td>{{ $evaluation->joining_date }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Evaluation Purpose:</td>
+                                    <td>{{ $evaluation->evaluation_purpose }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Review Period:</td>
+                                    <td>{{ $evaluation->review_period }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
         @endunless
 
         <div class="review-read-card second-table">

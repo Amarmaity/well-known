@@ -289,6 +289,18 @@
     font-size: .84rem;
 }
 
+.manager-review-page .manager-char-counter {
+    justify-self: end;
+    color: var(--manager-muted);
+    font-size: .74rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.manager-review-page .manager-char-counter.is-limit {
+    color: #dc3545;
+}
+
 .manager-review-page .total-block {
     display: flex;
     align-items: center;
@@ -333,6 +345,11 @@
     background: var(--manager-primary) !important;
     font-size: .88rem;
     font-weight: 650;
+}
+
+.manager-review-page #submitBtn:disabled {
+    cursor: not-allowed;
+    opacity: .55;
 }
 
 .manager-review-page .loading {
