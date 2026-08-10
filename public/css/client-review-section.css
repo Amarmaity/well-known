@@ -247,6 +247,13 @@
     line-height: 1.35;
 }
 
+.client-review-page .second-label::after,
+.client-review-page .third-label::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: 700;
+}
+
 .client-review-page .content-block .content > .second-label {
     margin-top: 2px;
 }
