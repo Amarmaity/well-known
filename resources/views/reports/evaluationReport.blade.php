@@ -6,6 +6,24 @@
     $totalScoreDisplay = floor($totalScore) === $totalScore
         ? number_format($totalScore, 0)
         : rtrim(rtrim(number_format($totalScore, 2, '.', ''), '0'), '.');
+    $assignedEmployee = $employee ?? null;
+    $formatAssignedName = static function ($assignedUser) {
+        if (!$assignedUser) {
+            return 'N/A';
+        }
+
+        $name = trim(($assignedUser->fname ?? '') . ' ' . ($assignedUser->lname ?? ''));
+
+        return $name !== '' ? $name : ($assignedUser->employee_id ?? 'N/A');
+    };
+    $assignedManagerName = $assignedEmployee
+        ? $formatAssignedName($assignedEmployee->manager)
+        : ($evaluation->manager_name ?: 'N/A');
+    if ($assignedManagerName === 'N/A' && !empty($evaluation->manager_name)) {
+        $assignedManagerName = $evaluation->manager_name;
+    }
+    $assignedAdminName = $assignedEmployee ? $formatAssignedName($assignedEmployee->admin) : 'N/A';
+    $assignedHrName = $assignedEmployee ? $formatAssignedName($assignedEmployee->hr) : 'N/A';
 @endphp
 
 <div class="review-read-page review-read-page--embedded">
@@ -38,8 +56,16 @@
                         <td>{{ $evaluation->division }}</td>
                     </tr>
                     <tr>
-                        <td>Manager Name:</td>
-                        <td>{{ $evaluation->manager_name }}</td>
+                        <td>Assigned Manager Name:</td>
+                        <td>{{ $assignedManagerName }}</td>
+                    </tr>
+                    <tr>
+                        <td>Assigned Admin Name:</td>
+                        <td>{{ $assignedAdminName }}</td>
+                    </tr>
+                    <tr>
+                        <td>Assigned HR Name:</td>
+                        <td>{{ $assignedHrName }}</td>
                     </tr>
                     <tr>
                         <td>Joining Date:</td>

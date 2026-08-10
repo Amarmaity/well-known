@@ -16,6 +16,18 @@
 
     @php
         $hideEmployeeEvaluationDetails = in_array(session('user_type'), ['admin', 'hr', 'manager', 'client'], true);
+        $formatAssignedName = static function ($assignedUser) {
+            if (!$assignedUser) {
+                return 'N/A';
+            }
+
+            $name = trim(($assignedUser->fname ?? '') . ' ' . ($assignedUser->lname ?? ''));
+
+            return $name !== '' ? $name : ($assignedUser->employee_id ?? 'N/A');
+        };
+        $assignedManagerName = $formatAssignedName($employee->manager);
+        $assignedAdminName = $formatAssignedName($employee->admin);
+        $assignedHrName = $formatAssignedName($employee->hr);
     @endphp
 
     <div class="review-read-page">
@@ -68,8 +80,16 @@
                                     <td>{{ $evaluation->division }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Manager Name:</td>
-                                    <td>{{ $evaluation->manager_name }}</td>
+                                    <td>Assigned Manager Name:</td>
+                                    <td>{{ $assignedManagerName !== 'N/A' ? $assignedManagerName : ($evaluation->manager_name ?: 'N/A') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Assigned Admin Name:</td>
+                                    <td>{{ $assignedAdminName }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Assigned HR Name:</td>
+                                    <td>{{ $assignedHrName }}</td>
                                 </tr>
                                 <tr>
                                     <td>Joining Date:</td>

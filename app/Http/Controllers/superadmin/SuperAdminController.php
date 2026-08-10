@@ -711,7 +711,7 @@ class SuperAdminController extends Controller
             $isAlreadySaved = $employee->final_salary == $finalSalary;
 
             $alreadyAppraised = FinancialData::where('emp_id', $employeeIdentifier)
-                ->whereYear('apprisal_date', now()->year)
+                ->where('financial_year', $financialYear)
                 ->exists();
 
             return response()->json([
@@ -804,7 +804,11 @@ class SuperAdminController extends Controller
             ->latest('id')
             ->firstOrFail();
 
-        return view('reports.evaluationReport', compact('user'));
+        $employee = SuperAddUser::with(['manager', 'admin', 'hr'])
+            ->where('employee_id', $emp_id)
+            ->first();
+
+        return view('reports.evaluationReport', compact('user', 'employee'));
     }
 
     public function getSuperAdminHrReview(Request $request, $emp_id)

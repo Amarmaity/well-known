@@ -1083,7 +1083,12 @@ class allUserController extends Controller
         $user = evaluationTable::where('emp_id', $emp_id)
             ->where('financial_year', $financialYear)
             ->firstOrFail();
-        return view('reports.evaluationReport', compact('user'));
+
+        $employee = SuperAddUser::with(['manager', 'admin', 'hr'])
+            ->where('employee_id', $emp_id)
+            ->first();
+
+        return view('reports.evaluationReport', compact('user', 'employee'));
     }
 
 
@@ -1227,7 +1232,10 @@ class allUserController extends Controller
     {
         $financial_year = request()->query('financial_year');
 
-        $employee = SuperAddUser::where('employee_id', $employee_id)->whereNotIn('user_type', ['client',])->first();
+        $employee = SuperAddUser::with(['manager', 'admin', 'hr'])
+            ->where('employee_id', $employee_id)
+            ->whereNotIn('user_type', ['client'])
+            ->first();
 
         if (!$employee) {
             return redirect()->back()->with('error', 'Employee not found');
