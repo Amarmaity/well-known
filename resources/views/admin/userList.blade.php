@@ -768,7 +768,10 @@
 
                                     {{-- Salary --}}
                                     <td>
-                                        <div class="emp-salary">₹{{ number_format($user->salary) }}</div>
+                                        @php
+                                            $displaySalary = $user->latestFinancialData?->final_salary ?? $user->salary;
+                                        @endphp
+                                        <div class="emp-salary">₹{{ number_format((float) $displaySalary) }}</div>
                                         <div class="emp-salary-grade">
                                             @if ($user->salary_grade)
                                                 <span class="emp-grade-pill">{{ $user->salary_grade }}</span>

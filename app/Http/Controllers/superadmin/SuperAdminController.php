@@ -751,6 +751,7 @@ class SuperAdminController extends Controller
         $currentDate = Carbon::now()->toDateString();
 
         $users = SuperAddUser::query()
+            ->with('latestFinancialData')
             ->where(function ($query) use ($currentDate) {
                 $query->where('probation_date', '<=', $currentDate)
                     ->orWhere('designation', 'Client');

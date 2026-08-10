@@ -104,6 +104,12 @@ class SuperAddUser extends Model
         return $this->hasOne(FinancialData::class, 'emp_id', 'employee_id');
     }
 
+    public function latestFinancialData()
+    {
+        return $this->hasOne(FinancialData::class, 'emp_id', 'employee_id')
+            ->latestOfMany('id');
+    }
+
     public function manager()
     {
         return $this->belongsTo(SuperAddUser::class, 'manager_id');

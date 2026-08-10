@@ -72,14 +72,14 @@
                     <div class="row form-section">
                         <div class="col-md-6">
                             <label for="fname" class="forms-label">First Name</label>
-                            <input type="text" name="fname" id="fname" class="form-control readonly-field"
-                                value="{{ $user->fname }}" readonly>
+                            <input type="text" name="fname" id="fname" class="form-control"
+                                value="{{ $user->fname }}" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="lname" class="forms-label">Last Name</label>
-                            <input type="text" name="lname" id="lname" class="form-control readonly-field"
-                                value="{{ $user->lname }}" readonly>
+                            <input type="text" name="lname" id="lname" class="form-control"
+                                value="{{ $user->lname }}" required>
                         </div>
 
 
