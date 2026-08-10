@@ -61,18 +61,18 @@
                             <td>{{ $review->comments_collaborate_colleagues }}</td>
                         </tr>
                         <tr>
-                            <td>4. Has the employee shown leadership potential or accepted additional responsibilities?</td>
-                            <td><span class="review-rating">{{ $review->leadership_responsibilities }}/5</span></td>
-                            <td>{{ $review->comments_leadership_responsibilities }}</td>
-                        </tr>
-                        <tr>
-                            <td>5. Can you provide an example of when the employee demonstrated problem-solving skills?</td>
+                            <td>4. Can you provide an example of when the employee demonstrated problem-solving skills?</td>
                             <td><span class="review-rating">{{ $review->demonstrated }}/5</span></td>
                             <td>{{ $review->comments_demonstrated }}</td>
                         </tr>
                         <tr>
+                            <td>5. Has the employee shown leadership potential or accepted additional responsibilities?</td>
+                            <td><span class="review-rating">{{ $review->leadership_responsibilities }}/5</span></td>
+                            <td>{{ $review->comments_leadership_responsibilities }}</td>
+                        </tr>
+                        <tr>
                             <td>6. How would you rate the employee’s innovative thinking and contribution to team success?</td>
-                            <td><span class="review-rating">{{ $review->demonstrated }}/5</span></td>
+                            <td><span class="review-rating">{{ $review->thinking_contribution }}/5</span></td>
                             <td>{{ $review->comments_thinking_contribution }}</td>
                         </tr>
                         <tr>

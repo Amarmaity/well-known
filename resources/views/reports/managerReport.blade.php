@@ -37,13 +37,13 @@
         </tr>
         <tr>
             <td>4. Can you provide an example of when the employee demonstrated problem-solving skills? </td>
-            <td>({{ $user->leadership_responsibilities }}/5)</td>
-            <td>{{ $user->comments_leadership_responsibilities }}</td>
+            <td>({{ $user->demonstrated }}/5)</td>
+            <td>{{ $user->comments_demonstrated }}</td>
         </tr>
         <tr>
             <td>5. Has the employee shown leadership potential or accepted additional responsibilities?</td>
-            <td>({{ $user->demonstrated }}/5)</td>
-            <td>{{ $user->comments_demonstrated }}</td>
+            <td>({{ $user->leadership_responsibilities }}/5)</td>
+            <td>{{ $user->comments_leadership_responsibilities }}</td>
         </tr>
         <tr>
             <td>6. How would you rate the employee’s innovative thinking and contribution to team success? </td>
