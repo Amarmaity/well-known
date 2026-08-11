@@ -124,7 +124,7 @@
                             <select class="form-control" id="designation_dropdown" name="designation" required>
                                 <option value="" disabled {{ $user->designation == null ? 'selected' : '' }}>Select
                                     Designation</option>
-                                <option value="Hr" {{ $user->designation == 'Hr' ? 'selected' : '' }}>Hr</option>
+                                <option value="Hr" {{ $user->designation == 'Hr' ? 'selected' : '' }}>HR</option>
                                 <option value="SEO" {{ $user->designation == 'SEO' ? 'selected' : '' }}>SEO</option>
                                 <option value="Admin" {{ $user->designation == 'Admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="UI/UX Designer"
@@ -246,19 +246,19 @@
                         </div>
 
                         <div class="client-hide col-md-6">
-                            <label for="salary" class="forms-label">Salary</label>
+                            <label for="salary" class="forms-label">Salary / Updated CTC</label>
                             <input type="number" class="form-control" id="salary" name="salary"
-                                placeholder="Enter Salary" min="0" value="{{ $user->salary }}" required>
+                                placeholder="Enter Salary" min="0" value="{{ old('salary', $currentSalary ?? $user->salary) }}" required>
                         </div>
 
                         <div class="client-hide col-md-6">
                             <label for="salary_grade" class="forms-label">Salary Grade/Band</label>
                             <select class="form-control" id="salary_grade" name="salary_grade" required>
-                                <option value="" disabled {{ $user->salary_grade == null ? 'selected' : '' }}>Salary
+                                <option value="" disabled {{ old('salary_grade', $currentSalaryGrade ?? $user->salary_grade) == null ? 'selected' : '' }}>Salary
                                     Grade</option>
                                 @foreach (['A', 'B', 'C', 'D', 'E', 'F'] as $grade)
                                     <option value="{{ $grade }}"
-                                        {{ $user->salary_grade == $grade ? 'selected' : '' }}>{{ $grade }}</option>
+                                        {{ old('salary_grade', $currentSalaryGrade ?? $user->salary_grade) == $grade ? 'selected' : '' }}>{{ $grade }}</option>
                                 @endforeach
                             </select>
                         </div>

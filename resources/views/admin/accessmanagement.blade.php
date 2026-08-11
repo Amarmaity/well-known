@@ -32,11 +32,10 @@
 
     <div class="access-shell">
         <div class="access-toolbar">
-            <div>
-                <a href="{{ route('setting-view') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i>
-                    <span>Back to Settings</span>
-                </a>
+            <div class="review-detail-header">
+                <button type="button" onclick="history.back()" class="review-back-btn">
+                    Back
+                </button>
                 <div class="access-title-block mt-3">
                     <h1>Access Management</h1>
                     <p>Assign sidebar modules and their related routes to admins, HRs, and managers.</p>

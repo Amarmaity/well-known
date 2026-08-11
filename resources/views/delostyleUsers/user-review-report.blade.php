@@ -78,21 +78,20 @@
                     <i class="bi bi-bar-chart-line"></i>
                     Review Score Summary
                 </div>
-
                 <div class="review-score-grid">
                     <div class="review-score-item" id="totalScoreBlock">
                         <div class="review-score-label" id="evaluationColumnHeader">Total Evaluation Score</div>
                         <div class="review-score-value" id="totalScoreCell"></div>
                     </div>
 
-                    <div class="review-score-item" id="adminScoreBlock">
-                        <div class="review-score-label" id="adminColumnHeader">Admin Review Score</div>
-                        <div class="review-score-value" id="adminScoreCell"></div>
-                    </div>
-
                     <div class="review-score-item" id="hrScoreBlock">
                         <div class="review-score-label" id="hrColumnHeader">HR Review Score</div>
                         <div class="review-score-value" id="hrScoreCell"></div>
+                    </div>
+
+                    <div class="review-score-item" id="adminScoreBlock">
+                        <div class="review-score-label" id="adminColumnHeader">Admin Review Score</div>
+                        <div class="review-score-value" id="adminScoreCell"></div>
                     </div>
 
                     <div class="review-score-item" id="managerScoreBlock">

@@ -414,3 +414,31 @@
         width: 100%;
     }
 }
+
+.access-management-page .review-back-btn {
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    padding: 0 14px;
+    font-size: .8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .15s ease, border-color .15s ease, color .15s ease, transform .05s ease;
+    margin-bottom: 10px;
+}
+
+.access-management-page .review-back-btn:hover {
+    background: #4E6382;
+    border-color: #4E6382;
+    color: #111827;
+}
+
+.access-management-page .review-back-btn:active {
+    transform: translateY(1px);
+}

@@ -88,7 +88,7 @@
                                     <label for="designation" class="forms-label">Designation</label>
                                     <select class="form-control" id="designation_dropdown" name="designation" required>
                                         <option value="" selected disabled>Select Designation</option>
-                                        <option value=" Hr">Hr</option>
+                                        <option value=" Hr">HR</option>
                                         <option value="SEO">SEO</option>
                                         <option value="Admin">Admin</option>
                                         <option value="UI/UX Designer">UI/UX Designer</option>

@@ -190,6 +190,12 @@
     color: var(--emp-ink-700);
 }
 
+.bi-envelope::before {
+    content: "\f32f";
+    color: grey;
+    margin-top: 5px ;
+}
+
 .emp-page table.emp-table tbody tr.emp-row {
     height: 60px;
     transition: background .12s ease;
@@ -253,6 +259,49 @@
     font-size: 11px;
     color: var(--emp-ink-300);
     min-width: 12px;
+    transition: color .15s ease;
+}
+
+.emp-page table.emp-table tbody tr.emp-row:hover .emp-copy-btn {
+    opacity: 1;
+}
+
+.emp-page .emp-copy-btn {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--emp-ink-300);
+    opacity: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: opacity .12s ease, color .12s ease, background .12s ease;
+    flex: none;
+}
+
+.emp-page .emp-copy-btn:hover {
+    color: var(--emp-primary);
+    background: var(--emp-primary-soft);
+}
+
+.emp-page .emp-copy-btn.is-copied {
+    opacity: 1;
+    color: var(--emp-success);
+}
+
+.emp-page .emp-copy-btn i {
+    font-size: 12px;
+}
+
+.emp-page .emp-copy-row:hover i.emp-inline-icon,
+.emp-page .emp-copy-row:hover i.emp-inline-icon::before,
+.emp-page .emp-row:hover .emp-copy-row i.emp-inline-icon,
+.emp-page .emp-row:hover .emp-copy-row i.emp-inline-icon::before {
+    color: var(--emp-ink-900);
 }
 
 .emp-page .emp-copy-text {
@@ -502,3 +551,20 @@
         min-width: 820px;
     }
 }
+
+.emp-page .emp-grade-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    min-height: 24px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--emp-primary-soft);
+    color: var(--emp-primary);
+    font-size: .76rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+

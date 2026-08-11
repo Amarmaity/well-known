@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminReviewTable;
 use App\Models\ApprisalTable;
+use App\Models\ClientReviewTable;
 use App\Models\FinancialData;
+use App\Models\HrReviewTable;
+use App\Models\ManagerReviewTable;
 use App\Models\SuperAddUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,12 +48,38 @@ class FinancialYearController extends Controller
                 ], 400);
             }
 
+            $superUser = SuperAddUser::where('employee_id', $empId)->first();
+            $userRoles = json_decode($superUser?->user_roles ?? '[]', true);
+            $userRoles = is_array($userRoles) ? array_values(array_filter($userRoles)) : [];
+            $missingReviews = [];
+
+            if (in_array('hr', $userRoles, true) && !HrReviewTable::where('emp_id', $empId)->where('financial_year', $financialYear)->exists()) {
+                $missingReviews[] = 'HR Review';
+            }
+
+            if (in_array('admin', $userRoles, true) && !AdminReviewTable::where('emp_id', $empId)->where('financial_year', $financialYear)->exists()) {
+                $missingReviews[] = 'Admin Review';
+            }
+
+            if (in_array('manager', $userRoles, true) && !ManagerReviewTable::where('emp_id', $empId)->where('financial_year', $financialYear)->exists()) {
+                $missingReviews[] = 'Manager Review';
+            }
+
+            if (in_array('client', $userRoles, true) && !ClientReviewTable::where('emp_id', $empId)->where('financial_year', $financialYear)->exists()) {
+                $missingReviews[] = 'Client Review';
+            }
+
+            if (!empty($missingReviews)) {
+                return response()->json([
+                    'message' => 'Cannot save appraisal until pending reviews are completed: ' . implode(', ', $missingReviews) . '.',
+                ], 400);
+            }
+
             // Calculate salary grade based on final salary
             $finalSalary = $empData['final_salary'] ?? 0;
             $salaryGrade = $this->determineSalaryGrade($finalSalary);
 
             // Update salary_grade in SuperAddUser
-            $superUser = SuperAddUser::where('employee_id', $empId)->first();
             if ($superUser && $superUser->salary_grade !== $salaryGrade) {
                 $superUser->salary_grade = $salaryGrade;
                 $superUser->save();

@@ -4,6 +4,7 @@ $(document).ready(function () {
     const financialDataUrl = $financialForm.data('financial-data-url') || '';
     const financialStoreUrl = $financialForm.data('financial-store-url') || '';
     const csrfToken = $('meta[name="csrf-token"]').attr('content') || '';
+    const saveButtonHtml = $saveButton.html() || 'Save';
     const savingButtonHtml = '<i class="bi bi-hourglass-split"></i> Saving...';
     const alreadySubmittedText = 'Already Submitted';
 
@@ -106,6 +107,20 @@ $(document).ready(function () {
         return `<span class="${className} financial-score">${displayValue}</span>`;
     }
 
+    function pendingCell() {
+        return '<span class="financial-pending">Pending</span>';
+    }
+
+    function reviewCell(className, value) {
+        const numericValue = Number(value);
+
+        if (!Number.isFinite(numericValue) || numericValue <= 0) {
+            return pendingCell();
+        }
+
+        return scoreCell(className, numericValue);
+    }
+
     function moneyCell(className, value) {
         const displayValue = `₹${Math.floor(Number(value) || 0)}`;
         return `<span class="${className} financial-money">${displayValue}</span>`;
@@ -151,11 +166,11 @@ $(document).ready(function () {
                 const baseSalary = parseFloat(response.salary) || 0;
                 const percentage = parseFloat(response.company_percentage) || 0;
 
-                let showHRReview = userType !== 'hr' && hrReview > 0;
-                let showAdminReview = userType !== 'admin' && adminReview > 0;
-                let showManagerReview = !(userType === 'hr' || userType === 'admin' ||
-                    userType === 'manager') && managerReview > 0;
-                let showClientReview = clientReviewValue > 0;
+                let showHRReview = response.showHRColumn ?? (userType !== 'hr' && hrReview > 0);
+                let showAdminReview = response.showAdminColumn ?? (userType !== 'admin' && adminReview > 0);
+                let showManagerReview = response.showManagerColumn ?? (!(userType === 'hr' || userType === 'admin' ||
+                    userType === 'manager') && managerReview > 0);
+                let showClientReview = response.showClientColumn ?? (clientReviewValue > 0);
 
                 $('#hr-review-header').toggle(showHRReview);
                 $('#admin-review-header').toggle(showAdminReview);
@@ -182,10 +197,10 @@ $(document).ready(function () {
                     </td>
                     <td><span class="employeeId financial-muted">${safeEmployeeId}</span></td>
                     <td>${scoreCell('EvaluationScore', evaluationScore)}</td>
-                    ${showHRReview ? `<td>${scoreCell('hrReview', hrReview)}</td>` : ''}
-                    ${showAdminReview ? `<td>${scoreCell('adminReview', adminReview)}</td>` : ''}
-                    ${showManagerReview ? `<td>${scoreCell('managerReview', managerReview)}</td>` : ''}
-                    ${showClientReview ? `<td>${scoreCell('clientReview', clientReviewValue)}</td>` : ''}
+                    ${showHRReview ? `<td>${reviewCell('hrReview', hrReview)}</td>` : ''}
+                    ${showAdminReview ? `<td>${reviewCell('adminReview', adminReview)}</td>` : ''}
+                    ${showManagerReview ? `<td>${reviewCell('managerReview', managerReview)}</td>` : ''}
+                    ${showClientReview ? `<td>${reviewCell('clientReview', clientReviewValue)}</td>` : ''}
                     <td>${scoreCell('avgReview', avgReviewPercentage)}</td>
                     <td>${moneyCell('currentSalary', baseSalary)}</td>
                     <td><span class="percentage financial-percent">${percentage.toFixed(2)}%</span></td>
@@ -198,6 +213,14 @@ $(document).ready(function () {
 
                 if (response.alreadyAppraised) {
                     setSaveButtonAlreadySubmitted(selectedYear);
+                    return;
+                }
+
+                if (response.allRequiredReviewsCompleted === false) {
+                    const missingReviews = Array.isArray(response.missingReviews) && response.missingReviews.length > 0
+                        ? response.missingReviews.join(', ')
+                        : 'required reviews';
+                    setSaveButtonDisabled('Save', `Complete pending reviews before saving: ${missingReviews}.`);
                     return;
                 }
 

@@ -88,7 +88,7 @@ class ApplyProbationAppraisal extends Command
     $appraisal = ApprisalTable::where('financial_year', $financialYear)->first();
 
     if (!$appraisal) {
-        $this->info("⚠️ No appraisal data found for financial year {$financialYear}.");
+        $this->info("⚠️ No appraisal data was found for financial year {$financialYear}.");
         return Command::SUCCESS;
     }
 

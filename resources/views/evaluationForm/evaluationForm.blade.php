@@ -84,6 +84,11 @@
                                     placeholder="Enter designation" class="form-control" readonly>
                             </div>
                             <div class="col-12 col-sm-6">
+                                <label for="updated_ctc" class="forms-label">Updated CTC:</label>
+                                <input type="text" name="updated_ctc" id="updated_ctc" placeholder="Updated CTC"
+                                    value="{{ isset($current_salary) && $current_salary !== '' ? number_format((float) $current_salary, 0, '.', '') : '' }}" class="form-control" readonly>
+                            </div>
+                            <div class="col-12 col-sm-6">
                                 <label for="salary_grade" class="forms-label">Salary Grade/Band:</label>
                                 <input type="text" name="salary_grade" id="salary_grade" placeholder="Enter Salary Grade"
                                     value="{{ $salary_grade ?? '' }}" class="form-control" readonly>
@@ -95,7 +100,7 @@
                                     readonly>
                             </div>
                             <div class="col-12 col-sm-6">
-                                <label for="emp_id" class="forms-label">Employee Id:</label>
+                                <label for="emp_id" class="forms-label">Employee ID:</label>
                                 <input type="text" name="emp_id" id="emp_id" value="{{ $employee_id ?? '' }}"
                                     placeholder="Enter Employee Id" class="form-control" readonly>
                             </div>

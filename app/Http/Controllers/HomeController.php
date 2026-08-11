@@ -69,6 +69,7 @@ class HomeController extends Controller
         "evaluator_name"     => $evaluatorName,
         "designation"        => $employee->designation,
         "salary_grade"       => $salaryGrade,
+        "current_salary"     => $currentSalary,
         "evaluation_purpose" => $employee->evaluation_purpose,
         "manager_name"       => $employee->manager_name,
         "admin_name"         => $assignedUserName($employee->admin),
@@ -272,8 +273,8 @@ class HomeController extends Controller
         =============================== */
 
         $request->validate([
-            'evaluator_signatur' => 'required|mimes:jpg,jpeg,png|max:2048',
-            'director_signatur' => 'nullable|mimes:jpg,png,pdf|max:2048',
+            'evaluator_signatur' => 'required|file|extensions:jpg,jpeg,png,pdf|max:2048',
+            'director_signatur' => 'nullable|file|extensions:jpg,jpeg,png,pdf|max:2048',
             'evaluator_signatur_date' => ['required', 'date', 'date_equals:' . $today],
             'financial_year' => [
                 'required',
@@ -439,7 +440,7 @@ class HomeController extends Controller
         $request->validate([
             'final_comment' => 'required|string',
             'director_name' => 'required|string',
-            'director_signatur' => 'nullable|mimes:jpg,png,pdf|max:2048',
+            'director_signatur' => 'nullable|file|extensions:jpg,jpeg,png,pdf|max:2048',
             'director_signatur_date' => 'required|date',
         ]);
 

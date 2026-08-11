@@ -101,8 +101,6 @@
 
         <script>
             $(document).ready(function() {
-                let debounceTimer;
-
                 function escapeHtml(value) {
                     return String(value ?? '').replace(/[&<>"']/g, function(char) {
                         return {
@@ -183,6 +181,20 @@
                     return `<span class="appraisal-score">${Number(value).toFixed(2)}%</span>`;
                 }
 
+                function pendingCell() {
+                    return '<span class="appraisal-pill is-needs">Pending</span>';
+                }
+
+                function reviewCell(value) {
+                    const numericValue = Number(value);
+
+                    if (!Number.isFinite(numericValue) || numericValue <= 0) {
+                        return pendingCell();
+                    }
+
+                    return scoreCell(numericValue);
+                }
+
                 function fetchEmployeeData() {
                     const employeeQuery = $('#employee_search').val().trim();
                     const financialYear = $('#financialYear').val().trim();
@@ -212,10 +224,10 @@
                                 ? values.some((value) => Number(value) > 0)
                                 : Number(values) > 0;
 
-                            const showHr = hasPercentageData(response.hrReviewData);
-                            const showAdmin = hasPercentageData(response.adminReviewData);
-                            const showManager = hasPercentageData(response.managerReviewData);
-                            const showClient = hasPercentageData(response.clientReviewData);
+                            const showHr = response.showHRColumn ?? hasPercentageData(response.hrReviewData);
+                            const showAdmin = response.showAdminColumn ?? hasPercentageData(response.adminReviewData);
+                            const showManager = response.showManagerColumn ?? hasPercentageData(response.managerReviewData);
+                            const showClient = response.showClientColumn ?? hasPercentageData(response.clientReviewData);
 
                             $('#client-column-header').toggle(showClient);
                             $('#manager-column-header').toggle(showManager);
@@ -232,7 +244,8 @@
                                 response.hrReviewData?.length || 0,
                                 response.managerReviewData?.length || 0,
                                 response.clientReviewData?.length || 0,
-                                response.evaluationScore?.length || 0
+                                response.evaluationScore?.length || 0,
+                                1
                             );
 
                             if (maxLength === 0) {
@@ -273,10 +286,10 @@
                                             </div>
                                         </td>
                                         <td>${scoreCell(evaluation)}</td>
-                                        ${showHr ? `<td>${scoreCell(hr)}</td>` : ''}
-                                        ${showAdmin ? `<td>${scoreCell(admin)}</td>` : ''}
-                                        ${showManager ? `<td>${scoreCell(manager)}</td>` : ''}
-                                        ${showClient ? `<td>${scoreCell(client)}</td>` : ''}
+                                        ${showHr ? `<td>${reviewCell(hr)}</td>` : ''}
+                                        ${showAdmin ? `<td>${reviewCell(admin)}</td>` : ''}
+                                        ${showManager ? `<td>${reviewCell(manager)}</td>` : ''}
+                                        ${showClient ? `<td>${reviewCell(client)}</td>` : ''}
                                         <td>
                                             <span class="appraisal-pill ${status.className}">${status.label} (${appraisalScore.toFixed(2)}%)</span>
                                         </td>
@@ -294,10 +307,7 @@
                     });
                 }
 
-                $('#employee_search').on('keyup', function() {
-                    clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(fetchEmployeeData, 300);
-                });
+                $('#employee_search').on('input', fetchEmployeeData);
 
                 $('#financialYear').on('change', function() {
                     fetchEmployeeData();

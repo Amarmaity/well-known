@@ -324,7 +324,7 @@ class SuperAdminController extends Controller
 
     public function getAppraisalData(Request $request)
     {
-        $employeeQuery = trim($request->query('employee_query', ''));
+        $employeeQuery = trim($request->query('employee_query', $request->query('search', '')));
         $financialYear = trim($request->query('financial_year', ''));
         $financialYear = str_replace('/', '-', $financialYear);
 
@@ -361,21 +361,11 @@ class SuperAdminController extends Controller
 
         if (!$employee) {
             Log::error("Employee not found with employee_query: $employeeQuery");
-            return response()->json(['status' => 'error', 'message' => 'No employee found with submitted evaluation for the selected financial year.'], 404);
+            return response()->json(['status' => 'error', 'message' => 'No employee was found with submitted evaluation for the selected financial year.'], 404);
         }
 
         $employeeIdentifier = $employee->emp_id ?? $employee->employee_id;
 
-        $hasData = SuperAddUser::where('employee_id', $employeeIdentifier)
-            ->where('financial_year', $financialYear)
-            ->exists();
-
-        if (!$hasData) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No appraisal data found for the selected financial year.'
-            ], 404);
-        }
 
         $adminReviewData = AdminReviewTable::where('emp_id', $employeeIdentifier)
             ->where('financial_year', $financialYear)
@@ -409,7 +399,11 @@ class SuperAdminController extends Controller
         // Optional: Client Review
         $clientReviewData = [];
         $userRoles = json_decode($employee->user_roles, true);
-        $hasClient = is_array($userRoles) && in_array('client', $userRoles);
+        $userRoles = is_array($userRoles) ? array_values(array_filter($userRoles)) : [];
+        $hasAdmin = in_array('admin', $userRoles, true);
+        $hasHR = in_array('hr', $userRoles, true);
+        $hasManager = in_array('manager', $userRoles, true);
+        $hasClient = in_array('client', $userRoles, true);
 
         if ($hasClient) {
             $clientReviews = ClientReviewTable::where('emp_id', $employeeIdentifier)
@@ -477,6 +471,10 @@ class SuperAdminController extends Controller
             'managerReviewData' => $managerReviewData,
             'clientReviewData' => $clientReviewData,
             'evaluationScore' => $evaluationScore,
+            'userRoles' => $userRoles,
+            'showAdminColumn' => $hasAdmin,
+            'showHRColumn' => $hasHR,
+            'showManagerColumn' => $hasManager,
             'showClientColumn' => $hasClient,
             'appraisal_score' => $appraisalScore,
             'status' => 'success',
@@ -583,6 +581,12 @@ class SuperAdminController extends Controller
 
             $employeeIdentifier = $employee->emp_id ?? $employee->employee_id;
             $userType = strtolower($employee->user_type);
+            $userRoles = json_decode($employee->user_roles ?? '[]', true);
+            $userRoles = is_array($userRoles) ? array_values(array_filter($userRoles)) : [];
+            $hasAdminRole = in_array('admin', $userRoles, true);
+            $hasHRRole = in_array('hr', $userRoles, true);
+            $hasManagerRole = in_array('manager', $userRoles, true);
+            $hasClientRole = in_array('client', $userRoles, true);
 
             // Client Review
             $clientReviewDetails = ClientReviewTable::join('all_clients', 'client_review_tables.client_id', '=', 'all_clients.id')
@@ -604,7 +608,7 @@ class SuperAdminController extends Controller
             if (!$hasData) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'No appraisal data found for the selected financial year.'
+                    'message' => 'No appraisal data was found for the selected financial year.'
                 ], 404);
             }
 
@@ -693,6 +697,26 @@ class SuperAdminController extends Controller
                 $scores[] = $clientAvg;
             }
 
+            $missingReviews = [];
+
+            if ($hasHRRole && empty($hrReviewData)) {
+                $missingReviews[] = 'HR Review';
+            }
+
+            if ($hasAdminRole && empty($adminReviewData)) {
+                $missingReviews[] = 'Admin Review';
+            }
+
+            if ($hasManagerRole && $managerReviewScores->isEmpty()) {
+                $missingReviews[] = 'Manager Review';
+            }
+
+            if ($hasClientRole && !$hasClientReview) {
+                $missingReviews[] = 'Client Review';
+            }
+
+            $allRequiredReviewsCompleted = empty($missingReviews);
+
             $finalReviewScore = round(array_sum($scores) / count($scores), 2);
 
             // Salary calculations
@@ -722,6 +746,13 @@ class SuperAdminController extends Controller
                 'adminReviewData' => $adminReviewData,
                 'managerReviewData' => $avgManagerReview,
                 'clientReviewData' => $clientReviewData,
+                'userRoles' => $userRoles,
+                'showHRColumn' => $hasHRRole,
+                'showAdminColumn' => $hasAdminRole,
+                'showManagerColumn' => $hasManagerRole,
+                'showClientColumn' => $hasClientRole,
+                'missingReviews' => $missingReviews,
+                'allRequiredReviewsCompleted' => $allRequiredReviewsCompleted,
                 'salary' => (int) $baseSalary,
                 'company_percentage' => $companyPercentage,
                 'updatedSalary' => (int) $incrementSalary,
@@ -1247,7 +1278,9 @@ class SuperAdminController extends Controller
     public function editUserView(Request $request, $id)
     {
         // Get the user
-        $user = SuperAddUser::findOrFail($id);
+        $user = SuperAddUser::with('latestFinancialData')->findOrFail($id);
+        $currentSalary = $user->latestFinancialData?->final_salary ?? $user->salary;
+        $currentSalaryGrade = $this->salaryGradeFromSalary($currentSalary) ?? $user->salary_grade;
 
         // Decode JSON client IDs to array
         $clientIds = json_decode($user->client_id, true) ?? [];
@@ -1266,7 +1299,7 @@ class SuperAdminController extends Controller
         $userType = $user->user_type;
 
         // dd($user,$clients,$clientIds,  $userRoles, $userType);
-        return view('admin.editUser', compact('user', 'clients', 'clientIds', 'userRoles', 'userType'));
+        return view('admin.editUser', compact('user', 'clients', 'clientIds', 'userRoles', 'userType', 'currentSalary', 'currentSalaryGrade'));
     }
 
     private function salaryGradeFromSalary($salary): ?string

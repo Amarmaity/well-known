@@ -862,7 +862,6 @@
                                             <ul class="dropdown-menu dropdown-menu-end emp-menu">
                                                 <li>
                                                     <a href="{{ url('/edit-user/' . $user->id) }}" class="dropdown-item">
-                                                        <i class="bi bi-pencil-square"></i>
                                                         Edit Employee
                                                     </a>
                                                 </li>
@@ -871,7 +870,6 @@
                                                     <li>
                                                         <button type="button" class="dropdown-item emp-copy-menu-item"
                                                             data-copy="{{ $user->email }}">
-                                                            <i class="bi bi-envelope"></i>
                                                             Copy Email
                                                         </button>
                                                     </li>
@@ -881,7 +879,6 @@
                                                     <li>
                                                         <button type="button" class="dropdown-item emp-copy-menu-item"
                                                             data-copy="{{ $user->mobno }}">
-                                                            <i class="bi bi-telephone"></i>
                                                             Copy Mobile
                                                         </button>
                                                     </li>

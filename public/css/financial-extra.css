@@ -51,6 +51,20 @@
     white-space: nowrap;
 }
 
+.financial-page .financial-pending {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--emp-danger-soft);
+    color: var(--emp-danger);
+    font-size: .74rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .financial-page .financial-savebar {
     display: flex;
     align-items: center;

@@ -6,8 +6,13 @@
 @section('body-class', 'special-page')
 
 @section('content')
-    <div>
-        <a href="{{ route('get-probation') }}" class="btn btn-secondary">Back</a>
+    @push('styles')
+        <link href="{{ asset('css/review-management.css') }}?v={{ filemtime(public_path('css/review-management.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/review-details.css') }}?v={{ filemtime(public_path('css/review-details.css')) }}" rel="stylesheet">
+    @endpush
+
+    <div class="review-detail-page">
+        <a href="javascript:void(0)" onclick="history.back()" class="review-back-btn">Back</a>
     </div>
 
     @if (session('success'))

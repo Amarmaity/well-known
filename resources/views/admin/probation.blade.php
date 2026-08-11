@@ -42,7 +42,9 @@
                                 <th>Joining Date</th>
                                 <th>Probation Date</th>
                                 <th>Salary</th>
+                                <th>Salary Grade</th>
                                 <th>Contact</th>
+                                <th>Status</th>
                                 <th class="emp-th-right" style="width:60px;">Action</th>
                             </tr>
                         </thead>
@@ -69,6 +71,8 @@
                                         '#7bbf6a',
                                     ];
                                     $avatarColor = $avatarPalette[crc32($fullName ?: 'U') % count($avatarPalette)];
+                                    $joiningDate = $users->dob ? \Carbon\Carbon::parse($users->dob)->format('d-m-Y') : '-';
+                                    $probationDate = $users->probation_date ? \Carbon\Carbon::parse($users->probation_date)->format('d-m-Y') : 'Not Set';
                                 @endphp
 
                                 <tr class="emp-row">
@@ -87,18 +91,24 @@
                                     <td>
                                         <div class="emp-copy-row">
                                             <span class="emp-copy-text">{{ $users->employee_id ?? '-' }}</span>
+                                            @if ($users->employee_id)
+                                                <button type="button" class="emp-copy-btn" data-copy="{{ $users->employee_id }}"
+                                                    title="Copy Employee ID">
+                                                    <i class="bi bi-copy"></i>
+                                                </button>
+                                            @endif
                                         </div>
                                     </td>
 
                                     <td>
-                                        <span class="emp-designation">{{ $users->dob ?? '-' }}</span>
+                                        <span class="emp-designation">{{ $joiningDate }}</span>
                                     </td>
 
                                     <td>
                                         <span class="emp-status is-active probation-date-text"
                                             id="probationDate{{ $users->employee_id }}">
                                             <span class="emp-status-dot"></span>
-                                            {{ $users->probation_date ?? 'Not Set' }}
+                                            {{ $probationDate }}
                                         </span>
                                     </td>
 
@@ -107,10 +117,34 @@
                                     </td>
 
                                     <td>
+                                        <span class="emp-grade-pill">{{ $users->salary_grade ?? '-' }}</span>
+                                    </td>
+
+                                    <td>
                                         <div class="emp-copy-row">
                                             <i class="bi bi-envelope emp-inline-icon"></i>
                                             <span class="emp-copy-text" title="{{ $users->email }}">{{ $users->email }}</span>
+                                            @if ($users->email)
+                                                <button type="button" class="emp-copy-btn" data-copy="{{ $users->email }}"
+                                                    title="Copy Email">
+                                                    <i class="bi bi-copy"></i>
+                                                </button>
+                                            @endif
                                         </div>
+                                    </td>
+
+                                    <td class="status-class">
+                                        @if ($users->status)
+                                            <span class="emp-status is-active">
+                                                <span class="emp-status-dot"></span>
+                                                Active
+                                            </span>
+                                        @else
+                                            <span class="emp-status is-inactive">
+                                                <span class="emp-status-dot"></span>
+                                                Inactive
+                                            </span>
+                                        @endif
                                     </td>
 
                                     <td class="text-end">
@@ -128,13 +162,28 @@
                                                         Edit Employee
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <div class="emp-menu-label">Account Status</div>
+                                                    <div class="emp-menu-toggle-row">
+                                                        <span>{{ $users->status ? 'Active' : 'Inactive' }}</span>
+                                                        <div class="form-check form-switch m-0 d-flex justify-content-end">
+                                                            <input class="form-check-input status-switch" type="checkbox"
+                                                                role="switch" data-user-type="{{ $users->user_type }}"
+                                                                data-identifier="{{ $users->employee_id }}"
+                                                                {{ $users->status ? 'checked' : '' }}>
+                                                        </div>
+                                                    </div>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7">
+                                    <td colspan="8">
                                         <div class="emp-empty">
                                             <i class="bi bi-hourglass-split"></i>
                                             <h5>No probation employees found</h5>
@@ -146,7 +195,7 @@
 
                             @if (count($user) > 0)
                                 <tr id="probationNoResults" hidden>
-                                    <td colspan="7">
+                                    <td colspan="8">
                                         <div class="emp-empty">
                                             <i class="bi bi-search"></i>
                                             <h5>No matching employees</h5>
@@ -264,6 +313,49 @@
                     }
                 });
 
+                $(document).on('change', '.status-switch', function() {
+                    const button = $(this);
+                    const userType = button.data('user-type');
+                    const identifier = button.data('identifier');
+                    const row = button.closest('tr.emp-row');
+                    const badge = row.find('.status-class');
+                    const menuLabel = button.closest('.emp-menu-toggle-row').find('span');
+                    const previousState = !button.prop('checked');
+
+                    $.ajax({
+                        url: `/toggle-status/${userType}/${identifier}`,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        beforeSend: function() {
+                            button.prop('disabled', true);
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                if (response.new_status) {
+                                    badge.html('<span class="emp-status is-active"><span class="emp-status-dot"></span>Active</span>');
+                                    menuLabel.text('Active');
+                                    button.prop('checked', true);
+                                } else {
+                                    badge.html('<span class="emp-status is-inactive"><span class="emp-status-dot"></span>Inactive</span>');
+                                    menuLabel.text('Inactive');
+                                    button.prop('checked', false);
+                                }
+                            } else {
+                                alert(response.error || 'Unable to update status.');
+                                button.prop('checked', previousState);
+                            }
+                        },
+                        error: function() {
+                            alert('Something went wrong.');
+                            button.prop('checked', previousState);
+                        },
+                        complete: function() {
+                            button.prop('disabled', false);
+                        }
+                    });
+                });
                 window.addEventListener('resize', closeProbationMenus);
                 window.addEventListener('scroll', closeProbationMenus, true);
 
@@ -384,6 +476,38 @@
                 if (rows.length > 0) {
                     renderTable();
                 }
+
+                function bindCopyHandler(el) {
+                    el.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const value = this.dataset.copy;
+                        if (!value) {
+                            return;
+                        }
+
+                        navigator.clipboard.writeText(value);
+
+                        const icon = this.querySelector('i');
+                        if (!icon) {
+                            return;
+                        }
+
+                        const originalClass = icon.className;
+                        icon.className = 'bi bi-check2';
+                        this.classList.add('is-copied');
+
+                        setTimeout(() => {
+                            icon.className = originalClass;
+                            this.classList.remove('is-copied');
+                        }, 800);
+
+                        closeProbationMenus();
+                    });
+                }
+
+                document.querySelectorAll('.emp-copy-btn').forEach(bindCopyHandler);
             });
 
             $(document).ready(function() {
