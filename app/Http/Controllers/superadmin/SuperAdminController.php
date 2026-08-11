@@ -17,6 +17,7 @@ use App\Models\evaluationTable;
 use App\Models\FinancialData;
 use App\Models\HrReviewTable;
 use App\Models\SuperAddUser;
+use App\Models\ApprisalTable;
 use Illuminate\Http\Request;
 use App\Models\AllClient;
 use App\Models\SuperUserTable;
@@ -950,6 +951,7 @@ class SuperAdminController extends Controller
         $user->email = $request->email;
         $user->mobno = $request->mobno;
         $user->employee_status = $request->employee_status;
+        $this->syncProbationAppraisalFields($user);
 
         DB::transaction(function () use ($user, $oldEmployeeId, $newEmployeeId) {
             $user->save();
@@ -969,13 +971,32 @@ class SuperAdminController extends Controller
 
     public function getPendingAppraisalView(Request $request)
     {
-        $users = SuperAddUser::where('user_type', '!=', 'client')->whereNotExists(function ($query) {
-            $query->select(DB::raw(1))
-                ->from('financial_data')
-                ->whereColumn('financial_data.emp_id', 'super_add_users.employee_id')
-                ->whereColumn('financial_data.financial_year', 'super_add_users.financial_year');
-        })->get();
-        // dd($users);                                    
+        SuperAddUser::where('user_type', '!=', 'client')
+            ->where('status', '!=', 0)
+            ->whereNotNull('probation_date')
+            ->whereDate('probation_date', '<=', Carbon::today())
+            ->where(function ($query) {
+                $query->where('employee_status', '!=', 'Employee')
+                    ->orWhereNull('employee_status')
+                    ->orWhereNull('financial_year');
+            })
+            ->get()
+            ->each(function (SuperAddUser $user) {
+                $this->syncProbationAppraisalFields($user);
+                $user->save();
+            });
+
+        $users = SuperAddUser::where('user_type', '!=', 'client')
+            ->where('status', '!=', 0)
+            ->where('employee_status', 'Employee')
+            ->whereNotNull('financial_year')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('financial_data')
+                    ->whereColumn('financial_data.emp_id', 'super_add_users.employee_id')
+                    ->whereColumn('financial_data.financial_year', 'super_add_users.financial_year');
+            })->get();
+
         return view('admin.appraisalPendingList', compact('users'));
     }
 
@@ -1333,6 +1354,40 @@ class SuperAdminController extends Controller
         return 'A';
     }
 
+    private function syncProbationAppraisalFields(SuperAddUser $user): void
+    {
+        if (strtolower(trim((string) $user->user_type)) === 'client') {
+            return;
+        }
+
+        if (!$user->probation_date) {
+            $user->employee_status = 'Probation Period';
+            $user->financial_year = null;
+            $user->company_percentage = null;
+            return;
+        }
+
+        $probationDate = Carbon::parse($user->probation_date)->startOfDay();
+        $today = Carbon::today()->startOfDay();
+
+        if ($probationDate->gt($today)) {
+            $user->employee_status = 'Probation Period';
+            $user->financial_year = null;
+            $user->company_percentage = null;
+            return;
+        }
+
+        $user->employee_status = 'Employee';
+
+        $currentYear = $today->year;
+        $startYear = $today->month < 4 ? $currentYear - 1 : $currentYear;
+        $financialYear = $startYear . '-' . ($startYear + 1);
+        $appraisal = ApprisalTable::where('financial_year', $financialYear)->first();
+
+        $user->financial_year = $financialYear;
+        $user->company_percentage = $appraisal?->company_percentage;
+    }
+
     public function updateUser(Request $request, $id)
     {
         $request->validate([
@@ -1388,6 +1443,7 @@ class SuperAdminController extends Controller
         $user->hr_id = $request->hr_id;
         $user->user_type = $request->user_type;
         $user->probation_date = $request->probation_date;
+        $this->syncProbationAppraisalFields($user);
         $user->salary = $request->salary;
         $user->salary_grade = $this->salaryGradeFromSalary($request->salary) ?? $request->salary_grade;
 

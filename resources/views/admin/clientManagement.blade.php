@@ -78,7 +78,6 @@
                                             </div>
                                             <div>
                                                 <div class="emp-person-name">{{ $client->client_name }}</div>
-                                                <div class="emp-person-meta">{{ $client->company_name ?? 'No company' }}</div>
                                             </div>
                                         </div>
                                     </td>
