@@ -42,7 +42,7 @@
 .emp-page .emp-header-text h1 {
     font-size: 1.28rem;
     font-weight: 650;
-    color: var(--emp-ink-900);
+    color: #000000;
     margin: 0;
     line-height: 1.25;
 }
@@ -84,7 +84,7 @@
     background: var(--emp-surface);
     padding: 0 14px 0 36px;
     font-size: .8375rem;
-    color: var(--emp-ink-900);
+    color: #000000;
     outline: none;
     transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
@@ -196,6 +196,11 @@
     margin-top: 5px ;
 }
 
+.bi-telephone::before {
+    color: grey;
+    margin-top: 5px ;
+}
+
 .emp-page table.emp-table tbody tr.emp-row {
     height: 60px;
     transition: background .12s ease;
@@ -232,7 +237,7 @@
 .emp-page .emp-person-name {
     font-size: .85rem;
     font-weight: 600;
-    color: var(--emp-ink-900);
+    color: #000000;
     line-height: 1.25;
     white-space: nowrap;
 }
@@ -301,7 +306,7 @@
 .emp-page .emp-copy-row:hover i.emp-inline-icon::before,
 .emp-page .emp-row:hover .emp-copy-row i.emp-inline-icon,
 .emp-page .emp-row:hover .emp-copy-row i.emp-inline-icon::before {
-    color: var(--emp-ink-900);
+    color: #000000;
 }
 
 .emp-page .emp-copy-text {
@@ -360,7 +365,7 @@
     justify-content: center;
     border: 1px solid var(--emp-line);
     background: var(--emp-canvas);
-    color: var(--emp-ink-900);
+    color: #000000;
     border-radius: 8px;
     cursor: pointer;
     transition: .15s ease;
@@ -405,7 +410,7 @@
 
 .emp-page .emp-menu .dropdown-item:hover {
     background: var(--emp-canvas);
-    color: var(--emp-ink-900);
+    color: #000000;
 }
 
 .emp-page .emp-menu .dropdown-item i {
@@ -454,7 +459,7 @@
 .emp-page .emp-empty h5 {
     font-size: .95rem;
     font-weight: 650;
-    color: var(--emp-ink-900);
+    color: #000000;
     margin: 14px 0 4px;
 }
 
@@ -481,7 +486,7 @@
 }
 
 .emp-page .emp-footer-count strong {
-    color: var(--emp-ink-900);
+    color: #000000;
     font-weight: 650;
 }
 
@@ -506,7 +511,7 @@
 
 .emp-page .emp-page-btn:hover {
     background: var(--emp-canvas);
-    color: var(--emp-ink-900);
+    color: #000000;
 }
 
 .emp-page .emp-page-btn.is-active {
@@ -555,7 +560,7 @@
 .emp-page .emp-salary {
     font-size: .85rem;
     font-weight: 650;
-    color: var(--emp-ink-900);
+    color: #000000;
     white-space: nowrap;
 }
 

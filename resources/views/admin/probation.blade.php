@@ -123,16 +123,36 @@
                                     </td>
 
                                     <td>
-                                        <div class="emp-copy-row">
-                                            <i class="bi bi-envelope emp-inline-icon"></i>
-                                            <span class="emp-copy-text" title="{{ $users->email }}">{{ $users->email }}</span>
-                                            @if ($users->email)
-                                                <button type="button" class="emp-copy-btn" data-copy="{{ $users->email }}"
+                                        @php
+                                            $mobile = trim((string) ($users->mobno ?? ''));
+                                            $email = trim((string) ($users->email ?? ''));
+                                        @endphp
+
+                                        @if ($mobile !== '')
+                                            <div class="emp-copy-row">
+                                                <i class="bi bi-telephone emp-inline-icon"></i>
+                                                <span class="emp-copy-text">{{ $mobile }}</span>
+                                                <button type="button" class="emp-copy-btn" data-copy="{{ $mobile }}"
+                                                    title="Copy Mobile">
+                                                    <i class="bi bi-copy"></i>
+                                                </button>
+                                            </div>
+                                        @endif
+
+                                        @if ($email !== '')
+                                            <div class="emp-copy-row">
+                                                <i class="bi bi-envelope emp-inline-icon"></i>
+                                                <span class="emp-copy-text" title="{{ $email }}">{{ $email }}</span>
+                                                <button type="button" class="emp-copy-btn" data-copy="{{ $email }}"
                                                     title="Copy Email">
                                                     <i class="bi bi-copy"></i>
                                                 </button>
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @endif
+
+                                        @if ($mobile === '' && $email === '')
+                                            <span>-</span>
+                                        @endif
                                     </td>
 
                                     <td class="status-class">
