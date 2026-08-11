@@ -520,7 +520,10 @@ $(function () {
         });
     }
 
-    $('#financialYear').on('change', checkExistingEvaluation);
+    $('#financialYear').on('change', function () {
+        $('#review_period').val($(this).val() || '');
+        checkExistingEvaluation();
+    });
 
     applyMandatoryFields();
     initEvaluationCommentCounters();

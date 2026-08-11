@@ -50,6 +50,10 @@
                         $currentFYStart - 1, // Previous FY
                         $currentFYStart, // Current FY
                     ];
+
+                    $selectedFinancialYear = !empty($financial_year)
+                        ? $financial_year
+                        : $currentFYStart . '-' . ($currentFYStart + 1);
                 @endphp
                 <select id="financialYear" class="form-select client__select" name="financial_year" required>
                     <option value="" selected disabled>Financial Year</option>
@@ -60,12 +64,7 @@
                             $fy = $year . '-' . $end;
                         @endphp
 
-                        <option value="{{ $fy }}"
-                            {{ isset($financial_year) && $financial_year == $fy
-                                ? 'selected'
-                                : (!isset($financial_year) && $year == $currentFYStart
-                                    ? 'selected'
-                                    : '') }}>
+                        <option value="{{ $fy }}" {{ $selectedFinancialYear == $fy ? 'selected' : '' }}>
                             {{ $fy }}
                         </option>
                     @endforeach
@@ -82,11 +81,6 @@
                                 <label for="designation" class="forms-label">Designation:</label>
                                 <input type="text" name="designation" id="designation" value="{{ $designation ?? '' }}"
                                     placeholder="Enter designation" class="form-control" readonly>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <label for="updated_ctc" class="forms-label">Updated CTC:</label>
-                                <input type="text" name="updated_ctc" id="updated_ctc" placeholder="Updated CTC"
-                                    value="{{ isset($current_salary) && $current_salary !== '' ? number_format((float) $current_salary, 0, '.', '') : '' }}" class="form-control" readonly>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="salary_grade" class="forms-label">Salary Grade/Band:</label>
@@ -147,7 +141,7 @@
                             <div class="col-12 col-sm-6">
                                 <label for="review_period" class="forms-label">Review Period:</label>
                                 <input type="text" name="review_period" id="review_period"
-                                    placeholder="Enter Review Period" value="{{ $financial_year ?? '' }}"
+                                    placeholder="Enter Review Period" value="{{ $selectedFinancialYear ?? '' }}"
                                     class="form-control" readonly>
                             </div>
                         </div>

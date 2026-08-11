@@ -532,7 +532,7 @@ $(function () {
     $userForm.on('input change select2:select select2:clear', 'input, select, textarea', function () {
         validateFieldInstant($(this));
 
-        if (this.id === 'password') {
+        if (this.id === 'password' && $('#cnf-password').val()) {
             validateFieldInstant($('#cnf-password'));
         }
 
