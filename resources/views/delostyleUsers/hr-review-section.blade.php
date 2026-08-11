@@ -274,6 +274,7 @@
 
         function searchUser() {
             const keyword = $('#employee_search').val().trim();
+            const financialYear = $('#financialYear').val();
 
             if (keyword.length < 2) {
                 $('#employeeDetails').hide();
@@ -292,7 +293,8 @@
                     url: '{{ route("user-search") }}',
                     type: 'GET',
                     data: {
-                        keyword: keyword
+                        keyword: keyword,
+                        financial_year: financialYear
                     },
                     success: function (response) {
                         $('#employeeTableBody').empty();
@@ -314,7 +316,7 @@
                         } else {
                             $('#selectLabel').hide(); // Hide label if no results
                             $('#employeeTableBody').html(
-                                '<tr><td colspan="4">No users found</td></tr>'
+                                `<tr><td colspan="4">${response.message || 'No users found'}</td></tr>`
                             );
                         }
                     },
@@ -346,7 +348,11 @@
             syncHrReviewFormState();
         });
 
-        $('#financialYear').on('change', syncHrReviewFormState);
+        $('#financialYear').on('change', function () {
+            $('#emp_id_input').val('').removeData('hr-reviewed-years');
+            syncHrReviewFormState();
+            searchUser();
+        });
         $('#HrReviewSubmit').on('input change', 'input, select, textarea', syncHrReviewFormState);
         $('#HrReviewSubmit').on('input', 'textarea', function () {
             updateHrCommentCounter(this);

@@ -45,6 +45,11 @@
     font-size: 16px;
 }
 
+.bi-clipboard2-check::before {
+    content: "\f725";
+    color: gray;
+}
+
 .self-review-page .client__heading {
     margin: 0;
     color: var(--self-ink);

@@ -41,6 +41,11 @@
     font-size: 16px;
 }
 
+.bi-person-check::before {
+    content: "\f4d6";
+    color: gray;    
+}
+
 .admin-review-page .client__heading {
     margin: 0;
     color: var(--admin-ink);

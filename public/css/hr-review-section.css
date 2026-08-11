@@ -41,6 +41,11 @@
     font-size: 16px;
 }
 
+.bi-people::before {
+    content: "\f4d0";
+    color: grey;
+}
+
 .hr-review-page .client__heading {
     margin: 0;
     color: var(--hr-ink);

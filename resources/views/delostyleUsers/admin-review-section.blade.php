@@ -492,6 +492,7 @@
 
     function searchUser() {
         const keyword = $('#employee_search').val().trim();
+        const financialYear = $('#financialYear').val();
 
         if (keyword.length < 2) {
             $('#employeeDetails').hide();
@@ -509,7 +510,10 @@
             $.ajax({
                 url: '{{ route("user-search") }}', // Replace with your route
                 type: 'GET',
-                data: { keyword: keyword },
+                data: {
+                    keyword: keyword,
+                    financial_year: financialYear
+                },
                 success: function (response) {
                     $('#employeeTableBody').empty();
 
@@ -529,7 +533,7 @@
                         });
                     } else {
                         $('#selectLabel').hide(); // Hide if no results
-                        $('#employeeTableBody').html('<tr><td colspan="4">No users found</td></tr>');
+                        $('#employeeTableBody').html(`<tr><td colspan="4">${response.message || 'No users found'}</td></tr>`);
                     }
                 },
                 error: function () {
@@ -558,7 +562,11 @@
         syncAdminReviewFormState();
     });
 
-    $('#financialYear').on('change', syncAdminReviewFormState);
+    $('#financialYear').on('change', function () {
+        $('#emp_id_input').val('').removeData('admin-reviewed-years');
+        syncAdminReviewFormState();
+        searchUser();
+    });
     $('#AdminReviewSubmit').on('input change', 'input, select, textarea', syncAdminReviewFormState);
     $('#AdminReviewSubmit').on('input', 'textarea', function () {
         updateAdminCommentCounter(this);

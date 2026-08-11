@@ -24,8 +24,8 @@
                 <i class="bi bi-person-check"></i>
                 <div>
                     <h1>Admin Review Details</h1>
-                    <p>Employee ID: {{ $employee_id }}@if (!empty($financial_year))
-                            · {{ $financial_year }}
+                    <p>Employee ID: {{ $employee_id }}@if (!empty($financial_year)) 
+                        Financial Year: {{ $financial_year }}
                         @endif
                     </p>
                 </div>

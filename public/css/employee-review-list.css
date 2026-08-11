@@ -22,6 +22,12 @@
     border-radius: 12px;
 }
 
+.bi-card-checklist::before {
+    content: "\f224";
+    color: gray;
+}
+
+
 .review-list-page .review-list-title {
     display: flex;
     align-items: center;

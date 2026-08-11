@@ -24,7 +24,7 @@
                 <i class="bi bi-diagram-3"></i>
                 <div>
                     <h1>Manager Review Details</h1>
-                    <p>Employee ID: {{ $employee_id }}@if(!empty($financial_year)) · {{ $financial_year }}@endif</p>
+                    <p>Employee ID: {{ $employee_id }}@if(!empty($financial_year)) Financial Year : {{ $financial_year }}@endif</p>
                 </div>
             </div>
         </div>

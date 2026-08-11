@@ -40,6 +40,11 @@
     color: var(--manager-primary);
     font-size: 16px;
 }
+.bi-diagram-3::before {
+    content: "\f2ee";
+    color: gray;
+}
+
 
 .manager-review-page .client__heading {
     margin: 0;

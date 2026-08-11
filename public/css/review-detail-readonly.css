@@ -68,6 +68,11 @@
     gap: 10px;
 }
 
+.bi-people::before {
+    content: "\f4d0";
+    color: gray;
+}
+
 .review-read-page .review-read-title i {
     width: 34px;
     height: 34px;
@@ -78,6 +83,16 @@
     background: var(--read-primary-soft);
     color: var(--read-primary);
     font-size: 16px;
+}
+
+.bi-diagram-3::before {
+    content: "\f2ee";
+    color: gray;
+}
+
+.bi-clipboard2-check::before {
+    content: "\f725";
+    color: gray;
 }
 
 .review-read-page .review-read-title h1 {

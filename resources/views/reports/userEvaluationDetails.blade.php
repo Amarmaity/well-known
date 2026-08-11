@@ -192,19 +192,6 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td>Evaluator's Name</td>
-                            <td>{{ $evaluation->evalutors_name }}</td>
-                        </tr>
-                        <tr>
-                            <td>Evaluator's Signature</td>
-                            <td><img src="{{ asset('storage/' . $evaluation->evaluator_signatur) }}"
-                                    alt="Evaluator's Signature" class="review-signature"></td>
-                        </tr>
-                        <tr>
-                            <td>Evaluation Date</td>
-                            <td>{{ $evaluation->evaluator_signatur_date }}</td>
-                        </tr>
-                        <tr>
                             <td>1. Responds and contributes to team efforts</td>
                             <td><span class="review-rating">{{ $evaluation->respond_contributes }}/5</span></td>
                             <td>{{ $evaluation->comments_respond_contributes }}</td>
@@ -279,6 +266,19 @@
                                     ? number_format($totalScore, 0)
                                     : rtrim(rtrim(number_format($totalScore, 2, '.', ''), '0'), '.');
                         @endphp
+                        <tr>
+                            <td>Evaluator's Name</td>
+                            <td>{{ $evaluation->evalutors_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Evaluator's Signature</td>
+                            <td><img src="{{ asset('storage/' . $evaluation->evaluator_signatur) }}"
+                                    alt="Evaluator's Signature" class="review-signature"></td>
+                        </tr>
+                        <tr>
+                            <td>Evaluation Date</td>
+                            <td>{{ $evaluation->evaluator_signatur_date }}</td>
+                        </tr>
                         <tr class="review-total-row">
                             <td>Total Scoring System</td>
                             <td><span class="review-rating">{{ $totalScoreDisplay }}/100</span></td>

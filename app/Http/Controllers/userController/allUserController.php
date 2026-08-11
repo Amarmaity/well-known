@@ -317,6 +317,7 @@ class allUserController extends Controller
     public function searchUser(Request $request)
     {
         $keyword = trim($request->input('keyword'));
+        $financialYear = trim((string) $request->input('financial_year', ''));
 
         // Logged-in user's details
         $currentUserType = strtolower(session('user_type'));
@@ -344,12 +345,12 @@ class allUserController extends Controller
         switch ($currentUserType) {
 
             case 'admin':
-                // Admin can search only employees assigned to this Admin
+                // Admin can search only employees assigned to this Admin.
                 $query->where('admin_id', $currentUserId);
                 break;
 
             case 'hr':
-                // HR can search only employees assigned to this HR
+                // HR can search only employees assigned to this HR.
                 $query->where('hr_id', $currentUserId);
                 break;
 
@@ -370,6 +371,15 @@ class allUserController extends Controller
                 ]);
         }
 
+
+        if (in_array($currentUserType, ['admin', 'hr'], true) && $financialYear !== '') {
+            $query->whereExists(function ($evaluationQuery) use ($financialYear) {
+                $evaluationQuery->select(DB::raw(1))
+                    ->from('evaluation_tables')
+                    ->whereColumn('evaluation_tables.emp_id', 'super_add_users.employee_id')
+                    ->where('evaluation_tables.financial_year', $financialYear);
+            });
+        }
 
         // Search by Employee ID or Employee Name
         if (!empty($keyword)) {
@@ -416,7 +426,11 @@ class allUserController extends Controller
         return response()->json([
             'success' => $users->isNotEmpty(),
             'users' => $users,
-            'message' => $users->isEmpty() ? 'No users found!' : null
+            'message' => $users->isEmpty()
+                ? (in_array($currentUserType, ['admin', 'hr'], true) && $financialYear !== ''
+                    ? 'Evaluation not submit for this financial year.'
+                    : 'No users found!')
+                : null
         ]);
     }
 
