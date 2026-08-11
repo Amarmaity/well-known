@@ -35,7 +35,7 @@ class EvaluationCredentialMail extends Mailable
                     ->with([
                         'user' => $this->user,
                         'password' => $this->password,
-                        'loginUrl' => url('https://evalon.delostylestudio.co.in/'), 
+                        'loginUrl' => 'https://evalon.delostylestudio.co.in/',
                     ]);
     }
 

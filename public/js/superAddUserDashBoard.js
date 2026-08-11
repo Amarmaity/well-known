@@ -124,8 +124,18 @@ $(function () {
         return $field.is(':visible');
     }
 
+    function isReviewerAssignmentOptional(selector) {
+        const selected = normalize($designationDropdown.val());
+        return (selected === 'hr' && selector === '#admin_id') || (selected === 'admin' && selector === '#hr_id');
+    }
+
     function validateRequiredField(selector, message) {
         const $field = $(selector).first();
+
+        if (isReviewerAssignmentOptional(selector)) {
+            clearFieldError($field);
+            return null;
+        }
 
         if (!isFieldActive($field)) {
             clearFieldError($field);
@@ -185,6 +195,11 @@ $(function () {
         const fieldId = $field.attr('id');
         const value = getFieldValue($field);
         const requiredConfig = getRequiredFieldConfig($field);
+
+        if (requiredConfig && isReviewerAssignmentOptional('#' + fieldId)) {
+            clearFieldError($field);
+            return true;
+        }
 
         if (requiredConfig && (!value || value.length === 0)) {
             setFieldError('#' + fieldId, requiredConfig[1]);
@@ -298,6 +313,10 @@ $(function () {
 
     function hasFieldValue(selector) {
         const $field = $(selector).first();
+
+        if (isReviewerAssignmentOptional(selector)) {
+            return true;
+        }
 
         if (!isFieldActive($field)) {
             return true;
