@@ -552,6 +552,28 @@
     }
 }
 
+.emp-page .emp-salary {
+    font-size: .85rem;
+    font-weight: 650;
+    color: var(--emp-ink-900);
+    white-space: nowrap;
+}
+
+.emp-page .emp-salary-grade {
+    font-size: .7rem;
+    color: var(--emp-ink-500);
+    margin-top: 1px;
+}
+
+.emp-page .emp-salary-grade .emp-grade-pill {
+    display: inline-block;
+    min-width: 0;
+    min-height: 0;
+    padding: 1px 7px;
+    font-size: .68rem;
+    font-weight: 600;
+}
+
 .emp-page .emp-grade-pill {
     display: inline-flex;
     align-items: center;

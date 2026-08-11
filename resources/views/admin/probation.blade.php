@@ -42,7 +42,6 @@
                                 <th>Joining Date</th>
                                 <th>Probation Date</th>
                                 <th>Salary</th>
-                                <th>Salary Grade</th>
                                 <th>Contact</th>
                                 <th>Status</th>
                                 <th class="emp-th-right" style="width:60px;">Action</th>
@@ -114,10 +113,13 @@
 
                                     <td>
                                         <div class="emp-salary">₹{{ number_format((float) $users->salary) }}</div>
-                                    </td>
-
-                                    <td>
-                                        <span class="emp-grade-pill">{{ $users->salary_grade ?? '-' }}</span>
+                                        <div class="emp-salary-grade">
+                                            @if ($users->salary_grade)
+                                                <span class="emp-grade-pill">{{ $users->salary_grade }}</span>
+                                            @else
+                                                <span>-</span>
+                                            @endif
+                                        </div>
                                     </td>
 
                                     <td>
@@ -158,7 +160,6 @@
                                                 <li>
                                                     <a href="{{ route('edit-probation-user', ['id' => $users->id]) }}"
                                                         class="dropdown-item">
-                                                        <i class="bi bi-pencil-square"></i>
                                                         Edit Employee
                                                     </a>
                                                 </li>

@@ -607,6 +607,25 @@
             $(this).val('DS' + value);
         });
 
+        function formatDateForInput(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return year + '-' + month + '-' + day;
+        }
+
+        $('#dob').on('change', function() {
+            const joiningDateValue = this.value;
+
+            if (!joiningDateValue) {
+                $('#probation_date').val('');
+                return;
+            }
+
+            const probationDate = new Date(joiningDateValue);
+            probationDate.setMonth(probationDate.getMonth() + 6);
+            $('#probation_date').val(formatDateForInput(probationDate));
+        });
         document.querySelector('.forms-block').addEventListener('submit', function(e) {
             const joiningDate = new Date(document.getElementById('dob').value);
             const probationDate = new Date(document.getElementById('probation_date').value);
