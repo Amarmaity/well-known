@@ -1192,34 +1192,58 @@ class allUserController extends Controller
     {
         $hrId = session('user_id');
 
-        // Step 1: Get all unique emp_ids from both tables
-        $validEmployeeIds = HrReviewTable::pluck('emp_id',)
-            ->merge(evaluationTable::pluck('emp_id'))
-            ->unique()
-            ->toArray();
-
-        // Step 2: Get employees assigned to logged-in HR, including HR's own submitted evaluation.
-        $superAddUser = SuperAddUser::where('status', 1)
-            ->whereIn('employee_id', $validEmployeeIds)
+        $assignedEmployeeIds = SuperAddUser::query()
+            ->where('status', 1)
             ->where(function ($query) use ($hrId) {
                 $query->where('hr_id', $hrId)
                     ->orWhere('id', $hrId);
             })
-            ->get();
-
-        // Step 3: Exclude employee_ids where user_type is 'admin'
-        $nonAdminEmployeeIds = $superAddUser
-            ->whereNotIn('user_type', ['manager'])  // Filter out admins
+            ->whereNotIn('user_type', ['manager', 'client'])
             ->pluck('employee_id')
             ->toArray();
 
-        // Step 4: Get only those evaluations for non-admin users
-        $hrReviewTable = HrReviewTable::whereIn('emp_id', $validEmployeeIds)->get();
-        $evaluation = evaluationTable::whereIn('emp_id', $nonAdminEmployeeIds)->get();
-        // dd($evaluation);
+        if (empty($assignedEmployeeIds)) {
+            $superAddUser = collect();
+            $hrReviewYearsByEmployee = collect();
+            $latestEvaluationYearsByEmployee = collect();
 
-        // $superAddUser = $superAddUser->where('user_type', '!=', ['admin', 'manager'])->values();
-        return view('reports.hrReportView', compact('superAddUser', 'hrReviewTable', 'evaluation'));
+            return view('reports.hrReportView', compact('superAddUser', 'hrReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
+        }
+
+        $latestEvaluations = evaluationTable::query()
+            ->whereIn('emp_id', $assignedEmployeeIds)
+            ->select('emp_id', DB::raw('MAX(created_at) as latest_evaluation_submitted_at'))
+            ->groupBy('emp_id');
+
+        $superAddUser = SuperAddUser::query()
+            ->joinSub($latestEvaluations, 'latest_evaluations', function ($join) {
+                $join->on('super_add_users.employee_id', '=', 'latest_evaluations.emp_id');
+            })
+            ->whereIn('super_add_users.employee_id', $assignedEmployeeIds)
+            ->orderByDesc('latest_evaluations.latest_evaluation_submitted_at')
+            ->select('super_add_users.*', 'latest_evaluations.latest_evaluation_submitted_at')
+            ->get();
+
+        $employeeIds = $superAddUser->pluck('employee_id')->toArray();
+
+        $hrReviewYearsByEmployee = HrReviewTable::whereIn('emp_id', $employeeIds)
+            ->whereNotNull('financial_year')
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->unique()->values();
+            });
+
+        $latestEvaluationYearsByEmployee = evaluationTable::whereIn('emp_id', $employeeIds)
+            ->whereNotNull('financial_year')
+            ->orderByDesc('created_at')
+            ->get(['emp_id', 'financial_year', 'created_at'])
+            ->groupBy('emp_id')
+            ->map(function ($evaluations) {
+                return optional($evaluations->first())->financial_year;
+            });
+
+        return view('reports.hrReportView', compact('superAddUser', 'hrReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
     }
 
 
@@ -1275,37 +1299,59 @@ class allUserController extends Controller
     public function getAdminReviewList(Request $request)
     {
         $adminId = session('user_id');
-        // Step 1: Get all unique emp_ids from both tables
-        $validEmployeeIds = evaluationTable::pluck('emp_id')
-            ->merge(AdminReviewTable::pluck('emp_id'))
-            ->unique()
-            ->toArray();
 
-        // Step 2: Get employees assigned to logged-in admin, including admin's own submitted evaluation.
-        $superAddUser = SuperAddUser::where('status', 1)
-            ->whereIn('employee_id', $validEmployeeIds)
+        $assignedEmployeeIds = SuperAddUser::query()
+            ->where('status', 1)
             ->where(function ($query) use ($adminId) {
                 $query->where('admin_id', $adminId)
                     ->orWhere('id', $adminId);
             })
-            ->get();
-
-        // Step 3: Exclude users with user_type 'hr' or 'manager'
-        $nonHrManagerEmployeeIds = $superAddUser
-            ->whereNotIn('user_type', ['manager']) // Exclude hr and manager
+            ->whereNotIn('user_type', ['manager', 'client'])
             ->pluck('employee_id')
             ->toArray();
 
-        // Step 4: Get only those evaluations for non-hr and non-manager users
-        $adminReviewTable = AdminReviewTable::whereIn('emp_id', $validEmployeeIds)->get();
-        $evaluation = evaluationTable::whereIn('emp_id', $nonHrManagerEmployeeIds)->get();
+        if (empty($assignedEmployeeIds)) {
+            $superAddUser = collect();
+            $adminReviewYearsByEmployee = collect();
+            $latestEvaluationYearsByEmployee = collect();
 
-        // Step 5: Filter out HR and Manager users before sending to view
-        // $superAddUser = $superAddUser->whereNotIn('user_type', ['hr', 'manager'])->values();
+            return view('reports.adminReportView', compact('superAddUser', 'adminReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
+        }
 
-        // dd($evaluation);
-        // Return view
-        return view('reports.adminReportView', compact('superAddUser', 'adminReviewTable', 'evaluation'));
+        $latestEvaluations = evaluationTable::query()
+            ->whereIn('emp_id', $assignedEmployeeIds)
+            ->select('emp_id', DB::raw('MAX(created_at) as latest_evaluation_submitted_at'))
+            ->groupBy('emp_id');
+
+        $superAddUser = SuperAddUser::query()
+            ->joinSub($latestEvaluations, 'latest_evaluations', function ($join) {
+                $join->on('super_add_users.employee_id', '=', 'latest_evaluations.emp_id');
+            })
+            ->whereIn('super_add_users.employee_id', $assignedEmployeeIds)
+            ->orderByDesc('latest_evaluations.latest_evaluation_submitted_at')
+            ->select('super_add_users.*', 'latest_evaluations.latest_evaluation_submitted_at')
+            ->get();
+
+        $employeeIds = $superAddUser->pluck('employee_id')->toArray();
+
+        $adminReviewYearsByEmployee = AdminReviewTable::whereIn('emp_id', $employeeIds)
+            ->whereNotNull('financial_year')
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->unique()->values();
+            });
+
+        $latestEvaluationYearsByEmployee = evaluationTable::whereIn('emp_id', $employeeIds)
+            ->whereNotNull('financial_year')
+            ->orderByDesc('created_at')
+            ->get(['emp_id', 'financial_year', 'created_at'])
+            ->groupBy('emp_id')
+            ->map(function ($evaluations) {
+                return optional($evaluations->first())->financial_year;
+            });
+
+        return view('reports.adminReportView', compact('superAddUser', 'adminReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
     }
 
 
@@ -1337,37 +1383,58 @@ class allUserController extends Controller
     {
         $managerId = session('user_id');
 
-        // Step 1: Get all emp_ids from Manager and Evaluation tables
-        $validEmployeeIds = ManagerReviewTable::pluck('emp_id')
-            ->merge(evaluationTable::pluck('emp_id'))
-            ->unique()
-            ->toArray();
-
-        // Step 2: Get employees assigned to logged-in manager, including the manager's own submitted evaluation.
-        $superAddUser = SuperAddUser::where('status', 1)
-            ->whereIn('employee_id', $validEmployeeIds)
+        $assignedEmployeeIds = SuperAddUser::query()
+            ->where('status', 1)
             ->where(function ($query) use ($managerId) {
                 $query->where('manager_id', $managerId)
                     ->orWhere('id', $managerId);
             })
-            ->get();
-
-        // Step 3: Exclude HR and Admin users
-        $nonHrAdminEmployeeIds = $superAddUser
-            ->whereNotIn('user_type', ['hr', 'admin'])
+            ->whereNotIn('user_type', ['hr', 'admin', 'client'])
             ->pluck('employee_id')
             ->toArray();
 
-        // Step 4: Get reviews and evaluations
-        $managerReviewTable = ManagerReviewTable::whereIn('emp_id', $nonHrAdminEmployeeIds)->get();
+        if (empty($assignedEmployeeIds)) {
+            $superAddUser = collect();
+            $managerReviewYearsByEmployee = collect();
+            $latestEvaluationYearsByEmployee = collect();
 
-        $evaluation = evaluationTable::whereIn('emp_id', $nonHrAdminEmployeeIds)->get();
+            return view('reports.managerReportView', compact('superAddUser', 'managerReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
+        }
 
-        return view('reports.managerReportView', compact(
-            'superAddUser',
-            'managerReviewTable',
-            'evaluation'
-        ));
+        $latestEvaluations = evaluationTable::query()
+            ->whereIn('emp_id', $assignedEmployeeIds)
+            ->select('emp_id', DB::raw('MAX(created_at) as latest_evaluation_submitted_at'))
+            ->groupBy('emp_id');
+
+        $superAddUser = SuperAddUser::query()
+            ->joinSub($latestEvaluations, 'latest_evaluations', function ($join) {
+                $join->on('super_add_users.employee_id', '=', 'latest_evaluations.emp_id');
+            })
+            ->whereIn('super_add_users.employee_id', $assignedEmployeeIds)
+            ->orderByDesc('latest_evaluations.latest_evaluation_submitted_at')
+            ->select('super_add_users.*', 'latest_evaluations.latest_evaluation_submitted_at')
+            ->get();
+
+        $employeeIds = $superAddUser->pluck('employee_id')->toArray();
+
+        $managerReviewYearsByEmployee = ManagerReviewTable::whereIn('emp_id', $employeeIds)
+            ->whereNotNull('financial_year')
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->unique()->values();
+            });
+
+        $latestEvaluationYearsByEmployee = evaluationTable::whereIn('emp_id', $employeeIds)
+            ->whereNotNull('financial_year')
+            ->orderByDesc('created_at')
+            ->get(['emp_id', 'financial_year', 'created_at'])
+            ->groupBy('emp_id')
+            ->map(function ($evaluations) {
+                return optional($evaluations->first())->financial_year;
+            });
+
+        return view('reports.managerReportView', compact('superAddUser', 'managerReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
     }
 
 
@@ -1403,33 +1470,56 @@ class allUserController extends Controller
             return back()->with('error', 'Client session expired or not logged in.');
         }
 
-        $validEmployeeIds = ClientReviewTable::pluck('emp_id')
-            ->merge(evaluationTable::pluck('emp_id'))
-            ->unique()
-            ->toArray();
-
-        $superAddUser = SuperAddUser::where('status', 1)
+        $assignedEmployeeIds = SuperAddUser::query()
+            ->where('status', 1)
             ->where('employee_status', 'Employee')
-            ->whereIn('employee_id', $validEmployeeIds)
             ->where('client_id', 'like', '%"' . $targetClientId . '"%')
-            ->get();
-
-        $filteredEmployeeIds = $superAddUser
             ->pluck('employee_id')
             ->toArray();
 
-        $clientReviewTable = ClientReviewTable::whereIn('emp_id', $filteredEmployeeIds)->get();
+        if (empty($assignedEmployeeIds)) {
+            $superAddUser = collect();
+            $clientReviewYearsByEmployee = collect();
+            $latestEvaluationYearsByEmployee = collect();
 
-        $evaluation = evaluationTable::whereIn('emp_id', $filteredEmployeeIds)->get();
+            return view('reports.clientReportView', compact('superAddUser', 'clientReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
+        }
 
-        return view(
-            'reports.clientReportView',
-            compact(
-                'superAddUser',
-                'clientReviewTable',
-                'evaluation'
-            )
-        );
+        $latestEvaluations = evaluationTable::query()
+            ->whereIn('emp_id', $assignedEmployeeIds)
+            ->select('emp_id', DB::raw('MAX(created_at) as latest_evaluation_submitted_at'))
+            ->groupBy('emp_id');
+
+        $superAddUser = SuperAddUser::query()
+            ->joinSub($latestEvaluations, 'latest_evaluations', function ($join) {
+                $join->on('super_add_users.employee_id', '=', 'latest_evaluations.emp_id');
+            })
+            ->whereIn('super_add_users.employee_id', $assignedEmployeeIds)
+            ->orderByDesc('latest_evaluations.latest_evaluation_submitted_at')
+            ->select('super_add_users.*', 'latest_evaluations.latest_evaluation_submitted_at')
+            ->get();
+
+        $employeeIds = $superAddUser->pluck('employee_id')->toArray();
+
+        $clientReviewYearsByEmployee = ClientReviewTable::whereIn('emp_id', $employeeIds)
+            ->where('client_id', $targetClientId)
+            ->whereNotNull('financial_year')
+            ->get(['emp_id', 'financial_year'])
+            ->groupBy('emp_id')
+            ->map(function ($reviews) {
+                return $reviews->pluck('financial_year')->unique()->values();
+            });
+
+        $latestEvaluationYearsByEmployee = evaluationTable::whereIn('emp_id', $employeeIds)
+            ->whereNotNull('financial_year')
+            ->orderByDesc('created_at')
+            ->get(['emp_id', 'financial_year', 'created_at'])
+            ->groupBy('emp_id')
+            ->map(function ($evaluations) {
+                return optional($evaluations->first())->financial_year;
+            });
+
+        return view('reports.clientReportView', compact('superAddUser', 'clientReviewYearsByEmployee', 'latestEvaluationYearsByEmployee'));
     }
 
     public function showDetailsClient($employee_id)

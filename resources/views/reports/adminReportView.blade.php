@@ -5,249 +5,309 @@
 @section('page-title', 'Admin-Review-Section')
 
 @section('content')
-@push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{{ asset('css/employee-review-list.css') }}?v={{ filemtime(public_path('css/employee-review-list.css')) }}" rel="stylesheet">
-@endpush
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="{{ asset('css/employee-review-list.css') }}?v={{ filemtime(public_path('css/employee-review-list.css')) }}"
+            rel="stylesheet">
+    @endpush
 
-{{-- {{dd($superAddUser, $adminReviewTable)}} --}}
+    {{-- {{dd($superAddUser, $adminReviewTable)}} --}}
 
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Review Table</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Employee Review Table</title>
 
-    <!-- Include CSS for DataTables -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
+        <!-- Include CSS for DataTables -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
 
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Include jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Include DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
-</head>
+        <!-- Include DataTables JS -->
+        <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    </head>
 
-<style>
-    table {
-        width: 100%;
-        max-width: 1606px;
-        /* Set the maximum width */
-        border-collapse: collapse;
-        margin: 0 auto;
-        /* This will center the table horizontally */
-    }
+    <style>
+        table {
+            width: 100%;
+            max-width: 1606px;
+            /* Set the maximum width */
+            border-collapse: collapse;
+            margin: 0 auto;
+            /* This will center the table horizontally */
+        }
 
-    table,
-    th,
-    td {
-        /* border: 1px solid black; */
-    }
+        table,
+        th,
+        td {
+            /* border: 1px solid black; */
+        }
 
-    th,
-    td {
-        padding: 10px;
-        text-align: left;
-    }
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
 
-    .dataTables_filter {
-        display: none;
-    }
-</style>
+        .dataTables_filter {
+            display: none;
+        }
+    </style>
 
-</head>
+    </head>
 
-<body>
-    <div class="review-list-page">
-    <div class="client clients-block review-list-header">
-        <div class="review-list-title">
-            <i class="bi bi-card-checklist"></i>
-            <div>
-                <h1 class="client__heading">View Employee Reviews</h1>
-                <p class="review-list-subtitle">Search employees and open review details by financial year.</p>
+    <body>
+        <div class="review-list-page">
+            <div class="client clients-block review-list-header">
+                <div class="review-list-title">
+                    <i class="bi bi-card-checklist"></i>
+                    <div>
+                        <h1 class="client__heading">View Employee Reviews</h1>
+                        <p class="review-list-subtitle">Search employees and open review details by financial year.</p>
+                    </div>
+                </div>
+                <div class="client___item">
+                    <input type="search" id="employee_search" name="search" class="form-control client__search"
+                        placeholder="Search" aria-label="Search">
+                    <button class="client__btn" type="submit">
+                        <img src="{{ asset('images/search.png') }}" alt="Search">
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="client___item">
-            <input type="search" id="employee_search" name="search" class="form-control client__search"
-                placeholder="Search" aria-label="Search">
-            <button class="client__btn" type="submit">
-                <img src="{{ asset('images/search.png') }}" alt="Search">
-            </button>
-        </div>
-    </div>
-    <div class="container table-container">
-        <div class="table-wrapper">
-            <table class="table table-bordered table-hover main-table" id="employeeReviewTable">
-                <thead>
-                    <tr>
-                        <th>Employee Name</th>
-                        <th>Employee Id</th>
-                        <th>Email</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($superAddUser as $user)
-                    <tr>
-                        <td>{{ $user->fname }} {{$user->lname}}</td>
-                        <td>{{ $user->employee_id }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>
-                             @php
-                                        $currentMonth = date('m');
-                                        $currentYear = date('Y');
+            <div class="container table-container">
+                <div class="table-wrapper">
+                    <table class="table table-bordered table-hover main-table" id="employeeReviewTable">
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Employee Id</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($superAddUser as $user)
+                                <tr>
+                                    <td>{{ $user->fname }} {{ $user->lname }}</td>
+                                    <td>{{ $user->employee_id }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        @php
+                                            $currentMonth = date('m');
+                                            $currentYear = date('Y');
 
-                                        // Indian FY logic (April start)
-                                        if ($currentMonth < 4) {
-                                            $currentFYStart = $currentYear - 1;
-                                        } else {
-                                            $currentFYStart = $currentYear;
-                                        }
+                                            // Indian FY logic (April start)
+                                            if ($currentMonth < 4) {
+                                                $currentFYStart = $currentYear - 1;
+                                            } else {
+                                                $currentFYStart = $currentYear;
+                                            }
 
-                                        $years = [
-                                            $currentFYStart - 1, // Previous FY
-                                            $currentFYStart, // Current FY
-                                            $currentFYStart + 1, // Next FY
-                                            $currentFYStart + 2, // Next +1 FY
-                                        ];
-                                    @endphp
+                                            $years = [
+                                                $currentFYStart - 1, // Previous FY
+                                                $currentFYStart, // Current FY
+                                                $currentFYStart + 1, // Next FY
+                                                $currentFYStart + 2, // Next +1 FY
+                                            ];
+                                            $currentFinancialYear = $currentFYStart . '-' . ($currentFYStart + 1);
+                                            $latestEvaluationFinancialYear = optional(
+                                                $latestEvaluationYearsByEmployee ?? collect(),
+                                            )->get($user->employee_id);
+                                            $selectedFinancialYear =
+                                                $latestEvaluationFinancialYear ?: $currentFinancialYear;
 
-                                    <select id="financial_year" class="form-control financial-year input-block" required>
-                                        <option value="" selected disabled>Financial Year</option>
+                                            if (
+                                                $latestEvaluationFinancialYear &&
+                                                preg_match(
+                                                    '/^(\d{4})-\d{4}$/',
+                                                    $latestEvaluationFinancialYear,
+                                                    $matches,
+                                                )
+                                            ) {
+                                                $years[] = (int) $matches[1];
+                                                $years = array_values(array_unique($years));
+                                                sort($years);
+                                            }
 
-                                        @foreach ($years as $year)
+                                            $adminReviewYears = optional($adminReviewYearsByEmployee ?? collect())
+                                                ->get($user->employee_id, collect())
+                                                ->values()
+                                                ->all();
+                                            $hasSelectedAdminReview = in_array(
+                                                $selectedFinancialYear,
+                                                $adminReviewYears,
+                                                true,
+                                            );
+                                        @endphp
+
+                                        <select id="financial_year" class="form-control financial-year input-block"
+                                            required>
+                                            <option value="" selected disabled>Financial Year</option>
+
+                                            @foreach ($years as $year)
+                                                @php
+                                                    $end = $year + 1;
+                                                    $fy = $year . '-' . $end;
+                                                @endphp
+
+                                                <option value="{{ $fy }}"
+                                                    {{ $fy === $selectedFinancialYear ? 'selected' : '' }}>
+                                                    {{ $fy }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                        <div class="btn-block">
+
                                             @php
-                                                $end = $year + 1;
-                                                $fy = $year . '-' . $end;
+                                                $sessionUserType = session()->get('user_type');
+                                                $sessionEmployeeId = session()->get('employee_id');
                                             @endphp
 
-                                            <option value="{{ $fy }}"
-                                                {{ $year == $currentFYStart ? 'selected' : '' }}>
-                                                {{ $fy }}
-                                            </option>
-                                        @endforeach
-
-                                    </select>
-                            <div class="btn-block">
-
-                                {{-- @if(session()->get('user_type') === 'admin')
-                                <a href="{{ route('user-admin-details', $user->employee_id) }}"
-                                class="btn btn-primary view-admin-details">View
-                                Details</a>
-                                @endif --}}
-                                @php
-                                $sessionUserType = session()->get('user_type');
-                                $sessionEmployeeId = session()->get('employee_id');
-
-                                if (!($sessionUserType === 'admin' && $sessionEmployeeId == $user->employee_id)) {
-                                echo '<a href="' . route('user-admin-details', $user->employee_id) . '"
-                                    class="btn btn-primary view-admin-details">View Details</a>';
-                                }
-                                @endphp
+                                            @if (!($sessionUserType === 'admin' && $sessionEmployeeId == $user->employee_id))
+                                                <a href="{{ route('user-admin-details', $user->employee_id) }}"
+                                                    class="btn btn-primary view-admin-details {{ $hasSelectedAdminReview ? '' : 'disabled' }}"
+                                                    data-admin-review-years='@json($adminReviewYears)'
+                                                    aria-disabled="{{ $hasSelectedAdminReview ? 'false' : 'true' }}"
+                                                    @unless ($hasSelectedAdminReview) tabindex="-1" @endunless>
+                                                    View Details
+                                                </a>
+                                            @endif
 
 
-                                <a href="{{route('user-report-view-evaluation', $user->employee_id)}}"
-                                    class="btn btn-primary view-evaluation">View
-                                    Evaluation</a>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                            <a href="{{ route('user-report-view-evaluation', $user->employee_id) }}"
+                                                class="btn btn-primary view-evaluation">View
+                                                Evaluation</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-    </div>
+    </body>
 
-    </div>
-</body>
-
-<!-- Include CSS for DataTables -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
-
-<!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Include DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
-
-
-
-<script>
-    $(document).ready(function() {
-        var table = $('#employeeReviewTable').DataTable({
-            "paging": false,
-            "searching": true, // keep this true to allow external filtering
-            "ordering": false,
-            "info": false
-        });
-
-        // Bind the custom search input
-        $('#employee_search').on('keyup', function() {
-            table.search(this.value).draw();
-        });
-    });
-
-
-$(document).ready(function() {
-    $('#employeeReviewTable').DataTable();
-
-    $('.view-admin-details').click(function(e) {
-        e.preventDefault();
-
-        let $row = $(this).closest('tr');
-        let financialYear = $row.find('.financial-year').val();
-        let baseUrl = $(this).attr('href');
-
-        if (!financialYear) {
-            alert('Please select a financial year!');
-            return;
+    <script>
+        function getAdminReviewYears($button) {
+            try {
+                return JSON.parse($button.attr('data-admin-review-years') || '[]');
+            } catch (error) {
+                return [];
+            }
         }
 
-        $.ajax({
-            url: baseUrl + '?financial_year=' + financialYear,
-            type: 'GET',
-            success: function(response) {
-                if (response.message) {
-                    alert(response.message);
-                } else {
-                    window.location.href = baseUrl + '?financial_year=' + financialYear;
-                }
-            },
-            error: function() {
-                alert('Something went wrong. Please try again.');
+        function updateAdminDetailsButton($row) {
+            const selectedYear = $row.find('.financial-year').val();
+            const $button = $row.find('.view-admin-details');
+
+            if (!$button.length) {
+                return;
             }
-        });
-    });
-});
 
-$(document).ready(function() {
-    $('.view-evaluation').click(function(e) {
-        e.preventDefault();
+            const adminReviewYears = getAdminReviewYears($button);
+            const isEnabled = selectedYear && adminReviewYears.includes(selectedYear);
 
-        const $row = $(this).closest('tr');
-        const financialYear = $row.find('.financial-year').val();
-        const baseUrl = $(this).attr('href');
-
-        if (!financialYear) {
-            alert('Please select a financial year!');
-            return;
+            $button.toggleClass('disabled', !isEnabled)
+                .attr('aria-disabled', isEnabled ? 'false' : 'true')
+                .attr('tabindex', isEnabled ? '0' : '-1');
         }
 
-        $.ajax({
-            url: baseUrl + '?financial_year=' + financialYear,
-            method: 'GET',
-            success: function(response) {
-                if (response.message) {
-                    alert(response.message); // You can use SweetAlert here if preferred
-                } else {
-                    window.location.href = baseUrl + '?financial_year=' + financialYear;
-                }
-            },
-            error: function() {
-                alert('Something went wrong. Please try again.');
-            }
+        function updateAllAdminDetailsButtons() {
+            $('#employeeReviewTable tbody tr').each(function() {
+                updateAdminDetailsButton($(this));
+            });
+        }
+
+        $(document).ready(function() {
+            var table = $('#employeeReviewTable').DataTable({
+                "paging": true,
+                "pageLength": 15,
+                "lengthChange": false,
+                "searching": true, // keep this true to allow external filtering
+                "ordering": false,
+                "info": true
+            });
+
+            // Bind the custom search input
+            $('#employee_search').on('keyup', function() {
+                table.search(this.value).draw();
+            });
+
+            updateAllAdminDetailsButtons();
+
+            $('#employeeReviewTable').on('change', '.financial-year', function() {
+                updateAdminDetailsButton($(this).closest('tr'));
+            });
         });
-    });
-});
-</script>
+
+
+        $(document).ready(function() {
+            $('#employeeReviewTable').on('click', '.view-admin-details', function(e) {
+                e.preventDefault();
+
+                if ($(this).hasClass('disabled')) {
+                    return;
+                }
+
+                let $row = $(this).closest('tr');
+                let financialYear = $row.find('.financial-year').val();
+                let baseUrl = $(this).attr('href');
+
+                if (!financialYear) {
+                    alert('Please select a financial year!');
+                    return;
+                }
+
+                $.ajax({
+                    url: baseUrl + '?financial_year=' + financialYear,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.message) {
+                            alert(response.message);
+                        } else {
+                            window.location.href = baseUrl + '?financial_year=' + financialYear;
+                        }
+                    },
+                    error: function() {
+                        alert('Something went wrong. Please try again.');
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $('.view-evaluation').click(function(e) {
+                e.preventDefault();
+
+                const $row = $(this).closest('tr');
+                const financialYear = $row.find('.financial-year').val();
+                const baseUrl = $(this).attr('href');
+
+                if (!financialYear) {
+                    alert('Please select a financial year!');
+                    return;
+                }
+
+                $.ajax({
+                    url: baseUrl + '?financial_year=' + financialYear,
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.message) {
+                            alert(response.message); // You can use SweetAlert here if preferred
+                        } else {
+                            window.location.href = baseUrl + '?financial_year=' + financialYear;
+                        }
+                    },
+                    error: function() {
+                        alert('Something went wrong. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

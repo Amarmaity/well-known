@@ -5,7 +5,8 @@
 @section('content')
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-        <link href="{{ asset('css/admin-review-section.css') }}?v={{ filemtime(public_path('css/admin-review-section.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/admin-review-section.css') }}?v={{ filemtime(public_path('css/admin-review-section.css')) }}"
+            rel="stylesheet">
     @endpush
 
     <head>
@@ -13,7 +14,7 @@
     </head>
 
     <body>
-        <form action="{{route('admin.review.submit')}}" method="post" id="AdminReviewSubmit"
+        <form action="{{ route('admin.review.submit') }}" method="post" id="AdminReviewSubmit"
             class="form-inline client__form admin-review-page">
             @csrf
             <div class="client admin-review-header">
@@ -73,9 +74,9 @@
             <div class="container employee-table" id="employeeDetails" style="display:none;">
                 <div class="table-wrapper">
                     <!-- <div id="selectLabel" class="hidden-label"
-                        style="margin-bottom: 10px; font-weight: bold; display: none;">
-                        Select the employee:
-                    </div> -->
+                            style="margin-bottom: 10px; font-weight: bold; display: none;">
+                            Select the employee:
+                        </div> -->
                     <table class="table table-bordered table-hover main-table">
                         <thead>
                             <tr>
@@ -106,7 +107,8 @@
                 <div>
                     <input type="hidden" id="emp_id_input" name="emp_id" placeholder="Enter Employee Id" required>
                     </input>
-                    <div id="reviewExistsError" class="review-exists-error">Already done review for this financial year.</div>
+                    <div id="reviewExistsError" class="review-exists-error">Already done review for this financial year.
+                    </div>
 
                     <div class="accordion">
                         <div class="content-block">
@@ -130,8 +132,8 @@
                                 <div class="review-block">
                                     <label for="comments_demonstrated_attendance" class="third-label">Tell us more about
                                         your experience:</label>
-                                    <textarea name="comments_demonstrated_attendance" id="comments" class="form-control"
-                                        rows="1" cols="50" maxlength="1500"
+                                    <textarea name="comments_demonstrated_attendance" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -153,8 +155,8 @@
                                     <div class="review-block">
                                         <label for="comments_employee_manage_shift" class="third-label">Tell us more about
                                             your experience:</label>
-                                        <textarea name="comments_employee_manage_shift" id="comments" class="form-control"
-                                            rows="1" cols="50" maxlength="1500"
+                                        <textarea name="comments_employee_manage_shift" id="comments" class="form-control" rows="1" cols="50"
+                                            maxlength="1500"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -173,10 +175,11 @@
                                     </select>
                                 </div>
                                 <div class="review-block">
-                                    <label for="comments_documentation_neatness" class="third-label">Tell us more about your
+                                    <label for="comments_documentation_neatness" class="third-label">Tell us more about
+                                        your
                                         experience:</label>
-                                    <textarea name="comments_documentation_neatness" id="comments" class="form-control"
-                                        rows="1" cols="50" maxlength="1500"
+                                    <textarea name="comments_documentation_neatness" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -199,10 +202,11 @@
                                 </select>
 
                                 <div class="review-block">
-                                    <label for="comments_followed_instructions" class="third-label">Tell us more about your
+                                    <label for="comments_followed_instructions" class="third-label">Tell us more about
+                                        your
                                         experience:</label>
-                                    <textarea name="comments_followed_instructions" id="comments" class="form-control"
-                                        rows="1" cols="50" maxlength="1500"
+                                    <textarea name="comments_followed_instructions" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -224,8 +228,8 @@
                                     <div class="review-block">
                                         <label for="comments_productive" class="third-label">Tell us more about your
                                             experience:</label>
-                                        <textarea name="comments_productive" id="comments" class="form-control" rows="1"
-                                            cols="50" maxlength="1500"
+                                        <textarea name="comments_productive" id="comments" class="form-control" rows="1" cols="50"
+                                            maxlength="1500"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -246,8 +250,8 @@
                                 <div class="review-block">
                                     <label for="comments_changes_schedules" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_changes_schedules" id="comments" class="form-control" rows="1"
-                                        cols="50" maxlength="1500"
+                                    <textarea name="comments_changes_schedules" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -272,8 +276,8 @@
                                 <div class="review-block">
                                     <label for="comments_leave_policy" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea name="comments_leave_policy" id="comments" class="form-control" rows="1"
-                                        cols="50" maxlength="1500"
+                                    <textarea name="comments_leave_policy" id="comments" class="form-control" rows="1" cols="50"
+                                        maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -282,8 +286,8 @@
                                     <label for="salary_deduction" class="second-label">2. Has there been any salary
                                         deduction due to the employee's
                                         leave?:</label>
-                                    <select class="form-select" aria-label="multiple select example" name="salary_deduction"
-                                        id="adr1" required>
+                                    <select class="form-select" aria-label="multiple select example"
+                                        name="salary_deduction" id="adr1" required>
                                         <option value="" selected disabled>Rate</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -295,8 +299,8 @@
                                     <div class="review-block">
                                         <label for="comments_salary_deduction" class="third-label">Tell us more about your
                                             experience:</label>
-                                        <textarea name="comments_salary_deduction" id="comments" class="form-control"
-                                            rows="1" cols="50" maxlength="1500"
+                                        <textarea name="comments_salary_deduction" id="comments" class="form-control" rows="1" cols="50"
+                                            maxlength="1500"
                                             placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     </div>
                                 </div>
@@ -315,10 +319,11 @@
                                     </select>
                                 </div>
                                 <div class="review-block">
-                                    <label for="comments_interact_housekeeping" class="third-label">Tell us more about your
+                                    <label for="comments_interact_housekeeping" class="third-label">Tell us more about
+                                        your
                                         experience:</label>
-                                    <textarea name="comments_interact_housekeeping" id="comments" class="form-control"
-                                        rows="1" maxlength="1500" cols="50"
+                                    <textarea name="comments_interact_housekeeping" id="comments" class="form-control" rows="1" maxlength="1500"
+                                        cols="50"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -348,10 +353,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('js/reviewValidation.js') }}"></script>
-    <script>   
+    <script>
         window.__adminReviewHandled = true;
 
-        document.addEventListener("submit", function (event) {
+        document.addEventListener("submit", function(event) {
             const form = event.target;
             if (!form || form.id !== "AdminReviewSubmit") {
                 return;
@@ -360,27 +365,86 @@
             event.preventDefault();
             event.stopImmediatePropagation();
 
-            const requiredFields = [
-                { name: 'financial_year', label: 'Financial Year' },
-                { name: 'emp_id', label: 'Employee' },
-                { name: 'demonstrated_attendance', label: 'Has the employee demonstrated regular attendance and punctuality?' },
-                { name: 'employee_manage_shift', label: 'How well does the employee manage time within the shift?' },
-                { name: 'documentation_neatness', label: 'How would you rate the employee’s accuracy and neatness in reports and documentation?' },
-                { name: 'followed_instructions', label: 'Has the employee followed administrative procedures and job instructions properly?' },
-                { name: 'productive', label: 'Does the employee effectively manage time and stay productive during working hours?' },
-                { name: 'changes_schedules', label: 'How well does the employee handle changes in schedules or assignments?' },
-                { name: 'leave_policy', label: 'Does the employee consistently adhere to the company’s leave policy?' },
-                { name: 'salary_deduction', label: 'Has there been any salary deduction due to the employee’s leave?' },
-                { name: 'interact_housekeeping', label: 'How well does the employee interact with the housekeeping staff?' },
-                { name: 'comments_demonstrated_attendance', label: 'Tell us more about your experience for attendance' },
-                { name: 'comments_employee_manage_shift', label: 'Tell us more about your experience for manage time' },
-                { name: 'comments_documentation_neatness', label: 'Tell us more about your experience for documentation' },
-                { name: 'comments_followed_instructions', label: 'Tell us more about your experience for instructions' },
-                { name: 'comments_productive', label: 'Tell us more about your experience for productivity' },
-                { name: 'comments_changes_schedules', label: 'Tell us more about your experience for schedule changes' },
-                { name: 'comments_leave_policy', label: 'Tell us more about your experience for leave policy' },
-                { name: 'comments_salary_deduction', label: 'Tell us more about your experience for salary deduction' },
-                { name: 'comments_interact_housekeeping', label: 'Tell us more about your experience for housekeeping' }
+            const requiredFields = [{
+                    name: 'financial_year',
+                    label: 'Financial Year'
+                },
+                {
+                    name: 'emp_id',
+                    label: 'Employee'
+                },
+                {
+                    name: 'demonstrated_attendance',
+                    label: 'Has the employee demonstrated regular attendance and punctuality?'
+                },
+                {
+                    name: 'employee_manage_shift',
+                    label: 'How well does the employee manage time within the shift?'
+                },
+                {
+                    name: 'documentation_neatness',
+                    label: 'How would you rate the employee’s accuracy and neatness in reports and documentation?'
+                },
+                {
+                    name: 'followed_instructions',
+                    label: 'Has the employee followed administrative procedures and job instructions properly?'
+                },
+                {
+                    name: 'productive',
+                    label: 'Does the employee effectively manage time and stay productive during working hours?'
+                },
+                {
+                    name: 'changes_schedules',
+                    label: 'How well does the employee handle changes in schedules or assignments?'
+                },
+                {
+                    name: 'leave_policy',
+                    label: 'Does the employee consistently adhere to the company’s leave policy?'
+                },
+                {
+                    name: 'salary_deduction',
+                    label: 'Has there been any salary deduction due to the employee’s leave?'
+                },
+                {
+                    name: 'interact_housekeeping',
+                    label: 'How well does the employee interact with the housekeeping staff?'
+                },
+                {
+                    name: 'comments_demonstrated_attendance',
+                    label: 'Tell us more about your experience for attendance'
+                },
+                {
+                    name: 'comments_employee_manage_shift',
+                    label: 'Tell us more about your experience for manage time'
+                },
+                {
+                    name: 'comments_documentation_neatness',
+                    label: 'Tell us more about your experience for documentation'
+                },
+                {
+                    name: 'comments_followed_instructions',
+                    label: 'Tell us more about your experience for instructions'
+                },
+                {
+                    name: 'comments_productive',
+                    label: 'Tell us more about your experience for productivity'
+                },
+                {
+                    name: 'comments_changes_schedules',
+                    label: 'Tell us more about your experience for schedule changes'
+                },
+                {
+                    name: 'comments_leave_policy',
+                    label: 'Tell us more about your experience for leave policy'
+                },
+                {
+                    name: 'comments_salary_deduction',
+                    label: 'Tell us more about your experience for salary deduction'
+                },
+                {
+                    name: 'comments_interact_housekeeping',
+                    label: 'Tell us more about your experience for housekeeping'
+                }
             ];
 
             let firstInvalidName = null;
@@ -415,8 +479,13 @@
 
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        el.focus({ preventScroll: true });
+                        el.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                        el.focus({
+                            preventScroll: true
+                        });
                         setTimeout(() => el.classList.remove('is-invalid'), 2500);
                     });
                 });
@@ -461,68 +530,85 @@
             const formData = new FormData(form);
             formData.append("AdminTotalReview", totalRating);
 
-            $.ajax({
-                url: "{{ route('admin.review.submit') }}",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                },
-                success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message || 'Admin Review submitted successfully!'
-                    }).then(() => location.reload());
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON?.message || 'Error submitting Admin review.'
-                    });
+            Swal.fire({
+                icon: 'question',
+                title: 'Are you sure?',
+                text: 'Do you want to submit this Admin review?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, submit',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    return;
                 }
+
+                $.ajax({
+                    url: "{{ route('admin.review.submit') }}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content")
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Submitted',
+                            text: response.message ||
+                                'Admin Review submitted successfully!'
+                        }).then(() => location.reload());
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON?.message ||
+                                'Error submitting Admin review.'
+                        });
+                    }
+                });
             });
         }, true);
 
-        $(function () {
-    let timeout = null;
+        $(function() {
+            let timeout = null;
 
-    function searchUser() {
-        const keyword = $('#employee_search').val().trim();
-        const financialYear = $('#financialYear').val();
+            function searchUser() {
+                const keyword = $('#employee_search').val().trim();
+                const financialYear = $('#financialYear').val();
 
-        if (keyword.length < 2) {
-            $('#employeeDetails').hide();
-            $('#selectLabel').hide();
-            return;
-        }
+                if (keyword.length < 2) {
+                    $('#employeeDetails').hide();
+                    $('#selectLabel').hide();
+                    return;
+                }
 
-        $('#employeeDetails').show();
-        $('#employeeTableBody').html('<tr><td colspan="4">Searching...</td></tr>');
-        $('#selectLabel').hide();
+                $('#employeeDetails').show();
+                $('#employeeTableBody').html('<tr><td colspan="4">Searching...</td></tr>');
+                $('#selectLabel').hide();
 
-        clearTimeout(timeout);
+                clearTimeout(timeout);
 
-        timeout = setTimeout(function () {
-            $.ajax({
-                url: '{{ route("user-search") }}', // Replace with your route
-                type: 'GET',
-                data: {
-                    keyword: keyword,
-                    financial_year: financialYear
-                },
-                success: function (response) {
-                    $('#employeeTableBody').empty();
+                timeout = setTimeout(function() {
+                    $.ajax({
+                        url: '{{ route('user-search') }}', // Replace with your route
+                        type: 'GET',
+                        data: {
+                            keyword: keyword,
+                            financial_year: financialYear
+                        },
+                        success: function(response) {
+                            $('#employeeTableBody').empty();
 
-                    if (response.success && response.users.length > 0) {
-                        $('#selectLabel').show(); // Show the label
+                            if (response.success && response.users.length > 0) {
+                                $('#selectLabel').show(); // Show the label
 
-                        response.users.forEach(function (user) {
-                            const reviewedYears = JSON.stringify(user.admin_reviewed_financial_years || []);
-                            $('#employeeTableBody').append(`
+                                response.users.forEach(function(user) {
+                                    const reviewedYears = JSON.stringify(user
+                                        .admin_reviewed_financial_years || []);
+                                    $('#employeeTableBody').append(`
                                 <tr class="selectable-row" data-emp-id="${user.employee_id}" data-admin-reviewed-years='${reviewedYears}'>
                                     <td>${user.employee_id}</td>
                                     <td>${user.fname} ${user.lname}</td>
@@ -530,190 +616,209 @@
                                     <td>${user.email}</td>
                                 </tr>
                             `);
-                        });
-                    } else {
-                        $('#selectLabel').hide(); // Hide if no results
-                        $('#employeeTableBody').html(`<tr><td colspan="4">${response.message || 'No users found'}</td></tr>`);
-                    }
-                },
-                error: function () {
-                    alert("An error occurred. Please try again.");
-                }
+                                });
+                            } else {
+                                $('#selectLabel').hide(); // Hide if no results
+                                $('#employeeTableBody').html(
+                                    `<tr><td colspan="4">${response.message || 'No users found'}</td></tr>`
+                                    );
+                            }
+                        },
+                        error: function() {
+                            alert("An error occurred. Please try again.");
+                        }
+                    });
+                }, 1000);
+            }
+
+            $('#employee_search').on('keyup', function() {
+                $('#emp_id_input').val('').removeData('admin-reviewed-years');
+                syncAdminReviewFormState();
+                searchUser();
             });
-        }, 1000);
-    }
 
-    $('#employee_search').on('keyup', function () {
-        $('#emp_id_input').val('').removeData('admin-reviewed-years');
-        syncAdminReviewFormState();
-        searchUser();
-    });
+            $(document).on('click', '.selectable-row', function() {
+                var empId = $(this).data('emp-id');
+                var reviewedYears = $(this).data('admin-reviewed-years') || [];
+                $('#emp_id_input').val(empId);
+                $('#emp_id_input').data('admin-reviewed-years', reviewedYears);
 
-    $(document).on('click', '.selectable-row', function () {
-        var empId = $(this).data('emp-id');
-        var reviewedYears = $(this).data('admin-reviewed-years') || [];
-        $('#emp_id_input').val(empId);
-        $('#emp_id_input').data('admin-reviewed-years', reviewedYears);
+                var selectedRow = $(this).clone().addClass('table-active');
+                $('#employeeTableBody').empty().append(selectedRow);
 
-        var selectedRow = $(this).clone().addClass('table-active');
-        $('#employeeTableBody').empty().append(selectedRow);
+                $('#selectLabel').hide(); // Hide after selection
+                syncAdminReviewFormState();
+            });
 
-        $('#selectLabel').hide(); // Hide after selection
-        syncAdminReviewFormState();
-    });
+            $('#financialYear').on('change', function() {
+                $('#emp_id_input').val('').removeData('admin-reviewed-years');
+                syncAdminReviewFormState();
+                searchUser();
+            });
+            $('#AdminReviewSubmit').on('input change', 'input, select, textarea', syncAdminReviewFormState);
+            $('#AdminReviewSubmit').on('input', 'textarea', function() {
+                updateAdminCommentCounter(this);
+            });
 
-    $('#financialYear').on('change', function () {
-        $('#emp_id_input').val('').removeData('admin-reviewed-years');
-        syncAdminReviewFormState();
-        searchUser();
-    });
-    $('#AdminReviewSubmit').on('input change', 'input, select, textarea', syncAdminReviewFormState);
-    $('#AdminReviewSubmit').on('input', 'textarea', function () {
-        updateAdminCommentCounter(this);
-    });
+            const adminRequiredFieldNames = [
+                'financial_year',
+                'emp_id',
+                'demonstrated_attendance',
+                'employee_manage_shift',
+                'documentation_neatness',
+                'followed_instructions',
+                'productive',
+                'changes_schedules',
+                'leave_policy',
+                'salary_deduction',
+                'interact_housekeeping',
+                'comments_demonstrated_attendance',
+                'comments_employee_manage_shift',
+                'comments_documentation_neatness',
+                'comments_followed_instructions',
+                'comments_productive',
+                'comments_changes_schedules',
+                'comments_leave_policy',
+                'comments_salary_deduction',
+                'comments_interact_housekeeping'
+            ];
 
-    const adminRequiredFieldNames = [
-        'financial_year',
-        'emp_id',
-        'demonstrated_attendance',
-        'employee_manage_shift',
-        'documentation_neatness',
-        'followed_instructions',
-        'productive',
-        'changes_schedules',
-        'leave_policy',
-        'salary_deduction',
-        'interact_housekeeping',
-        'comments_demonstrated_attendance',
-        'comments_employee_manage_shift',
-        'comments_documentation_neatness',
-        'comments_followed_instructions',
-        'comments_productive',
-        'comments_changes_schedules',
-        'comments_leave_policy',
-        'comments_salary_deduction',
-        'comments_interact_housekeeping'
-    ];
+            function updateAdminCommentCounter(textarea) {
+                const limit = parseInt(textarea.getAttribute('maxlength'), 10) || 1500;
+                const count = textarea.value.length;
+                const counter = textarea.parentElement.querySelector('.admin-char-counter');
 
-    function updateAdminCommentCounter(textarea) {
-        const limit = parseInt(textarea.getAttribute('maxlength'), 10) || 1500;
-        const count = textarea.value.length;
-        const counter = textarea.parentElement.querySelector('.admin-char-counter');
-
-        if (counter) {
-            counter.textContent = `${count}/${limit}`;
-            counter.classList.toggle('is-limit', count >= limit);
-        }
-    }
-
-    function initAdminCommentCounters() {
-        $('#AdminReviewSubmit textarea').each(function () {
-            this.setAttribute('maxlength', '1500');
-
-            if (!this.parentElement.querySelector('.admin-char-counter')) {
-                $(this).after('<div class="admin-char-counter" aria-live="polite">0/1500</div>');
-            }
-
-            updateAdminCommentCounter(this);
-        });
-    }
-
-    function isAdminReviewFormComplete() {
-        for (const name of adminRequiredFieldNames) {
-            const field = document.querySelector(`#AdminReviewSubmit [name="${name}"]`);
-            if (!field || field.disabled) {
-                continue;
-            }
-
-            if (field.tagName === 'SELECT') {
-                const selectedOption = field.options[field.selectedIndex];
-                if (!field.value || (selectedOption && selectedOption.disabled)) {
-                    return false;
+                if (counter) {
+                    counter.textContent = `${count}/${limit}`;
+                    counter.classList.toggle('is-limit', count >= limit);
                 }
-                continue;
             }
 
-            if (!field.value || !field.value.trim()) {
-                return false;
+            function initAdminCommentCounters() {
+                $('#AdminReviewSubmit textarea').each(function() {
+                    this.setAttribute('maxlength', '1500');
+
+                    if (!this.parentElement.querySelector('.admin-char-counter')) {
+                        $(this).after('<div class="admin-char-counter" aria-live="polite">0/1500</div>');
+                    }
+
+                    updateAdminCommentCounter(this);
+                });
             }
-        }
 
-        return true;
-    }
+            function isAdminReviewFormComplete() {
+                for (const name of adminRequiredFieldNames) {
+                    const field = document.querySelector(`#AdminReviewSubmit [name="${name}"]`);
+                    if (!field || field.disabled) {
+                        continue;
+                    }
 
-    function getAdminReviewedYears() {
-        const reviewedYears = $('#emp_id_input').data('admin-reviewed-years') || [];
+                    if (field.tagName === 'SELECT') {
+                        const selectedOption = field.options[field.selectedIndex];
+                        if (!field.value || (selectedOption && selectedOption.disabled)) {
+                            return false;
+                        }
+                        continue;
+                    }
 
-        if (Array.isArray(reviewedYears)) {
-            return reviewedYears;
-        }
+                    if (!field.value || !field.value.trim()) {
+                        return false;
+                    }
+                }
 
-        if (typeof reviewedYears === 'string') {
-            try {
-                return JSON.parse(reviewedYears);
-            } catch (error) {
+                return true;
+            }
+
+            function getAdminReviewedYears() {
+                const reviewedYears = $('#emp_id_input').data('admin-reviewed-years') || [];
+
+                if (Array.isArray(reviewedYears)) {
+                    return reviewedYears;
+                }
+
+                if (typeof reviewedYears === 'string') {
+                    try {
+                        return JSON.parse(reviewedYears);
+                    } catch (error) {
+                        return [];
+                    }
+                }
+
                 return [];
             }
-        }
 
-        return [];
-    }
+            function syncAdminReviewFormState() {
+                const financialYear = $('#financialYear').val();
+                const reviewedYears = getAdminReviewedYears();
+                const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
 
-    function syncAdminReviewFormState() {
-        const financialYear = $('#financialYear').val();
-        const reviewedYears = getAdminReviewedYears();
-        const reviewExists = Boolean(financialYear && reviewedYears.includes(financialYear));
+                $('#reviewExistsError').toggle(reviewExists);
+                $('#AdminReviewSubmit')
+                    .find('select:not(#financialYear), textarea')
+                    .prop('disabled', reviewExists);
+                $('#submitBtn').prop('disabled', reviewExists || !isAdminReviewFormComplete());
+            }
 
-        $('#reviewExistsError').toggle(reviewExists);
-        $('#AdminReviewSubmit')
-            .find('select:not(#financialYear), textarea')
-            .prop('disabled', reviewExists);
-        $('#submitBtn').prop('disabled', reviewExists || !isAdminReviewFormComplete());
-    }
+            window.isAdminReviewAlreadyDone = function() {
+                return $('#reviewExistsError').is(':visible');
+            };
 
-    window.isAdminReviewAlreadyDone = function () {
-        return $('#reviewExistsError').is(':visible');
-    };
-
-    initAdminCommentCounters();
-    syncAdminReviewFormState();
-});
+            initAdminCommentCounters();
+            syncAdminReviewFormState();
+        });
 
 
 
 
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const adminForm = document.getElementById("AdminReviewSubmit");
 
             if (adminForm) {
-                adminForm.addEventListener("submit", function (event) {
+                adminForm.addEventListener("submit", function(event) {
                     event.preventDefault();
 
-                    const firstInvalid = adminForm.querySelector('select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
+                    const firstInvalid = adminForm.querySelector(
+                        'select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
                     const empId = document.getElementById('emp_id_input');
                     const financialYear = document.getElementById('financialYear');
 
                     if (window.isAdminReviewAlreadyDone && window.isAdminReviewAlreadyDone()) {
-                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Already done review for this financial year.' });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            text: 'Already done review for this financial year.'
+                        });
                         return;
                     }
 
                     if (!financialYear.value) {
                         financialYear.classList.add('is-invalid');
-                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Please select a financial year.' }).then(() => financialYear.focus());
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            text: 'Please select a financial year.'
+                        }).then(() => financialYear.focus());
                         return;
                     }
 
                     if (!empId.value) {
                         empId.classList.add('is-invalid');
-                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Please select an employee first.' }).then(() => empId.focus());
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            text: 'Please select an employee first.'
+                        }).then(() => empId.focus());
                         return;
                     }
 
                     if (firstInvalid) {
                         firstInvalid.classList.add('is-invalid');
-                        Swal.fire({ icon: 'error', title: 'Validation Error', text: 'Please complete all required fields.' }).then(() => firstInvalid.focus());
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            text: 'Please complete all required fields.'
+                        }).then(() => firstInvalid.focus());
                         return;
                     }
 
@@ -741,11 +846,13 @@
                         processData: false,
                         contentType: false,
                         headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute("content")
                         },
-                        success: function (response) {
+                        success: function(response) {
                             console.log("Success:", response);
-                            alert("✅ " + (response.message || "Admin Review submitted successfully!"));
+                            alert("✅ " + (response.message ||
+                                "Admin Review submitted successfully!"));
 
                             adminForm.reset();
 
@@ -758,15 +865,19 @@
                                 select.selectedIndex = 0;
                             });
 
-                            document.querySelectorAll("#AdminReviewSubmit textarea").forEach(textarea => {
-                                textarea.value = "";
-                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                            });
+                            document.querySelectorAll("#AdminReviewSubmit textarea").forEach(
+                                textarea => {
+                                    textarea.value = "";
+                                    textarea.dispatchEvent(new Event('input', {
+                                        bubbles: true
+                                    }));
+                                });
                             location.reload();
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             console.error("Error:", xhr.responseJSON);
-                            alert("❌ " + (xhr.responseJSON?.message || "Error submitting Admin review."));
+                            alert("❌ " + (xhr.responseJSON?.message ||
+                                "Error submitting Admin review."));
                         }
                     });
                 });
@@ -775,7 +886,7 @@
 
 
         // Admin Review total ratting
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             function adminTotalReview() {
                 let totalRating = 0;
 
@@ -799,7 +910,8 @@
                 select.addEventListener("change", () => select.classList.remove('is-invalid'));
                 select.addEventListener("input", adminTotalReview);
             });
-            document.querySelectorAll("input, textarea").forEach(el => el.addEventListener("input", () => el.classList.remove('is-invalid')));
+            document.querySelectorAll("input, textarea").forEach(el => el.addEventListener("input", () => el
+                .classList.remove('is-invalid')));
         });
     </script>
 @endsection

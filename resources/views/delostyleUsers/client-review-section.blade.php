@@ -8,7 +8,8 @@
 
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{{ asset('css/client-review-section.css') }}?v={{ filemtime(public_path('css/client-review-section.css')) }}" rel="stylesheet">
+    <link href="{{ asset('css/client-review-section.css') }}?v={{ filemtime(public_path('css/client-review-section.css')) }}"
+        rel="stylesheet">
 @endpush
 
 @section('content')
@@ -99,7 +100,8 @@
                 <div>
                     <input type="hidden" id="emp_id_input" name="emp_id" placeholder="Enter Employee Id" required>
                     </input>
-                    <div id="reviewExistsError" class="review-exists-error">Already done review for this financial year.</div>
+                    <div id="reviewExistsError" class="review-exists-error">Already done review for this financial year.
+                    </div>
                     <div class="accordion">
                         <div class="content-block">
                             <input type="checkbox" id="section1">
@@ -121,8 +123,8 @@
                                 <div class="review-block">
                                     <label for="comment_understand_requirements" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comment_understand_requirements" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comment_understand_requirements" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
 
@@ -168,8 +170,8 @@
                                     <label for="comments_detailed_project_scope" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea required name="comments_detailed_project_scope" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_detailed_project_scope" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                 </div>
                             </div>
@@ -222,8 +224,8 @@
                                     <label for="comments_comfortable_discussing" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea required name="comments_comfortable_discussing" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_comfortable_discussing" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -248,8 +250,8 @@
                                 <div class="review-block">
                                     <label for="comments_regular_updates" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_regular_updates" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_regular_updates" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -273,8 +275,8 @@
                                 <div class="review-block">
                                     <label for="comments_concerns_addressed" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_concerns_addressed" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_concerns_addressed" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -301,8 +303,8 @@
                                 <div class="review-block">
                                     <label for="comments_technical_expertise" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_technical_expertise" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_technical_expertise" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -351,8 +353,8 @@
                                 <div class="review-block">
                                     <label for="comments_suggest_innovative" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_suggest_innovative" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_suggest_innovative" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -404,8 +406,8 @@
                                 <div class="review-block">
                                     <label for="comments_encounter_issues" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_encounter_issues" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_encounter_issues" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -453,8 +455,8 @@
                                 <div class="review-block">
                                     <label for="comments_solution_perform" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_solution_perform" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_solution_perform" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -479,8 +481,8 @@
                                 <div class="review-block">
                                     <label for="comments_project_delivered" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_project_delivered" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_project_delivered" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -504,8 +506,8 @@
                                 <div class="review-block">
                                     <label for="comments_communicated_handled" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_communicated_handled" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_communicated_handled" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -528,8 +530,8 @@
                                 <div class="review-block">
                                     <label for="comments_development_process" class="third-label">Tell us more about your
                                         experience:</label>
-                                    <textarea required name="comments_development_process" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_development_process" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -557,8 +559,8 @@
                                     <label for="comments_unexpected_challenges" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea required name="comments_unexpected_challenges" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_unexpected_challenges" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -583,8 +585,8 @@
                                     <label for="comments_effective_workarounds" class="third-label">Tell us more about
                                         your
                                         experience:</label>
-                                    <textarea required name="comments_effective_workarounds" id="comments" class="form-control" rows="1" cols="50"
-                                        maxlength="1500"
+                                    <textarea required name="comments_effective_workarounds" id="comments" class="form-control" rows="1"
+                                        cols="50" maxlength="1500"
                                         placeholder="What made you give this rating? Share specific examples or feedback to help us improve."></textarea>
                                     <span class="invalid-feedback"></span>
                                 </div>
@@ -639,6 +641,7 @@
 
     </body>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(function() {
             let timeout = null;
@@ -672,7 +675,8 @@
                                 $('#selectLabel').show(); // Show label if clients found
 
                                 response.users.forEach(function(user) {
-                                    const reviewedYears = JSON.stringify(user.client_reviewed_financial_years || []);
+                                    const reviewedYears = JSON.stringify(user
+                                        .client_reviewed_financial_years || []);
                                     $('#employeeTableBody').append(`
                                         <tr class="selectable-row" data-emp-id="${user.employee_id}" data-client-reviewed-years='${reviewedYears}'>
                                             <td>${user.employee_id}</td>
@@ -693,7 +697,7 @@
                             alert("An error occurred. Please try again.");
                         }
                     });
-                }, 1000); 
+                }, 1000);
             }
 
             $('#employee_search').on('keyup', function() {
@@ -776,30 +780,31 @@
 
                 let complete = true;
 
-                $('#ClientReviewSubmit').find('select[required], textarea[required], input[required]').each(function() {
-                    if (!complete) {
-                        return;
-                    }
+                $('#ClientReviewSubmit').find('select[required], textarea[required], input[required]').each(
+                    function() {
+                        if (!complete) {
+                            return;
+                        }
 
-                    const $field = $(this);
-                    const type = ($field.attr('type') || '').toLowerCase();
+                        const $field = $(this);
+                        const type = ($field.attr('type') || '').toLowerCase();
 
-                    if ($field.is(':disabled') || type === 'hidden') {
-                        return;
-                    }
+                        if ($field.is(':disabled') || type === 'hidden') {
+                            return;
+                        }
 
-                    if ($field.is('select')) {
-                        const selectedOption = this.options[this.selectedIndex];
-                        if (!$field.val() || (selectedOption && selectedOption.disabled)) {
+                        if ($field.is('select')) {
+                            const selectedOption = this.options[this.selectedIndex];
+                            if (!$field.val() || (selectedOption && selectedOption.disabled)) {
+                                complete = false;
+                            }
+                            return;
+                        }
+
+                        if (!$field.val() || !$field.val().trim()) {
                             complete = false;
                         }
-                        return;
-                    }
-
-                    if (!$field.val() || !$field.val().trim()) {
-                        complete = false;
-                    }
-                });
+                    });
 
                 return complete;
             }
@@ -826,7 +831,11 @@
             let formData = new FormData(form);
 
             if ($('#reviewExistsError').is(':visible')) {
-                alert("Already done review for this financial year.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Already done review for this financial year.'
+                });
                 return;
             }
 
@@ -834,10 +843,15 @@
                 return;
             }
 
-            const firstInvalid = form.querySelector('select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
+            const firstInvalid = form.querySelector(
+                'select[required]:invalid, input[required]:invalid, textarea[required]:invalid');
             if (firstInvalid) {
                 firstInvalid.classList.add('is-invalid');
-                firstInvalid.focus();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please complete all required fields.'
+                }).then(() => firstInvalid.focus());
                 return;
             }
 
@@ -846,95 +860,139 @@
 
             formData.append("ClientTotalReview", totalRating);
 
-            $.ajax({
-                url: "{{ route('client.review.submit') }}",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').getAttribute(
-                        "content")
-                },
-                success: function(response) {
-                    console.log("Success:", response);
-                    alert("✅ " + (response.message || "Review submitted successfully!"));
+            Swal.fire({
+                icon: 'question',
+                title: 'Are you sure?',
+                text: 'Do you want to submit this Client review?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, submit',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    return;
+                }
 
-                    form.reset();
-                    const totalDisplay = document.getElementById("clientTotalReview");
-                    if (totalDisplay) {
-                        totalDisplay.textContent = "";
-                    }
-
-                    document.querySelectorAll("select[id^='cli']").forEach(select => {
-                        select.selectedIndex = 0;
-                    });
-
-                    document.querySelectorAll("textarea").forEach(textarea => {
-                        textarea.value = "";
-                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    });
-                    location.reload();
-                },
-                error: function(xhr) {
-                    console.log("XHR Response:", xhr.responseText);
-
-                    try {
-                        const errorData = JSON.parse(xhr.responseText);
-
-                        // Handle Laravel validation errors
-                        if (xhr.status == 422) {
-
-                            let errors = xhr.responseJSON.errors;
-
-                            // Remove old errors
-                            $(".text-danger").html("");
-                            $(".is-invalid").removeClass("is-invalid");
-
-                            let firstField = null;
-
-                            $.each(errors, function(field, messages) {
-
-                                let input = $("[name='" + field + "']");
-
-                                input.addClass("is-invalid");
-
-                                $(".error-" + field).html(messages[0]);
-
-                                if (!firstField) {
-                                    firstField = input;
-                                }
-                            });
-
-                            // Scroll and focus to first invalid field
-                            if (firstField) {
-                                $("html, body").animate({
-                                    scrollTop: firstField.offset().top - 120
-                                }, 500);
-
-                                firstField.focus();
+                $.ajax({
+                    url: "{{ route('client.review.submit') }}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]')
+                            .getAttribute(
+                                "content")
+                    },
+                    success: function(response) {
+                        console.log("Success:", response);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Submitted',
+                            text: response.message ||
+                                "Client Review submitted successfully!"
+                        }).then(() => {
+                            form.reset();
+                            const totalDisplay = document.getElementById(
+                                "clientTotalReview");
+                            if (totalDisplay) {
+                                totalDisplay.textContent = "";
                             }
 
-                            return;
-                        }
+                            document.querySelectorAll("select[id^='cli']").forEach(
+                                select => {
+                                    select.selectedIndex = 0;
+                                });
 
-                        if (xhr.status === 403) {
-                            alert("⛔ " + (errorData.message || "This User has no Client."));
-                        } else if (xhr.status === 404) {
-                            alert("🔍 " + (errorData.message || "Employee not found."));
-                        } else if (xhr.status === 409) {
-                            alert("⚠️ " + (errorData.message ||
-                                "You already submitted a review for this employee."));
-                        } else {
-                            alert("❌ " + (errorData.message ||
-                                "Something went wrong! Please try again."));
-                        }
+                            document.querySelectorAll("textarea").forEach(textarea => {
+                                textarea.value = "";
+                                textarea.dispatchEvent(new Event('input', {
+                                    bubbles: true
+                                }));
+                            });
+                            location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        console.log("XHR Response:", xhr.responseText);
 
-                    } catch (e) {
-                        alert("⚠️ Unexpected error occurred.");
-                        console.error("Parsing error:", e);
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+
+                            // Handle Laravel validation errors
+                            if (xhr.status == 422) {
+
+                                let errors = xhr.responseJSON.errors;
+
+                                // Remove old errors
+                                $(".text-danger").html("");
+                                $(".is-invalid").removeClass("is-invalid");
+
+                                let firstField = null;
+
+                                $.each(errors, function(field, messages) {
+
+                                    let input = $("[name='" + field + "']");
+
+                                    input.addClass("is-invalid");
+
+                                    $(".error-" + field).html(messages[0]);
+
+                                    if (!firstField) {
+                                        firstField = input;
+                                    }
+                                });
+
+                                // Scroll and focus to first invalid field
+                                if (firstField) {
+                                    $("html, body").animate({
+                                        scrollTop: firstField.offset().top - 120
+                                    }, 500);
+
+                                    firstField.focus();
+                                }
+
+                                return;
+                            }
+
+                            if (xhr.status === 403) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Not Authorized',
+                                    text: errorData.message ||
+                                        'This User has no Client.'
+                                });
+                            } else if (xhr.status === 404) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Not Found',
+                                    text: errorData.message || 'Employee not found.'
+                                });
+                            } else if (xhr.status === 409) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Already Submitted',
+                                    text: errorData.message ||
+                                        'You already submitted a review for this employee.'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorData.message ||
+                                        'Something went wrong! Please try again.'
+                                });
+                            }
+
+                        } catch (e) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Unexpected error occurred.'
+                            });
+                            console.error("Parsing error:", e);
+                        }
                     }
-                }
+                });
             });
         });
 

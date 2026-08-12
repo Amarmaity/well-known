@@ -141,6 +141,35 @@
                                                 $currentFYStart + 1, // Next FY
                                                 $currentFYStart + 2, // Next +1 FY
                                             ];
+                                            $currentFinancialYear = $currentFYStart . '-' . ($currentFYStart + 1);
+                                            $latestEvaluationFinancialYear = optional(
+                                                $latestEvaluationYearsByEmployee ?? collect(),
+                                            )->get($user->employee_id);
+                                            $selectedFinancialYear =
+                                                $latestEvaluationFinancialYear ?: $currentFinancialYear;
+
+                                            if (
+                                                $latestEvaluationFinancialYear &&
+                                                preg_match(
+                                                    '/^(\d{4})-\d{4}$/',
+                                                    $latestEvaluationFinancialYear,
+                                                    $matches,
+                                                )
+                                            ) {
+                                                $years[] = (int) $matches[1];
+                                                $years = array_values(array_unique($years));
+                                                sort($years);
+                                            }
+
+                                            $managerReviewYears = optional($managerReviewYearsByEmployee ?? collect())
+                                                ->get($user->employee_id, collect())
+                                                ->values()
+                                                ->all();
+                                            $hasSelectedManagerReview = in_array(
+                                                $selectedFinancialYear,
+                                                $managerReviewYears,
+                                                true,
+                                            );
                                         @endphp
 
                                         <select id="financial_year" class="form-control financial-year input-block"
@@ -154,7 +183,7 @@
                                                 @endphp
 
                                                 <option value="{{ $fy }}"
-                                                    {{ $year == $currentFYStart ? 'selected' : '' }}>
+                                                    {{ $fy === $selectedFinancialYear ? 'selected' : '' }}>
                                                     {{ $fy }}
                                                 </option>
                                             @endforeach
@@ -163,8 +192,12 @@
                                         <div class="btn-block">
                                             @if ($user->user_type !== 'manager')
                                                 <a href="{{ route('user-manager-details', $user->employee_id) }}"
-                                                    class="btn btn-primary view-manager-details">View
-                                                    Details</a>
+                                                    class="btn btn-primary view-manager-details {{ $hasSelectedManagerReview ? '' : 'disabled' }}"
+                                                    data-manager-review-years='@json($managerReviewYears)'
+                                                    aria-disabled="{{ $hasSelectedManagerReview ? 'false' : 'true' }}"
+                                                    @unless ($hasSelectedManagerReview) tabindex="-1" @endunless>
+                                                    View Details
+                                                </a>
                                             @endif
                                             <a href="{{ route('user-report-view-evaluation', $user->employee_id) }}"
                                                 class="btn btn-primary view-evaluation">View Evaluation</a>
@@ -178,24 +211,66 @@
             </div>
             <!-- Initialize DataTables with search functionality -->
             <script>
+                function getManagerReviewYears($button) {
+                    try {
+                        return JSON.parse($button.attr('data-manager-review-years') || '[]');
+                    } catch (error) {
+                        return [];
+                    }
+                }
+
+                function updateManagerDetailsButton($row) {
+                    const selectedYear = $row.find('.financial-year').val();
+                    const $button = $row.find('.view-manager-details');
+
+                    if (!$button.length) {
+                        return;
+                    }
+
+                    const managerReviewYears = getManagerReviewYears($button);
+                    const isEnabled = selectedYear && managerReviewYears.includes(selectedYear);
+
+                    $button.toggleClass('disabled', !isEnabled)
+                        .attr('aria-disabled', isEnabled ? 'false' : 'true')
+                        .attr('tabindex', isEnabled ? '0' : '-1');
+                }
+
+                function updateAllManagerDetailsButtons() {
+                    $('#employeeReviewTable tbody tr').each(function() {
+                        updateManagerDetailsButton($(this));
+                    });
+                }
+
                 $(document).ready(function() {
                     var table = $('#employeeReviewTable').DataTable({
-                        "paging": false,
+                        "paging": true,
+                        "pageLength": 15,
+                        "lengthChange": false,
                         "searching": true, // keep this true to allow external filtering
                         "ordering": false,
-                        "info": false
+                        "info": true
                     });
 
                     // Bind the custom search input
                     $('#employee_search').on('keyup', function() {
                         table.search(this.value).draw();
                     });
+
+                    updateAllManagerDetailsButtons();
+
+                    $('#employeeReviewTable').on('change', '.financial-year', function() {
+                        updateManagerDetailsButton($(this).closest('tr'));
+                    });
                 });
 
                 //Manager Details
                 $(document).ready(function() {
-                    $('.view-manager-details').click(function(e) {
+                    $('#employeeReviewTable').on('click', '.view-manager-details', function(e) {
                         e.preventDefault();
+
+                        if ($(this).hasClass('disabled')) {
+                            return;
+                        }
 
                         let $row = $(this).closest('tr');
                         let financialYear = $row.find('.financial-year').val();
