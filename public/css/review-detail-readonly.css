@@ -73,6 +73,11 @@
     color: gray;
 }
 
+.bi-briefcase::before {
+    content: "\f1cc";
+    color: gray;
+}
+
 .review-read-page .review-read-title i {
     width: 34px;
     height: 34px;

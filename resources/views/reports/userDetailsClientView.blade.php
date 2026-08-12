@@ -7,6 +7,12 @@
 @section('body-class', 'special-page')
 
 @section('content')
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link
+            href="{{ asset('css/review-detail-readonly.css') }}?v={{ filemtime(public_path('css/review-detail-readonly.css')) }}"
+            rel="stylesheet">
+    @endpush
 
 @php
     $clientQuestions = [
@@ -74,18 +80,29 @@
         }
     </style>
 
-    <div class="container">
+    <div class="review-read-page">
+        <div class="review-read-header review-read-header--back-top">
+            <a href="{{ url()->previous() }}" class="review-read-back">
+                <i class="bi bi-arrow-left"></i>
+                Back
+            </a>
 
-        <!-- Back Button aligned to the right -->
-        <div class="text-right mb-3">
-            <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+            <div class="review-read-title">
+                <i class="bi bi-briefcase"></i>
+                <div>
+                    <h1>Client Review Details</h1>
+                    <p>Employee ID: {{ $employee_id }}@if (!empty($financial_year)) Financial Year : {{ $financial_year }}@endif</p>
+                </div>
+            </div>
         </div>
 
-        <h2>Client Review Details</h2>
-        <!-- Client Review History Table -->
-        <div class="table-container span-tage">
+        <div class="review-read-card span-tage">
+            <div class="review-read-section-title">
+                {{-- <i class="bi bi-card-checklist"></i> --}}
+                Review Scores and Comments
+            </div>
             <div class="table-wrapper">
-                <table id="clientReviewHistoryTable" class="display table table-striped  table-bordered set-position">
+                <table id="clientReviewHistoryTable" class="table table-bordered table-hover main-table">
                     <thead>
                         <tr>
                             <th>Field</th>

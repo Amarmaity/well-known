@@ -31,7 +31,7 @@
 
     <div class="review-read-card">
         <div class="review-read-section-title">
-            <i class="bi bi-card-checklist"></i>
+            {{-- <i class="bi bi-card-checklist"></i> --}}
             Review Scores and Comments
         </div>
         <div class="table-wrapper">
