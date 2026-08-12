@@ -141,19 +141,6 @@
                     $userRoles = $user_roles ?? [];
                 @endphp
 
-                {{-- Admin --}}
-                @if (in_array('admin', $userRoles))
-                    @if (optional($users['adminReview'])->emp_id)
-                        <button class="review-action-btn"
-                            onclick="loadReport('adminReport', '{{ $users['adminReview']->emp_id }}')">
-                            <i class="bi bi-person-check"></i>
-                            View Admin Review
-                        </button>
-                    @else
-                        <p class="review-pending">Admin review is pending.</p>
-                    @endif
-                @endif
-
                 {{-- HR --}}
                 @if (in_array('hr', $userRoles))
                     @if (optional($users['hrReview'])->emp_id)
@@ -164,6 +151,19 @@
                         </button>
                     @else
                         <p class="review-pending">HR review is pending.</p>
+                    @endif
+                @endif
+
+                {{-- Admin --}}
+                @if (in_array('admin', $userRoles))
+                    @if (optional($users['adminReview'])->emp_id)
+                        <button class="review-action-btn"
+                            onclick="loadReport('adminReport', '{{ $users['adminReview']->emp_id }}')">
+                            <i class="bi bi-person-check"></i>
+                            View Admin Review
+                        </button>
+                    @else
+                        <p class="review-pending">Admin review is pending.</p>
                     @endif
                 @endif
 
@@ -291,21 +291,21 @@
                 html += "<p class=\"review-pending\">Evaluation review is pending.</p>";
             }
 
-            if (userRoles.includes("admin")) {
-                if (data.reports?.adminReview) {
-                    html +=
-                        "<button class=\"review-action-btn\" onclick=\"loadReport('adminReport', '{{ $emp_id }}')\"><i class=\"bi bi-person-check\"></i>View Admin Review</button>";
-                } else if (data.pendingReviews?.adminReview) {
-                    html += "<p class=\"review-pending\">Admin review is pending.</p>";
-                }
-            }
-
             if (userRoles.includes("hr")) {
                 if (data.reports?.hrReview) {
                     html +=
                         "<button class=\"review-action-btn\" onclick=\"loadReport('hrReport', '{{ $emp_id }}')\"><i class=\"bi bi-people\"></i>View HR Review</button>";
                 } else if (data.pendingReviews?.hrReview) {
                     html += "<p class=\"review-pending\">HR review is pending.</p>";
+                }
+            }
+
+            if (userRoles.includes("admin")) {
+                if (data.reports?.adminReview) {
+                    html +=
+                        "<button class=\"review-action-btn\" onclick=\"loadReport('adminReport', '{{ $emp_id }}')\"><i class=\"bi bi-person-check\"></i>View Admin Review</button>";
+                } else if (data.pendingReviews?.adminReview) {
+                    html += "<p class=\"review-pending\">Admin review is pending.</p>";
                 }
             }
 

@@ -307,6 +307,7 @@
                 max-width: 170px;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                display: contents;
             }
 
             .emp-page .emp-copy-btn {

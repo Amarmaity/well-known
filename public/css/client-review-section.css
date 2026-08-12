@@ -40,6 +40,10 @@
     color: var(--client-primary);
     font-size: 16px;
 }
+.bi-briefcase::before {
+    content: "\f1cc";
+    color: grey;
+}
 
 .client-review-page .client__heading {
     margin: 0;

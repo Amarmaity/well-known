@@ -315,6 +315,7 @@
     max-width: 190px;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: contents;
 }
 
 .emp-page .emp-designation {

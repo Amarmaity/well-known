@@ -120,15 +120,6 @@
                     <p class="review-pending">Review your self first.</p>
                 @endif
 
-                @if ($userData['adminReview'] !== null)
-                    <button class="review-action-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')">
-                        <i class="bi bi-person-check"></i>
-                        Admin Report
-                    </button>
-                @elseif($pendingReviews['adminReview'] ?? false)
-                    <p class="review-pending">Admin review is pending.</p>
-                @endif
-
                 @if ($userData['hrReview'] !== null)
                     <button class="review-action-btn" onclick="loadReport('hrReport', '{{ $emp_id }}')">
                         <i class="bi bi-people"></i>
@@ -136,6 +127,15 @@
                     </button>
                 @elseif($pendingReviews['hrReview'] ?? false)
                     <p class="review-pending">HR review is pending.</p>
+                @endif
+
+                @if ($userData['adminReview'] !== null)
+                    <button class="review-action-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')">
+                        <i class="bi bi-person-check"></i>
+                        Admin Report
+                    </button>
+                @elseif($pendingReviews['adminReview'] ?? false)
+                    <p class="review-pending">Admin review is pending.</p>
                 @endif
 
                 @if ($userData['managerReview'] !== null)
@@ -257,18 +257,18 @@
                 html += '<p class="review-pending">Review your self first.</p>';
             }
 
-            if (data.reports?.adminReview) {
-                html +=
-                    `<button class="review-action-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')"><i class="bi bi-person-check"></i>Admin Report</button>`;
-            } else if (data.pendingReviews?.adminReview) {
-                html += '<p class="review-pending">Admin review is pending.</p>';
-            }
-
             if (data.reports?.hrReview) {
                 html +=
                     `<button class="review-action-btn" onclick="loadReport('hrReport', '{{ $emp_id }}')"><i class="bi bi-people"></i>HR Report</button>`;
             } else if (data.pendingReviews?.hrReview) {
                 html += '<p class="review-pending">HR review is pending.</p>';
+            }
+
+            if (data.reports?.adminReview) {
+                html +=
+                    `<button class="review-action-btn" onclick="loadReport('adminReport', '{{ $emp_id }}')"><i class="bi bi-person-check"></i>Admin Report</button>`;
+            } else if (data.pendingReviews?.adminReview) {
+                html += '<p class="review-pending">Admin review is pending.</p>';
             }
 
             if (data.reports?.managerReview) {
