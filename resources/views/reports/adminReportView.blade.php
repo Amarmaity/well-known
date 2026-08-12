@@ -74,7 +74,6 @@
                 <img src="{{ asset('images/search.png') }}" alt="Search">
             </button>
         </div>
-        {{-- <input type="hidden" name="emp_id" id="selectedEmpId"> --}}
     </div>
     <div class="container table-container">
         <div class="table-wrapper">

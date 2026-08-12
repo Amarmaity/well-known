@@ -199,6 +199,7 @@
     vertical-align: middle;
     font-size: 0.8375rem;
     color: var(--emp-ink-700);
+    padding-right: 70px;
 }
 
 .emp-page table.emp-table tbody tr.emp-row {
@@ -254,6 +255,7 @@
     align-items: center;
     gap: 4px;
     white-space: nowrap;
+    display: contents;
 }
 
 .emp-copy-row i::before {

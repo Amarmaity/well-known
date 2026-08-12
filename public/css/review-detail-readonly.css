@@ -103,6 +103,11 @@
     line-height: 1.2;
 }
 
+.bi-person-check::before {
+    content: "\f4d6";
+    color: grey;
+}
+
 .review-read-page .review-read-title p {
     margin: 2px 0 0;
     color: var(--read-muted);
