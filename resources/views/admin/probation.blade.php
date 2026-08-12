@@ -39,6 +39,7 @@
                             <tr>
                                 <th style="width:260px;">Employee</th>
                                 <th>Employee ID</th>
+                                <th>Designation</th>
                                 <th>Joining Date</th>
                                 <th>Probation Date</th>
                                 <th>Salary</th>
@@ -97,6 +98,10 @@
                                                 </button>
                                             @endif
                                         </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="emp-designation">{{ $users->designation ?? '-' }}</span>
                                     </td>
 
                                     <td>
@@ -204,7 +209,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8">
+                                    <td colspan="9">
                                         <div class="emp-empty">
                                             <i class="bi bi-hourglass-split"></i>
                                             <h5>No probation employees found</h5>
@@ -216,7 +221,7 @@
 
                             @if (count($user) > 0)
                                 <tr id="probationNoResults" hidden>
-                                    <td colspan="8">
+                                    <td colspan="9">
                                         <div class="emp-empty">
                                             <i class="bi bi-search"></i>
                                             <h5>No matching employees</h5>
