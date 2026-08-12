@@ -137,7 +137,7 @@
     background: var(--emp-surface);
     border: 1px solid var(--emp-line);
     border-radius: var(--emp-radius-lg);
-    overflow: visible;
+    overflow: hidden;
 }
 
 .emp-page .emp-table-scroll {
