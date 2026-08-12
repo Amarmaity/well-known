@@ -199,7 +199,6 @@
     vertical-align: middle;
     font-size: 0.8375rem;
     color: var(--emp-ink-700);
-    padding-right: 70px;
 }
 
 .emp-page table.emp-table tbody tr.emp-row {
@@ -255,7 +254,6 @@
     align-items: center;
     gap: 4px;
     white-space: nowrap;
-    display: contents;
 }
 
 .emp-copy-row i::before {
@@ -278,6 +276,7 @@
     max-width: 170px;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: contents;
 }
 
 .emp-page table.emp-table tbody tr.emp-row:hover .emp-copy-btn {
@@ -297,7 +296,10 @@
     opacity: 0;
     cursor: pointer;
     border-radius: 4px;
-    transition: opacity .12s ease, color .12s ease, background .12s ease;
+    transition:
+        opacity 0.12s ease,
+        color 0.12s ease,
+        background 0.12s ease;
     flex: none;
 }
 

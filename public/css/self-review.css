@@ -184,6 +184,7 @@
     font-size: .74rem;
     font-weight: 600;
     line-height: 1;
+    margin-top: 9px ;
 }
 
 .self-review-page .evaluation-char-counter.is-limit {

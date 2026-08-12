@@ -9,7 +9,8 @@
 
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-        <link href="{{ asset('css/client-management.css') }}?v={{ filemtime(public_path('css/client-management.css')) }}" rel="stylesheet">
+        <link href="{{ asset('css/client-management.css') }}?v={{ filemtime(public_path('css/client-management.css')) }}"
+            rel="stylesheet">
     @endpush
 
     <div class="emp-page">
@@ -106,9 +107,8 @@
                                         @if ($clientEmail !== '')
                                             <div class="emp-copy-row">
                                                 <i class="bi bi-envelope emp-inline-icon"></i>
-                                                <span class="emp-copy-text" title="{{ $clientEmail }}">
-                                                    {{ $clientEmail }}
-                                                </span>
+                                                <span class="emp-copy-text"
+                                                    title="{{ $clientEmail }}">{{ $clientEmail }}</span>
                                                 <button class="emp-copy-btn" data-copy="{{ $clientEmail }}"
                                                     title="Copy Email">
                                                     <i class="bi bi-copy"></i>
@@ -119,7 +119,9 @@
                                         @if ($clientMobile === '' && $clientEmail === '')
                                             <span>—</span>
                                         @endif
+
                                     </td>
+
 
                                     <td class="status-class" id="status-{{ $client->id }}">
                                         @if ($client->status)
@@ -144,7 +146,8 @@
 
                                             <ul class="dropdown-menu dropdown-menu-end emp-menu">
                                                 <li>
-                                                    <a href="{{ route('edit-client', $client->id) }}" class="dropdown-item">
+                                                    <a href="{{ route('edit-client', $client->id) }}"
+                                                        class="dropdown-item">
                                                         <i class="bi bi-pencil-square"></i>
                                                         Edit Client
                                                     </a>
@@ -267,7 +270,8 @@
                     const windowPadding = 12;
                     const left = Math.max(
                         windowPadding,
-                        Math.min(buttonRect.right - menuRect.width, window.innerWidth - menuRect.width - windowPadding)
+                        Math.min(buttonRect.right - menuRect.width, window.innerWidth - menuRect.width -
+                            windowPadding)
                     );
                     let top = buttonRect.bottom + 6;
 
@@ -404,7 +408,8 @@
                     if (paginationInfo) {
                         const from = totalRows === 0 ? 0 : startIndex + 1;
                         const to = Math.min(endIndex, totalRows);
-                        paginationInfo.innerHTML = `Showing <strong>${from}</strong> to <strong>${to}</strong> of <strong>${totalRows}</strong> clients`;
+                        paginationInfo.innerHTML =
+                            `Showing <strong>${from}</strong> to <strong>${to}</strong> of <strong>${totalRows}</strong> clients`;
                     }
 
                     renderPagination(totalPages);
