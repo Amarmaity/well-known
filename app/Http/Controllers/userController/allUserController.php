@@ -1593,9 +1593,4 @@ class allUserController extends Controller
         return in_array((string) $clientId, array_map('strval', $clientIds), true);
     }
 
-
-    public function breakDetails($id)
-    {
-        return view('delostyleUsers.break-details');
-    }
 }

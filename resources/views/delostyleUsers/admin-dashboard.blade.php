@@ -11,7 +11,7 @@
 @section('content')
 
 <!-- ============ MAIN ============ -->
-  <main class="main-area admin-dashboard">
+  {{-- <main class="main-area admin-dashboard">
  
     <!-- Topbar -->
     <div class="topbar">
@@ -458,7 +458,7 @@
       </div>
     </div>
  
-  </main>
+  </main> --}}
  
  
 <!-- <script>
