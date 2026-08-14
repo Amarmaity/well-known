@@ -21,67 +21,67 @@ class HomeController extends Controller
 
     public function index($employee_id = null)
     {
-    
-    
-    $sessionEmployeeId = session('employee_id');
-    $userType = session('user_type');
 
-    if (!$sessionEmployeeId) {
-        return redirect()->route('all-user-login')
-            ->with('error', 'Please log in to continue.');
-    }
 
-    // Employee and Manager can only fill their own evaluation
-    if (in_array($userType, ['users', 'manager'])) {
+        $sessionEmployeeId = session('employee_id');
+        $userType = session('user_type');
 
-        if ($employee_id !== null && $employee_id !== $sessionEmployeeId) {
-            Session::flush();
-
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
-
+        if (!$sessionEmployeeId) {
             return redirect()->route('all-user-login')
-                ->with('error', 'Unauthorized access.');
+                ->with('error', 'Please log in to continue.');
         }
 
-        $employee_id = $sessionEmployeeId;
+        // Employee and Manager can only fill their own evaluation
+        if (in_array($userType, ['users', 'manager'])) {
+
+            if ($employee_id !== null && $employee_id !== $sessionEmployeeId) {
+                Session::flush();
+
+                request()->session()->invalidate();
+                request()->session()->regenerateToken();
+
+                return redirect()->route('all-user-login')
+                    ->with('error', 'Unauthorized access.');
+            }
+
+            $employee_id = $sessionEmployeeId;
+        }
+
+        // HR/Admin/Super User
+        if (in_array($userType, ['hr', 'admin', 'Super User'])) {
+            $employee_id = $employee_id ?? $sessionEmployeeId;
+        }
+
+        $employee = SuperAddUser::with(["admin", "hr", "latestFinancialData"])->where("employee_id", $employee_id)->firstOrFail();
+        $sessionUser = SuperAddUser::where("email", session("user_email"))->first();
+        $evaluatorName = $sessionUser
+            ? trim($sessionUser->fname . " " . $sessionUser->lname)
+            : $employee->fname . " " . $employee->lname;
+        $assignedUserName = fn($user) => $user ? trim($user->fname . " " . $user->lname) : null;
+
+        $isProbationLocked = $employee->probation_date && now()->lt(Carbon::parse($employee->probation_date));
+        $currentSalary = $employee->latestFinancialData?->final_salary ?? $employee->salary;
+        $salaryGrade = $this->salaryGradeFromSalary($currentSalary) ?? $employee->salary_grade;
+
+        return view("evaluationForm.evaluationForm", [
+            "employee_id" => $employee->employee_id,
+            "employee_name" => $employee->fname . " " . $employee->lname,
+            "evaluator_name" => $evaluatorName,
+            "designation" => $employee->designation,
+            "salary_grade" => $salaryGrade,
+            "current_salary" => $currentSalary,
+            "evaluation_purpose" => $employee->evaluation_purpose,
+            "manager_name" => $employee->manager_name,
+            "admin_name" => $assignedUserName($employee->admin),
+            "hr_name" => $assignedUserName($employee->hr),
+            "division" => $employee->division,
+            "dob" => $employee->dob,
+            "financial_year" => $employee->financial_year,
+            "employee_status" => $employee->employee_status,
+            "is_probation_locked" => $isProbationLocked,
+            "probation_date" => $employee->probation_date,
+        ]);
     }
-
-    // HR/Admin/Super User
-    if (in_array($userType, ['hr', 'admin', 'Super User'])) {
-        $employee_id = $employee_id ?? $sessionEmployeeId;
-    }
-
-    $employee = SuperAddUser::with(["admin", "hr", "latestFinancialData"])->where("employee_id", $employee_id)->firstOrFail();
-    $sessionUser = SuperAddUser::where("email", session("user_email"))->first();
-    $evaluatorName = $sessionUser
-        ? trim($sessionUser->fname . " " . $sessionUser->lname)
-        : $employee->fname . " " . $employee->lname;
-    $assignedUserName = fn ($user) => $user ? trim($user->fname . " " . $user->lname) : null;
-
-    $isProbationLocked = $employee->probation_date && now()->lt(Carbon::parse($employee->probation_date));
-    $currentSalary = $employee->latestFinancialData?->final_salary ?? $employee->salary;
-    $salaryGrade = $this->salaryGradeFromSalary($currentSalary) ?? $employee->salary_grade;
-
-    return view("evaluationForm.evaluationForm", [
-        "employee_id"        => $employee->employee_id,
-        "employee_name"      => $employee->fname . " " . $employee->lname,
-        "evaluator_name"     => $evaluatorName,
-        "designation"        => $employee->designation,
-        "salary_grade"       => $salaryGrade,
-        "current_salary"     => $currentSalary,
-        "evaluation_purpose" => $employee->evaluation_purpose,
-        "manager_name"       => $employee->manager_name,
-        "admin_name"         => $assignedUserName($employee->admin),
-        "hr_name"            => $assignedUserName($employee->hr),
-        "division"           => $employee->division,
-        "dob"                => $employee->dob,
-        "financial_year"     => $employee->financial_year,
-        "employee_status" => $employee->employee_status,
-        "is_probation_locked" => $isProbationLocked,
-        "probation_date" => $employee->probation_date,
-    ]);
-}
 
 
     private function salaryGradeFromSalary($salary): ?string
@@ -113,6 +113,70 @@ class HomeController extends Controller
         }
 
         return 'A';
+    }
+
+    private function notifyEvaluationSubmitted(SuperAddUser $employee, array $evaluationData): void
+    {
+        $recipientEmails = collect();
+
+        $assignedUserIds = collect([
+            $employee->manager_id,
+            $employee->admin_id,
+            $employee->hr_id,
+        ])->filter()->unique()->values();
+
+        if ($assignedUserIds->isNotEmpty()) {
+            $recipientEmails = $recipientEmails->merge(
+                SuperAddUser::whereIn('id', $assignedUserIds)
+                    ->whereNotNull('email')
+                    ->pluck('email')
+            );
+        }
+
+        $clientIds = $this->extractEmployeeClientIds($employee->client_id);
+
+        if (!empty($clientIds)) {
+            $recipientEmails = $recipientEmails->merge(
+                AllClient::whereIn('id', $clientIds)
+                    ->whereNotNull('client_email')
+                    ->pluck('client_email')
+            );
+        }
+
+        $recipientEmails
+            ->map(fn($email) => trim((string) $email))
+            ->filter(fn($email) => filter_var($email, FILTER_VALIDATE_EMAIL))
+            ->unique()
+            ->values()
+            ->each(function ($email) use ($evaluationData) {
+                try {
+                    Mail::to($email)->send(new EvaluationSubmitted($evaluationData));
+                } catch (\Throwable $e) {
+                    Log::error('Failed to send evaluation submitted email.', [
+                        'recipient' => $email,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            });
+    }
+
+    private function extractEmployeeClientIds($clientIds): array
+    {
+        if (!$clientIds) {
+            return [];
+        }
+
+        if (is_array($clientIds)) {
+            return array_values(array_filter($clientIds));
+        }
+
+        $decodedClientIds = json_decode($clientIds, true);
+
+        if (is_array($decodedClientIds)) {
+            return array_values(array_filter($decodedClientIds));
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', (string) $clientIds))));
     }
 
     // Send OTP to user email
@@ -192,8 +256,8 @@ class HomeController extends Controller
         ], 400);
     }
 
-  
-     public function submitEvaluation(Request $request)
+
+    public function submitEvaluation(Request $request)
     {
         $employeeId = $request->input('emp_id');
         $employee = SuperAddUser::where('employee_id', $employeeId)->first();
@@ -384,6 +448,8 @@ class HomeController extends Controller
 
         try {
             $evaluation = evaluationTable::create($data);
+
+            $this->notifyEvaluationSubmitted($employee, $data);
 
             // reset OTP after success
             Session::forget('otp_verified');

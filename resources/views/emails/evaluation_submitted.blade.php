@@ -4,14 +4,23 @@
     <title>Evaluation Submitted</title>
 </head>
 <body>
-    <h2>New Evaluation Submitted</h2>
-    <p><strong>Employee Name:</strong> {{ $evaluationData['employee_name'] }}</p>
-    <p><strong>Employee ID:</strong> {{ $evaluationData['emp_id'] }}</p>
-    {{-- <p><strong>Department:</strong> {{ $evaluationData['designation'] }}</p> --}}
-    <p><strong>Designation:</strong> {{ $evaluationData['designation'] }}</p>
-    <p><strong>Submitted By:</strong> {{ $evaluationData['evalutors_name'] }}</p>
+    <p>This is to inform you that the self-evaluation for the following employee has been submitted and is now available for your review.</p>
 
-    {{-- <p>Please log in to the system to view the full evaluation details.</p> --}}
-    <p>Please fill your review for the employee.</p>
+    <h3>Employee Details</h3>
+    <p>
+        <strong>Employee Name:</strong> {{ $evaluationData['employee_name'] ?? 'N/A' }}<br>
+        <strong>Employee ID:</strong> {{ $evaluationData['emp_id'] ?? 'N/A' }}<br>
+        <strong>Designation:</strong> {{ $evaluationData['designation'] ?? 'N/A' }}<br>
+        <strong>Financial Year:</strong> {{ $evaluationData['financial_year'] ?? 'N/A' }}<br>
+        <strong>Submitted By:</strong> {{ $evaluationData['evalutors_name'] ?? ($evaluationData['employee_name'] ?? 'N/A') }}
+    </p>
+
+    <p>You are requested to log in to the system, review the submitted self-evaluation, and complete your review accordingly.</p>
+    <p>Thank you for your timely attention to this matter.</p>
+
+    <p>
+        Regards,<br>
+        Delostyle Team
+    </p>
 </body>
 </html>
